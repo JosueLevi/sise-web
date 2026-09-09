@@ -1,0 +1,19 @@
+# Basura del sistema
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Copias de seguridad y temporales
+*.bak
+*.tmp
+*.orig
+
+# Nada de node por ahora: el sitio es estático y no tiene build
+node_modules/

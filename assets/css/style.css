@@ -1,0 +1,2206 @@
+/* ============================================================
+   SISE · Instituto Superior — Hoja de estilos
+   Tipografías: Barlow Condensed (títulos) / Barlow (textos)
+   Color primario: #FF0E49
+   ============================================================ */
+
+/* ---------- Tokens ---------- */
+:root{
+  --red:#FF0E49;
+  --red-600:#E00040;
+  --red-700:#C00036;
+  --red-soft:#FFE4EC;
+  --terciario:#FAD44F;  /* tercer color de marca */
+
+  --ink:#12131A;
+  --ink-2:#2A2C36;
+  --body:#5C6270;
+  --muted:#8A90A0;
+
+  --white:#fff;
+  --bg:#F4F4F4;        /* fondo general de la página */
+  --bg-soft:#F6F7FA;
+  --line:#E7E9F0;
+
+  --blue-1:#0B4FD6;
+  --blue-2:#1E86F0;
+  --blue-3:#37C4F5;
+
+  --shell:1240px;
+  --gut:24px;
+  --r-sm:12px;
+  --r-md:18px;
+  --r-lg:26px;
+  --r-xl:34px;
+
+  --shadow-sm:0 4px 16px rgba(18,19,26,.06);
+  --shadow-md:0 14px 40px rgba(18,19,26,.10);
+  --shadow-lg:0 26px 70px rgba(18,19,26,.16);
+
+  --header-h:78px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* ---------- Reset ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@keyframes pageIn{from{opacity:0}to{opacity:1}}
+@keyframes riseIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+body{
+  animation:pageIn .5s var(--ease);
+  margin:0;
+  font-family:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:17px;
+  line-height:1.65;
+  color:var(--body);
+  background:var(--bg);
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block}
+/* Sin esto, un display de clase (p. ej. .btn{display:inline-flex})
+   pisa la regla del navegador y el elemento se sigue viendo. */
+[hidden]{display:none!important}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+ul{margin:0;padding:0;list-style:none}
+h1,h2,h3,h4{
+  font-family:'Barlow Condensed',Impact,sans-serif;
+  font-weight:800;
+  color:var(--ink);
+  line-height:1.02;
+  letter-spacing:.005em;
+  margin:0;
+}
+p{margin:0}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px;border-radius:4px}
+
+.shell{width:100%;max-width:var(--shell);margin-inline:auto;padding-inline:var(--gut)}
+
+.skip-link{
+  position:absolute;left:-9999px;top:0;z-index:999;
+  background:var(--red);color:#fff;padding:12px 20px;border-radius:0 0 10px 0;font-weight:700;
+}
+.skip-link:focus{left:0}
+
+/* Visible solo para lectores de pantalla */
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+/* Los iconos inyectados desde icons.js llenan su contenedor */
+[data-ico]{display:inline-flex;align-items:center;justify-content:center}
+[data-ico] > svg{width:100%;height:100%;display:block}
+.floater [data-ico]{width:26px;height:26px}
+.mod-opt [data-ico]{width:21px;height:21px;flex:none}
+
+/* ---------- Botones ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-family:'Barlow',sans-serif;font-weight:700;font-size:15px;
+  padding:13px 28px;border-radius:10px;cursor:pointer;
+  transition:transform .2s var(--ease),background .2s var(--ease),box-shadow .2s var(--ease),color .2s var(--ease);
+  white-space:nowrap;
+}
+.btn-pill{border-radius:999px}
+.btn-primary{background:var(--red);color:#fff;box-shadow:0 10px 26px rgba(255,14,73,.32)}
+.btn-primary:hover{background:var(--red-600);transform:translateY(-2px);box-shadow:0 14px 32px rgba(255,14,73,.42)}
+.btn-outline-light{border:1.5px solid rgba(255,255,255,.55);color:#fff;background:rgba(255,255,255,.06);backdrop-filter:blur(6px)}
+.btn-outline-light:hover{background:var(--red);border-color:var(--red)}
+.btn-block{width:100%}
+.ico-arrow{width:18px;height:18px;flex:none;transition:transform .25s var(--ease)}
+.btn:hover .ico-arrow{transform:translate(3px,-3px)}
+
+/* ---------- Header (barra flotante tipo píldora) ---------- */
+.site-header{
+  position:fixed;inset:26px 0 auto 0;z-index:100;
+  transition:inset .3s var(--ease),transform .34s var(--ease),opacity .28s var(--ease);
+  will-change:transform;
+}
+/* Se aparta hacia arriba al bajar. El 100% no basta: hay que subir
+   ademas el hueco que deja el inset, si no asoma el borde inferior. */
+.site-header.is-hidden{
+  transform:translateY(calc(-100% - 40px));
+  opacity:0;pointer-events:none;
+}
+.site-header.is-stuck{inset:10px 0 auto 0}
+.header-shell{width:100%;max-width:1288px;margin-inline:auto;padding-inline:var(--gut)}
+
+/* Sobre el banner no hay panel: ni borde, ni fondo, ni desenfoque.
+   Lo que sostiene el texto es el degradado del borde superior de la
+   foto (.hero-veil). El panel sólido vuelve al hacer scroll. */
+.nav-pill{
+  position:relative;
+  display:flex;align-items:center;gap:clamp(12px,1.8vw,28px);
+  padding:11px 12px 11px 10px;border-radius:999px;
+  border:1.5px solid transparent;
+  background:transparent;
+  transition:background .3s var(--ease),border-color .3s var(--ease),
+             padding .3s var(--ease),backdrop-filter .3s var(--ease);
+}
+.main-nav a,.nav-link{text-shadow:0 1px 6px rgba(0,0,0,.45)}
+/* Al salir del banner sí hay barra: ahí no hay foto que respetar */
+.site-header.is-stuck .nav-pill{
+  background:rgba(14,15,20,.92);
+  border-color:rgba(255,255,255,.16);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  padding:8px 12px 8px 26px;
+}
+.site-header.is-stuck .nav-link{text-shadow:none}
+
+/* Logo real (SVG del diseño): las letras toman currentColor,
+   el chevron conserva el rojo de marca #FF0C47 */
+.brand{display:flex;align-items:center;flex:none;color:#fff}
+.brand-logo{display:block;width:auto;height:27px;aspect-ratio:96/24}
+.brand-logo > svg{width:100%;height:100%;display:block}
+
+.main-nav{display:flex;align-items:center;gap:clamp(12px,1.8vw,30px);margin-inline:auto}
+.nav-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:inherit;font-size:15.5px;font-weight:500;color:#fff;
+  position:relative;padding:5px 0;white-space:nowrap;cursor:pointer;
+  transition:color .2s var(--ease);
+}
+.nav-link::after{
+  content:'';position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--red);
+  transition:width .28s var(--ease);
+}
+.nav-link:hover{color:var(--red)}
+.nav-link:hover::after{width:100%}
+.nav-link .caret{width:15px;height:15px;flex:none;transition:transform .25s var(--ease)}
+
+/* ---- Dropdown ---- */
+.nav-item{position:relative}
+/* El panel de carreras es más ancho que su enlace: se centra sobre la
+   píldora entera, por eso el enlace deja de ser el punto de anclaje. */
+.nav-item.has-mega{position:static}
+.nav-item:hover .nav-link,.nav-item.is-open .nav-link{color:var(--red)}
+.nav-item:hover .nav-link::after,.nav-item.is-open .nav-link::after{width:100%}
+.nav-item:hover .caret,.nav-item.is-open .caret{transform:rotate(180deg)}
+
+.drop{
+  position:absolute;top:calc(100% + 18px);left:50%;translate:-50% 0;
+  min-width:258px;padding:10px;border-radius:18px;
+  background:rgba(20,21,28,.94);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 22px 50px rgba(0,0,0,.4);
+  opacity:0;visibility:hidden;transform:translateY(-8px);
+  transition:opacity .22s var(--ease),transform .22s var(--ease),visibility .22s;
+  z-index:5;
+}
+/* puente invisible para que el ratón llegue al panel */
+.drop::before{content:'';position:absolute;left:0;right:0;top:-18px;height:18px}
+.nav-item:hover .drop,.nav-item.is-open .drop,.nav-item:focus-within .drop{
+  opacity:1;visibility:visible;transform:translateY(0);
+}
+.drop a{
+  display:block;padding:10px 14px;border-radius:11px;
+  font-size:14.5px;font-weight:500;color:rgba(255,255,255,.86);white-space:nowrap;
+  transition:background .18s var(--ease),color .18s var(--ease),padding-left .18s var(--ease);
+}
+.drop a:hover{background:rgba(255,255,255,.1);color:#fff;padding-left:19px}
+.drop a.is-cta{
+  margin-top:6px;background:var(--red);color:#fff;font-weight:600;text-align:center;
+}
+.drop a.is-cta:hover{background:var(--red-600);padding-left:14px}
+
+/* ---- Panel de carreras por áreas ----
+   A diferencia del resto de desplegables, este va en claro: panel
+   blanco, título de área en rojo con su icono y las carreras en gris
+   oscuro, tal cual el diseño. */
+.drop-mega{
+  width:min(1100px,calc(100vw - 32px));
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:30px 24px;padding:30px 28px 34px;
+  border-radius:20px;
+  background:#fff;
+  /* El menu lleva sombra de texto para sostenerse sobre la foto del
+     banner. Aqui el fondo es blanco: esa sombra solo deja un halo gris. */
+  border:1px solid rgba(15,17,26,.07);
+  box-shadow:0 26px 64px rgba(15,17,26,.17);
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+.mega-area{
+  display:flex;align-items:center;gap:9px;margin:0 0 4px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:19px;font-weight:700;line-height:1.2;color:var(--red);
+}
+.drop-mega .mega-area,
+.drop-mega .mega-col a{text-shadow:none}
+.mega-ico{display:block;width:20px;height:20px;flex:none}
+.mega-ico > svg{width:100%;height:100%;display:block}
+
+.drop-mega .mega-col a{
+  padding:7px 0;border-radius:0;
+  font-size:13.5px;font-weight:400;line-height:1.35;
+  color:var(--body);white-space:normal;
+}
+/* Idiomas: un solo grupo -> panel estrecho, una columna, bajo su botón.
+   Hereda el fondo blanco de drop-mega pero sin el ancho de 1100px. */
+.drop-mega.is-compact{
+  width:auto;min-width:224px;
+  grid-template-columns:1fr;
+  gap:0;padding:20px 22px 16px;
+}
+.drop-mega.is-compact .mega-col a{white-space:nowrap}
+
+.drop-mega .mega-col a:hover{
+  background:transparent;color:var(--red);padding-left:5px;
+}
+
+.btn-empleo{
+  display:inline-flex;align-items:center;gap:11px;flex:none;
+  background:#fff;color:var(--ink);font-weight:600;font-size:15.5px;
+  padding:13px 26px;border-radius:999px;white-space:nowrap;
+  transition:background .22s var(--ease),transform .22s var(--ease),box-shadow .22s var(--ease);
+}
+/* Icono animado: hereda el color del botón */
+.lottie{display:block;flex:none;line-height:0}
+.lottie svg{display:block;width:100%;height:100%;overflow:visible}
+.lottie svg path{stroke:currentColor!important}
+.lottie svg g[clip-path]{clip-path:none!important}
+.btn-empleo .lottie{width:24px;height:24px}
+/* El icono va en rojo aunque el texto sea oscuro: el Lottie hereda
+   currentColor, así que se le da el suyo propio. */
+.btn-empleo .lottie{color:var(--red)}
+/* Hover suave: la píldora no cambia de color, solo se levanta */
+.btn-empleo:hover{background:#FFF3F6;transform:translateY(-2px);box-shadow:0 8px 22px rgba(18,19,26,.16)}
+
+.burger{position:relative;width:44px;height:44px;display:grid;place-content:center;border-radius:12px;flex:none;transition:background .2s}
+.burger:hover{background:rgba(255,255,255,.14)}
+.burger{color:#fff}
+.burger-abrir,.burger-cerrar{width:24px;height:24px;transition:opacity .2s var(--ease),transform .3s var(--ease)}
+.burger-cerrar{position:absolute;opacity:0;transform:rotate(-90deg)}
+.burger.is-open .burger-abrir{opacity:0;transform:rotate(90deg)}
+.burger.is-open .burger-cerrar{opacity:1;transform:rotate(0)}
+
+/* ============================================================
+   MENÚ DESPLEGADO (lo abre la hamburguesa)
+   ============================================================
+   Hoja blanca a pantalla completa con el mapa del sitio. Sustituye al
+   panel lateral por niveles: aquel existía para que 24 carreras y 33
+   cursos cupieran en una lista de móvil; aquí eso lo resuelve el
+   buscador, y las columnas llevan a las páginas de cada sección. */
+.site-menu{
+  position:fixed;inset:0;z-index:120;background:#fff;
+  overflow-y:auto;overscroll-behavior:contain;
+  opacity:0;visibility:hidden;
+  /* La visibilidad se apaga DESPUÉS del fundido, pero se enciende al
+     instante: si tarda, el foco no puede entrar en la hoja al abrir
+     (no se puede enfocar lo que aún está oculto). */
+  transition:opacity .3s var(--ease),visibility 0s linear .3s;
+}
+.site-menu.is-open{
+  opacity:1;visibility:visible;
+  transition:opacity .3s var(--ease),visibility 0s;
+}
+.sm-sheet{
+  position:relative;z-index:1;min-height:100%;
+  display:flex;flex-direction:column;
+  max-width:1180px;margin-inline:auto;padding:26px var(--gut) 24px;
+  transform:translateY(-14px);transition:transform .38s var(--ease);
+}
+.site-menu.is-open .sm-sheet{transform:none}
+
+/* Chevrón de marca, muy tenue, detrás de todo.
+   Cuelga de .sm-sheet y no de .site-menu: el menu tiene scroll propio,
+   y un absoluto dentro de un contenedor con scroll se mide contra la
+   ventana, no contra el contenido. Colgando del panel crece con el. */
+.sm-deco{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+/* Un absoluto pinta por encima de los hermanos sin posicionar, asi que
+   el contenido necesita su propia capa para quedar delante. */
+.sm-top,.sm-search,.sm-body,.sm-found,.sm-foot{position:relative;z-index:1}
+.sm-deco > span{position:absolute;display:block;aspect-ratio:67/71}
+/* El icono viene solo contorneado; aquí se quiere la silueta maciza. */
+.sm-deco > span svg{width:100%;height:100%;display:block}
+.sm-deco > span svg path{fill:currentColor;stroke:none}
+/* Centrada y a toda la altura de la hoja. El alto manda y el ancho
+   sale de la proporcion del icono; en pantallas estrechas eso la hace
+   mas ancha que la ventana, y el overflow:hidden del contenedor la
+   recorta por los lados, que es justo el efecto buscado. */
+.sm-deco-1{
+  top:0;height:100%;width:auto;
+  left:50%;transform:translateX(-50%);
+  color:rgba(255,14,73,.075);
+}
+
+/* ---- Cabecera ---- */
+.sm-top{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding-bottom:20px;border-bottom:1.5px solid var(--red);
+}
+.sm-brand{display:inline-flex;flex-direction:column;gap:5px}
+.sm-brand-logo{display:block;width:clamp(112px,12vw,142px);color:var(--red)}
+.sm-brand-logo svg{width:100%;height:auto;display:block}
+.sm-brand-sub{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--ink);
+}
+.menu-close{
+  width:46px;height:46px;flex:none;display:grid;place-content:center;border-radius:12px;
+  color:var(--red);transition:background .2s var(--ease),transform .3s var(--ease);
+}
+.menu-close svg{width:26px;height:26px;display:block}
+.menu-close:hover{background:#FFF1F4;transform:rotate(90deg)}
+
+/* ---- Columnas ---- */
+.sm-body{
+  flex:1;display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr)) minmax(196px,244px);
+  gap:clamp(22px,3vw,46px);padding:clamp(28px,4vw,48px) 0;
+}
+/* display:contents deja que las tres columnas del <nav> sean celdas de
+   la rejilla junto a la tarjeta, sin perder la semántica del nav. */
+.sm-cols{display:contents}
+.sm-col-t{font-weight:700;font-size:17px;color:var(--red);margin-bottom:14px}
+.sm-col a{
+  display:block;padding:7px 0;font-size:15.5px;color:#4B4F5A;
+  transition:color .2s var(--ease),transform .2s var(--ease);
+}
+.sm-col a:hover,.sm-col a:focus-visible{color:var(--red);transform:translateX(3px)}
+/* Separa la oferta académica del resto de páginas del sitio */
+.sm-col a.has-sep{margin-top:12px;padding-top:15px;border-top:1px solid var(--line)}
+/* Dónde estás ahora */
+.sm-col a[aria-current="page"]{color:var(--red);font-weight:600}
+
+/* ---- Columna derecha: admisión primero, soporte después ---- */
+.sm-side{align-self:start;display:grid;gap:14px}
+.sm-cta{background:var(--red);color:#fff;border-radius:18px;padding:22px 20px}
+.sm-cta-t{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:23px;line-height:1.05;color:#fff;
+}
+.sm-cta-p{margin:8px 0 16px;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.92)}
+.sm-cta-btn{
+  width:100%;justify-content:center;gap:9px;padding:11px 16px;font-size:14px;
+  background:#fff;color:var(--red);
+}
+.sm-cta-btn:hover{background:#272423;color:#fff;transform:translateY(-2px)}
+.sm-fl{display:block;width:20px;height:20px;flex:none;transition:transform .25s var(--ease)}
+.sm-fl svg{width:100%;height:100%;display:block}
+.sm-cta-btn:hover .sm-fl{transform:translateX(3px)}
+
+.sm-card{
+  display:flex;align-items:center;gap:12px;
+  border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;background:#fff;
+  transition:border-color .25s var(--ease);
+}
+.sm-card:hover{border-color:var(--red)}
+.sm-card-ico{display:block;width:30px;height:30px;flex:none;color:var(--red)}
+.sm-card-ico svg{width:100%;height:100%;display:block}
+.sm-card-t{font-size:14px;font-weight:600;color:var(--ink);line-height:1.25}
+.sm-card-link{
+  display:inline-block;margin-top:2px;font-size:13px;font-weight:600;color:var(--red);
+}
+.sm-card-link:hover{text-decoration:underline}
+
+/* ---- Pie ---- */
+.sm-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  padding-top:18px;border-top:1.5px solid var(--red);
+}
+.sm-contacto{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.sm-via{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:14.5px;font-weight:500;color:var(--ink);transition:color .2s var(--ease);
+}
+.sm-via-ico{display:block;width:18px;height:18px;flex:none;color:var(--red)}
+.sm-via-ico svg{width:100%;height:100%;display:block}
+.sm-via:hover{color:var(--red)}
+.sm-social{display:flex;gap:10px}
+.sm-social a{
+  width:36px;height:36px;border-radius:50%;display:grid;place-content:center;
+  background:var(--red);color:#fff;
+  transition:transform .22s var(--ease),background .22s var(--ease);
+}
+.sm-social svg{width:17px;height:17px;display:block}
+.sm-social a:hover{transform:translateY(-3px);background:var(--red-600)}
+
+/* ---- Entrada escalonada ---- */
+.site-menu.is-open .sm-col,
+.site-menu.is-open .sm-side{animation:riseIn .5s var(--ease) backwards}
+.site-menu.is-open .sm-col:nth-child(1){animation-delay:.08s}
+.site-menu.is-open .sm-col:nth-child(2){animation-delay:.14s}
+.site-menu.is-open .sm-col:nth-child(3){animation-delay:.2s}
+.site-menu.is-open .sm-side{animation-delay:.26s}
+
+@media (max-width:900px){
+  .sm-body{grid-template-columns:1fr 1fr;gap:26px 22px}
+  .sm-side{grid-column:1/-1;max-width:360px}
+  /* A toda altura, en una pantalla estrecha la flecha sale 3 veces mas
+     ancha que la ventana y solo se ve su franja central: deja de leerse
+     como flecha. Aqui manda el ancho y cabe entera, centrada en los dos
+     ejes sobre el alto completo del panel. */
+  .sm-deco-1{
+    top:50%;height:auto;
+    width:min(76vw,420px);
+    transform:translate(-50%,-50%);
+  }
+  /* La pagina actual se marca con un subrayado, no tinendo la linea
+     entera de rojo: en una sola columna el texto en rojo pesa
+     demasiado y compite con los titulos de grupo. */
+  .sm-col a[aria-current="page"]{
+    color:#4B4F5A;font-weight:inherit;
+    text-decoration:underline;
+    text-decoration-color:var(--red);
+    text-decoration-thickness:2.5px;
+    text-underline-offset:5px;
+  }
+}
+@media (max-width:560px){
+  .sm-body{grid-template-columns:1fr;padding:24px 0}
+  .sm-side{max-width:none}
+  .sm-foot{justify-content:center}
+  .sm-contacto{justify-content:center;gap:14px 20px}
+}
+@media (prefers-reduced-motion:reduce){
+  .sm-sheet{transform:none;transition:none}
+  .site-menu.is-open .sm-col,
+  .site-menu.is-open .sm-side{animation:none}
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative;min-height:min(720px,100vh);display:flex;align-items:center;
+  padding:calc(var(--header-h) + 34px) 0 52px;
+  /* Sin esto el arrastre no funciona con el dedo: al detectar un gesto
+     horizontal el navegador asume que es scroll, se queda el gesto y
+     manda pointercancel, asi que el JS no llega a ver el movimiento.
+     pan-y le deja el desplazamiento vertical y nos cede el horizontal. */
+  touch-action:pan-y;
+}
+/* El fondo del hero es un carrusel: una capa por diapositiva */
+.hero-bg{position:absolute;inset:0;overflow:hidden}
+/* El desplegable del formulario es alto y sale del hero. Sin overflow en
+   el hero ya no se recorta, y con esto se pinta sobre la seccion de
+   abajo mientras esta abierto (si no, la siguiente seccion lo tapa). */
+.hero:has(.field.is-open){z-index:30}
+.lead-card{position:relative;z-index:1}
+.hero-slide{
+  position:absolute;inset:0;
+  background-position:center 28%;background-size:cover;background-repeat:no-repeat;
+  opacity:0;transition:opacity .8s var(--ease);
+}
+.hero-slide.is-on{opacity:1}
+/* Banner sin velo ni degradados: la foto se ve tal cual.
+   Para recuperarlo, descomenta el bloque de abajo. */
+.hero-veil{
+  position:absolute;inset:0;
+  /* Solo la franja del menú: se apaga al 17% del alto */
+  background:linear-gradient(180deg,rgba(6,8,14,.46) 0%,rgba(6,8,14,.20) 8%,transparent 17%);
+}
+/*
+.hero-veil{
+  background:
+    linear-gradient(100deg,rgba(8,9,13,.56) 0%,rgba(8,9,13,.32) 26%,rgba(8,9,13,.05) 50%,rgba(8,9,13,.16) 100%),
+    linear-gradient(180deg,rgba(8,9,13,.28) 0%,transparent 22%),
+    linear-gradient(0deg,rgba(8,9,13,.26) 0%,transparent 16%);
+}
+*/
+.hero-grid{
+  position:relative;display:grid;grid-template-columns:1fr minmax(336px,392px);
+  gap:48px;align-items:center;
+}
+.hero-copy{max-width:560px;animation:riseIn .8s var(--ease) .12s backwards;
+  transition:opacity .2s var(--ease),transform .2s var(--ease)}
+/* Cruce del texto al cambiar de diapositiva */
+.hero-copy.is-swap{opacity:0;transform:translateY(8px)}
+/* Diapositiva sin texto: solo quedan los controles */
+.hero-copy.sin-texto .hero-title,
+.hero-copy.sin-texto .hero-sub{display:none}
+
+
+/* Controles del carrusel: solo puntos, al pie de la sección */
+.hero-nav{
+  position:absolute;left:0;right:0;bottom:26px;z-index:3;
+  display:flex;justify-content:center;
+}
+.hero-nav[hidden]{display:none!important}
+
+.hero-dots{display:flex;gap:12px}
+.hero-dots:empty{display:none}
+.hero-dot{
+  width:38px;height:6px;border-radius:99px;padding:0;cursor:pointer;
+  background:rgba(255,255,255,.65);
+  /* Sombra propia: sin ella desaparecen sobre las fotos claras */
+  box-shadow:0 1px 5px rgba(0,0,0,.45);
+  transition:background .3s var(--ease),width .3s var(--ease),box-shadow .3s var(--ease);
+}
+.hero-dot:hover{background:#fff}
+.hero-dot.is-on{
+  background:var(--red);width:62px;
+  box-shadow:0 2px 12px rgba(255,14,73,.6),0 1px 4px rgba(0,0,0,.35);
+}
+/* Zona de pulsación cómoda sin agrandar el punto */
+.hero-dot::before{content:'';position:absolute;inset:-15px -6px}
+.hero-dot{position:relative}
+
+/* El fondo se puede arrastrar; el formulario no */
+.hero{cursor:grab}
+.hero.is-dragging{cursor:grabbing;user-select:none}
+.hero.is-dragging .hero-slide{transition:none}
+.lead-card{cursor:auto}
+.hero-bg{will-change:transform}
+.lead-card{animation:riseIn .8s var(--ease) .28s backwards}
+.hero-title{color:#fff}
+.hero-title .l1{display:block;font-weight:800;font-size:clamp(38px,4.5vw,76px);letter-spacing:.005em}
+/* "COMO SE VIVE": lettering de marcador.
+   Permanent Marker (Google Fonts) + inclinación, para el trazo de rotulador
+   de la referencia. Si consigues el .woff2 original del diseño, basta con
+   declararlo aquí como 'SISE Marker' y va delante en la pila. */
+.hero-title .l2{
+  display:inline-block;
+  font-family:'SISE Marker','Permanent Marker','Barlow Condensed',cursive;
+  font-weight:400;
+  font-size:clamp(44px,5.1vw,88px);
+  line-height:1.04;
+  color:var(--red);
+  /* Nunca en dos líneas: el tamaño se calcula para que quepa */
+  white-space:nowrap;
+  text-transform:uppercase;
+  letter-spacing:.005em;
+  margin-top:.10em;
+  transform:skewX(-9deg) rotate(-1.2deg);
+  transform-origin:left center;
+  /* Permanent Marker solo tiene un grosor: el trazo del mismo color
+     engorda el lettering para acercarlo a la referencia. */
+  /* Permanent Marker solo tiene un grosor. El trazo del mismo color
+     engorda el lettering sin cerrar los huecos de las letras: a 4.5px
+     se empastaban la O, la S y la E. */
+  -webkit-text-stroke:3px var(--red);
+  text-shadow:0 2px 10px rgba(0,0,0,.32),0 1px 2px rgba(0,0,0,.26);
+}
+
+.hero-sub{margin-top:18px;color:rgba(255,255,255,.9);font-size:17.5px;font-weight:500;max-width:430px}
+
+/* Formulario */
+.lead-card{
+  background:rgba(255,255,255,.85);
+  border-radius:26px;padding:26px 24px;box-shadow:var(--shadow-lg);
+  animation:riseIn .8s var(--ease) .28s backwards;
+}
+.lead-title{
+  text-align:center;font-size:24px;font-weight:800;color:var(--ink);
+  letter-spacing:.005em;margin-bottom:11px;
+}
+.lead-title em{font-style:normal;color:var(--red)}
+
+.lead-form{display:grid;grid-template-columns:1fr 1fr;gap:13px 14px}
+
+.mod-q{grid-column:1/-1;font-size:13.5px;color:var(--ink-2);margin-bottom:-3px}
+.mod-switch{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mod-opt{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:11px 18px;border-radius:999px;
+  border:1.5px solid #CBD0DA;background:transparent;color:var(--body);
+  font-size:14px;font-weight:500;text-align:left;
+  transition:all .22s var(--ease);
+}
+.mod-opt svg{width:21px;height:21px;flex:none}
+.mod-opt:hover{border-color:#F6B9C9;color:var(--red)}
+.mod-opt.is-on{background:#FBDCE4;border-color:#FBDCE4;color:var(--red);font-weight:600}
+
+/* ---- Campos con etiqueta flotante ----
+   Reposo: la etiqueta va dentro del campo, en oscuro.
+   Con foco o con dato: sube y el borde se ABRE para dejarle sitio
+   (fieldset + legend), en vez de taparlo con un parche blanco. */
+.field{position:relative;display:block;min-width:0}
+
+.field input,.field select{
+  position:relative;z-index:1;
+  width:100%;font:inherit;font-size:14.5px;color:var(--ink);
+  height:50px;padding:0 15px;border:0;border-radius:13px;
+  background:transparent;
+}
+.field input:focus,.field select:focus{outline:0}
+
+/* ---- Desplegable a medida ----
+   El <select> real queda oculto (guarda el valor y valida);
+   lo visible es .sel-btn + .sel-list. */
+.field select{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;padding:0}
+.sel-btn{
+  position:relative;z-index:1;display:flex;align-items:center;
+  width:100%;height:50px;padding:0 44px 0 15px;
+  font:inherit;font-size:14.5px;color:var(--ink);text-align:left;
+  background:transparent;border:0;border-radius:13px;cursor:pointer;
+}
+.sel-btn::after{
+  content:'';position:absolute;right:15px;top:50%;width:11px;height:11px;
+  border-right:2px solid #565A67;border-bottom:2px solid #565A67;
+  transform:translateY(-70%) rotate(45deg);
+  transition:transform .25s var(--ease);
+}
+.field.is-open .sel-btn::after{transform:translateY(-25%) rotate(225deg)}
+.sel-val{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.sel-list{
+  /* Se ensancha lo que haga falta para no cortar los nombres */
+  position:absolute;left:0;top:calc(100% + 8px);z-index:20;
+  min-width:100%;width:max-content;max-width:min(340px,82vw);
+  background:#fff;border-radius:14px;padding:7px;
+  border:1px solid var(--line);
+  box-shadow:0 18px 44px rgba(18,19,26,.18);
+  max-height:500px;overflow-y:auto;
+  opacity:0;visibility:hidden;transform:translateY(-6px);
+  transition:opacity .18s var(--ease),transform .18s var(--ease),visibility .18s;
+}
+.field.is-open .sel-list{opacity:1;visibility:visible;transform:none}
+/* La columna derecha despliega hacia la izquierda */
+.lead-form > .field:nth-of-type(even) .sel-list{left:auto;right:0}
+.sel-opt{
+  padding:10px 13px;border-radius:9px;font-size:14.5px;color:var(--ink-2);
+  cursor:pointer;line-height:1.3;
+  transition:background .14s var(--ease),color .14s var(--ease);
+}
+.sel-opt.is-on{background:#FDE7EC;color:var(--red)}
+.sel-opt[aria-selected="true"]{color:var(--red);font-weight:600}
+.sel-list::-webkit-scrollbar{width:6px}
+.sel-list::-webkit-scrollbar-thumb{background:#D6D9E0;border-radius:99px}
+
+/* La etiqueta flotante y la muesca ahora las manda el estado del campo */
+.field.is-open .sel-btn ~ .notch,
+.field.is-filled .sel-btn ~ .notch{border-color:var(--ink)}
+.field.is-open .sel-btn ~ .notch{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,14,73,.13)}
+.field select{
+  appearance:none;padding-right:44px;cursor:pointer;color:transparent;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27560%27%20height%3D%27130%27%20viewBox%3D%270%200%20560%20130%27%3E%3Cpath%20fill%3D%27%23FF0E49%27%20d%3D%27M18%2074%20C120%2042%20300%2042%20452%2056%20C500%2060%20532%2066%20544%2074%20C532%2082%20498%2086%20452%2084%20C300%2094%20120%2096%2032%2086%20C22%2085%2012%2080%2018%2074%20Z%27%2F%3E%3C%2Fsvg%3E");
+  background-repeat:no-repeat;background-position:right 16px center;background-size:17px;
+}
+/* El placeholder solo se ve cuando el campo está activo */
+.field input::placeholder{color:transparent;transition:color .2s var(--ease)}
+.field input:focus::placeholder{color:#A2A8B6}
+
+/* Marco con muesca */
+.field .notch{
+  position:absolute;top:-5px;left:0;right:0;bottom:0;
+  margin:0;padding:0 9px;min-width:0%;overflow:hidden;pointer-events:none;
+  border:1.3px solid #565A67;border-radius:13px;
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.field .notch legend{
+  float:none;display:block;width:auto;max-width:.01px;padding:0;
+  height:11px;line-height:11px;font-size:12px;
+  visibility:hidden;overflow:hidden;white-space:nowrap;
+  transition:max-width .05s var(--ease);
+}
+.field .notch legend span{display:inline-block;padding:0 6px}
+
+.field > label{
+  position:absolute;left:15px;top:50%;transform:translateY(-50%);z-index:2;
+  font-size:13.5px;font-weight:500;color:var(--ink-2);line-height:1;
+  pointer-events:none;white-space:nowrap;
+  max-width:calc(100% - 26px);overflow:hidden;text-overflow:ellipsis;
+  transition:top .18s var(--ease),font-size .18s var(--ease),color .18s var(--ease);
+}
+.field > label i{font-style:normal}
+
+/* Estado flotado: etiqueta arriba en rojo a 12px + muesca abierta */
+.field input:focus ~ label,
+.field input:not(:placeholder-shown) ~ label,
+.field.is-open > label,
+.field.is-filled > label{
+  top:0;font-size:12px;color:var(--red);max-width:calc(100% - 20px);
+}
+.field input:focus ~ .notch legend,
+.field input:not(:placeholder-shown) ~ .notch legend,
+.field.is-open .notch legend,
+.field.is-filled .notch legend{
+  max-width:100%;transition:max-width .1s .04s var(--ease);
+}
+
+.field input:focus ~ .notch{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,14,73,.13)}
+.field.has-error .notch{border-color:var(--red)}
+.field.has-error input,.field.has-error select{background-color:rgba(255,246,248,.5)}
+
+/* Casillas */
+.check{
+  grid-column:1/-1;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;
+  font-size:12.5px;line-height:1.5;color:var(--ink-2);cursor:pointer;
+}
+.check input{position:absolute;opacity:0;width:0;height:0}
+.check .box{
+  width:20px;height:20px;border-radius:6px;border:2px solid var(--red);background:transparent;
+  margin-top:1px;transition:all .18s var(--ease);position:relative;
+}
+.check .box::after{
+  content:'';position:absolute;left:5.6px;top:2.2px;width:4.6px;height:9.6px;
+  border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) scale(.4);
+  opacity:0;transition:opacity .16s var(--ease),transform .16s var(--ease);
+}
+.check input:checked + .box{background:var(--red);border-color:var(--red)}
+.check input:checked + .box::after{opacity:1;transform:rotate(45deg) scale(1)}
+.check input:focus-visible + .box{outline:3px solid var(--red);outline-offset:2px}
+.check a{color:inherit;font-weight:700}
+.check a:hover{color:var(--red)}
+.check-just .txt{text-align:justify}
+.check.has-error .box{box-shadow:0 0 0 3px rgba(255,14,73,.22)}
+
+.submit-btn{
+  grid-column:1/-1;justify-self:center;margin-top:3px;
+  display:inline-flex;align-items:center;gap:16px;
+  background:var(--red);color:#fff;font-weight:600;font-size:15.5px;
+  padding:13px 20px 13px 30px;border-radius:999px;
+  box-shadow:0 12px 30px rgba(255,14,73,.34);
+  transition:transform .2s var(--ease),background .2s var(--ease),box-shadow .2s var(--ease);
+}
+.submit-btn [data-ico]{width:24px;height:24px;flex:none;transition:transform .25s var(--ease)}
+.submit-btn:hover{background:var(--red-600);transform:translateY(-2px);box-shadow:0 16px 36px rgba(255,14,73,.44)}
+
+/* Inactivo mientras falten campos. Sigue siendo pulsable a propósito:
+   al pulsarlo se marcan los campos que faltan. */
+.submit-btn.is-off{
+  background:#D9DCE3;color:#7A8090;box-shadow:none;cursor:not-allowed;
+}
+.submit-btn.is-off:hover{background:#D9DCE3;transform:none;box-shadow:none}
+.submit-btn.is-off:hover svg{transform:none}
+.submit-btn:hover [data-ico]{transform:translateX(4px)}
+
+/* Vacío no ocupa: si no, el hueco de abajo no cuadra con el de arriba */
+.form-msg{grid-column:1/-1;font-size:13.5px;font-weight:600;text-align:center;margin-top:-2px}
+.form-msg:empty{display:none}
+.form-msg.ok{color:#1B9E5A}
+.form-msg.err{color:var(--red)}
+
+/* Flotantes */
+.floaters{position:fixed;right:20px;bottom:24px;z-index:90;display:flex;flex-direction:column;gap:12px}
+.floater{
+  width:52px;height:52px;border-radius:50%;display:grid;place-content:center;color:#fff;
+  box-shadow:0 8px 24px rgba(0,0,0,.24);transition:transform .22s var(--ease),box-shadow .22s var(--ease);
+}
+.floater svg{width:26px;height:26px}
+.floater:hover{transform:scale(1.09) translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.32)}
+.floater-wa{background:#25D366}
+.floater{position:relative}
+.floater-badge{
+  position:absolute;top:-2px;right:-2px;min-width:20px;height:20px;padding:0 5px;
+  border-radius:999px;background:var(--red);color:#fff;
+  font-size:11.5px;font-weight:700;line-height:20px;text-align:center;
+  border:2px solid #fff;
+}
+.floater-call{background:var(--red)}
+/* Abre el formulario. Solo en movil: en escritorio el formulario ya
+   esta a la vista dentro del banner. */
+.floater-form{display:none;background:var(--red)}
+.floater-form svg{width:26px;height:26px}
+
+/* Velo del formulario emergente */
+.form-velo{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(8,9,14,.62);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  animation:fadeVelo .22s var(--ease);
+}
+@keyframes fadeVelo{from{opacity:0}to{opacity:1}}
+
+/* Boton de cierre de la tarjeta: solo se ve cuando es emergente */
+.lead-cerrar{
+  display:none;position:absolute;top:12px;right:12px;z-index:2;
+  width:38px;height:38px;border-radius:50%;place-content:center;
+  background:#F1F2F5;color:var(--ink);
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+.lead-cerrar svg{width:20px;height:20px;display:block}
+.lead-cerrar:hover{background:var(--red);color:#fff}
+
+/* ============================================================
+   Cabeceras de sección
+   ============================================================ */
+.section{padding:96px 0;position:relative}
+.section-head{text-align:center;max-width:760px;margin:0 auto 40px}
+.section-title{
+  font-size:clamp(34px,4.6vw,52px);text-transform:uppercase;font-weight:800;letter-spacing:.01em;
+}
+.section-title em{font-style:normal;color:var(--red)}
+.section-sub{margin-top:14px;font-size:16.5px;color:var(--body)}
+.section-cta{text-align:center;margin-top:48px}
+
+/* Reveal on scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.is-in{opacity:1;transform:none}
+/* Escalonado de los hijos de un bloque revelado */
+.reveal-stagger:not(.is-in) > *{opacity:0;transform:translateY(20px)}
+.reveal-stagger.is-in > *{animation:riseIn .65s var(--ease) backwards}
+.reveal-stagger.is-in > *:nth-child(1){animation-delay:.05s}
+.reveal-stagger.is-in > *:nth-child(2){animation-delay:.12s}
+.reveal-stagger.is-in > *:nth-child(3){animation-delay:.19s}
+.reveal-stagger.is-in > *:nth-child(4){animation-delay:.26s}
+.reveal-stagger.is-in > *:nth-child(n+5){animation-delay:.33s}
+
+/* Las tarjetas de carrera y de blog entran con su propia animación (la
+   misma más un pelín de escala) pero disparada por el reveal, no al
+   insertarse en el DOM. Antes se animaban nada más cargar la página,
+   con la rejilla aún fuera de pantalla, y al bajar ya había terminado:
+   el efecto existia pero no lo veía nadie. El retardo por tarjeta va
+   en línea desde el JS, así que la cascada no se corta en la quinta. */
+.career-grid.is-in > *,
+.news-grid.is-in > *{animation-name:cardIn}
+
+/* ============================================================
+   PAGINAS INTERNAS (carreras / cursos / idiomas)
+   ============================================================ */
+.pagina-interna{background:var(--bg)}
+/* La primera seccion arranca bajo el header fijo */
+.oferta-page{padding-top:150px}
+@media (max-width:600px){ .oferta-page{padding-top:120px} }
+
+.crumb{
+  display:flex;align-items:center;gap:9px;justify-content:center;
+  margin-bottom:16px;font-size:13.5px;color:var(--muted);
+}
+.crumb a{color:var(--red);font-weight:600}
+.crumb a:hover{text-decoration:underline}
+.crumb span:last-child{color:var(--body)}
+
+/* ============================================================
+   HUB DEL HOME — 3 tarjetas grandes que llevan a paginas internas
+   ============================================================ */
+/* Splatter de pincel (PNG real del usuario), recoloreado al rojo de marca
+   usando su transparencia como máscara. Solo uno, abajo a la izquierda. */
+.hub{position:relative;overflow:hidden}
+.hub .shell{position:relative;z-index:1}
+.hub::before{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  right:-40px;top:-30px;width:320px;height:320px;
+  background-color:var(--terciario);
+  -webkit-mask-image:url("../img/brush.webp");mask-image:url("../img/brush.webp");
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  transform:scaleX(-1);
+  opacity:.5;
+}
+.hub::after{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  left:-40px;bottom:-20px;width:340px;height:340px;
+  background-color:var(--red);
+  -webkit-mask-image:url("../img/brush.webp");mask-image:url("../img/brush.webp");
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  opacity:.14;
+}
+
+.hub-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+  max-width:1120px;margin-inline:auto;
+}
+.hub-card{
+  position:relative;display:flex;flex-direction:column;justify-content:flex-end;
+  aspect-ratio:3/3.9;border-radius:26px;overflow:hidden;isolation:isolate;
+  color:#fff;padding:26px 24px;
+  box-shadow:0 10px 26px rgba(18,19,26,.08);
+  transition:transform .32s var(--ease),box-shadow .32s var(--ease);
+}
+.hub-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(18,19,26,.14)}
+
+.hub-photo{
+  position:absolute;inset:0;z-index:-2;
+  background-size:cover;background-position:center top;
+  transition:transform .6s var(--ease);
+}
+.hub-card:hover .hub-photo{transform:scale(1.06)}
+/* Encuadre por tarjeta: las fotos son horizontales y el sujeto no
+   siempre esta al centro. En Cursos el chico esta a la derecha. */
+.hub--amarillo .hub-photo{background-position:71% 26%}
+.hub--rojo .hub-photo{background-position:50% 18%}
+.hub--azul .hub-photo{background-position:50% 12%}
+
+/* Velo de color de marca: transparente arriba (se ve la foto) y sólido
+   abajo (sostiene el titulo). Cada tema cambia el color. */
+.hub-card::after{
+  content:'';position:absolute;inset:0;z-index:-1;
+}
+.hub--rojo::after{
+  background:linear-gradient(to top,rgba(255,61,106,.92) 4%,rgba(255,61,106,.58) 34%,rgba(255,61,106,.09) 62%,transparent 82%);
+}
+.hub--azul{color:#fff}
+.hub--azul::after{
+  background:linear-gradient(to top,rgba(70,66,166,.92) 4%,rgba(70,66,166,.58) 34%,rgba(70,66,166,.09) 62%,transparent 82%);
+}
+.hub--amarillo{color:#272423}
+/* Texto oscuro sobre amarillo: la irradiación lo hace ver más fino que
+   el blanco sobre rojo/azul. Se sube a 900 para que pese igual al ojo. */
+.hub--amarillo .hub-title{font-weight:900}
+.hub--amarillo::after{
+  background:linear-gradient(to top,rgba(251,221,110,.94) 6%,rgba(251,221,110,.6) 36%,rgba(251,221,110,.11) 64%,transparent 84%);
+}
+
+.hub-body{position:relative;display:flex;flex-direction:column;gap:3px}
+.hub-kicker{
+  font-family:'Barlow',sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;
+  text-transform:uppercase;opacity:.9;
+}
+.hub-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;line-height:.98;
+  font-size:clamp(30px,3.4vw,42px);text-transform:uppercase;letter-spacing:.01em;
+}
+.hub-meta{margin-top:8px;font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:500;opacity:.9}
+
+.hub-go{
+  position:absolute;top:22px;right:22px;z-index:1;
+  width:48px;height:48px;border-radius:50%;
+  display:grid;place-content:center;
+  background:#fff;color:var(--ink);
+  box-shadow:0 8px 20px rgba(0,0,0,.18);
+  transition:transform .25s var(--ease),background .25s var(--ease),color .25s var(--ease);
+}
+.hub-go svg{width:22px;height:22px}
+.hub-card:hover .hub-go{transform:translateX(3px)}
+.hub--rojo:hover .hub-go{background:#FF3D6A;color:#fff}
+.hub--azul:hover .hub-go{background:#4642A6;color:#fff}
+.hub--amarillo:hover .hub-go{background:#272423;color:#fff}
+
+@media (max-width:820px){
+  .hub-grid{grid-template-columns:1fr;gap:16px;max-width:460px}
+  .hub-card{aspect-ratio:16/10;padding:22px}
+  .hub-photo{background-position:center 30%}
+}
+
+/* ---------- Chips ---------- */
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-bottom:44px}
+.chip{
+  font-size:13.5px;font-weight:600;padding:11px 20px;border-radius:999px;
+  border:1.5px solid var(--line);color:var(--body);background:#fff;
+  transition:all .22s var(--ease);
+}
+.chip:hover{border-color:var(--red);color:var(--red)}
+.chip.is-active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 8px 20px rgba(255,14,73,.28)}
+
+/* Con las 8 categorias llenas la fila se parte en dos en pantallas
+   medianas. Antes de que eso pase pasa a ser una sola fila que se
+   arrastra en horizontal, con un degradado que avisa que sigue. */
+@media (max-width:1024px){
+  .chips{
+    justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;
+    padding-bottom:8px;scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+    mask-image:linear-gradient(to right,#000 0,#000 calc(100% - 34px),transparent 100%);
+  }
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none}
+}
+
+/* ============================================================
+   CARRERAS
+   ============================================================ */
+.carreras{background:transparent;overflow:hidden}
+/* Flecha decorativa del fondo: el mismo chevron doble del diseño,
+   a gran escala y en rosa muy claro. */
+.bg-chevron{
+  /* Abarca todo el alto de la sección; el ancho sale del alto por
+     la proporción del chevron, así que se desborda por la derecha
+     (queda recortado por el overflow:hidden de .carreras). */
+  position:absolute;top:0;bottom:0;left:12%;
+  height:100%;width:auto;aspect-ratio:67/71;
+  /* Rojo de marca a plano, al 5%, y desvanecido hacia abajo */
+  color:var(--red);opacity:.05;
+  -webkit-mask-image:linear-gradient(to bottom,#000 45%,transparent 95%);
+  mask-image:linear-gradient(to bottom,#000 45%,transparent 95%);
+  pointer-events:none;z-index:0;
+}
+.bg-chevron > svg{width:100%;height:100%;display:block}
+/* El SVG original viene con fill="none" y solo stroke (así se usa en
+   las tarjetas). En el fondo va macizo, así que se rellena por CSS. */
+.bg-chevron svg path{fill:currentColor}
+.bg-chevron{overflow:visible}
+.carreras .shell{position:relative;z-index:1}
+
+/* Tres por fila, pero la rejilla se estrecha: a todo el ancho las
+   tarjetas salían de 377px, demasiado. */
+.career-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:28px;position:relative;
+  max-width:1150px;margin-inline:auto;
+}
+/* Mismo patrón que las tarjetas de blog: caja blanca, foto arriba con
+   el botón en anillo, y el texto debajo. */
+.career-card{
+  position:relative;display:flex;flex-direction:column;
+  /* Sin caja: la tarjeta va suelta sobre el fondo de página.
+     El borde existe siempre pero transparente, así al marcarse en rojo
+     no se mueve nada de sitio. */
+  background:transparent;border-radius:24px;padding:22px;box-shadow:none;
+  border:2px solid transparent;
+  transition:transform .3s var(--ease),border-color .25s var(--ease);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.career-card:hover{transform:translateY(-6px);border-color:var(--red)}
+
+.cc-top{position:relative}
+.cc-media{
+  position:relative;width:100%;aspect-ratio:4/3.45;
+  border-radius:12px;overflow:hidden;background:#EDEFF4;
+}
+.career-card .cc-img{
+  position:absolute;inset:0;background-size:cover;background-position:center top;
+  transition:transform .6s var(--ease);
+}
+.career-card:hover .cc-img{transform:scale(1.06)}
+
+/* Carreras a las que todavia no les ha llegado la foto: en vez de una
+   imagen rota, el mismo gris del contenedor con un tinte de marca. */
+.cc-img-vacia{
+  background:
+    linear-gradient(135deg,rgba(255,14,73,.10),rgba(250,212,79,.16)),
+    #EDEFF4;
+}
+.career-card:hover .cc-img-vacia{transform:none}
+
+/* El icono va junto al título. Sin la sombra que llevaba para
+   sostenerse sobre la foto: aquí el fondo es blanco. */
+.cc-head{display:flex;align-items:center;gap:10px}
+.cc-icon{
+  display:block;width:21px;height:21px;flex:none;color:var(--red);
+}
+.cc-icon svg{width:100%;height:100%;display:block}
+
+/* Botón con anillo del color de la tarjeta: parece un recorte */
+.cc-go{
+  position:absolute;right:-4px;bottom:-10px;z-index:3;
+  width:46px;height:46px;border-radius:50%;
+  display:grid;place-content:center;
+  background:#fff;color:var(--red);
+  border:1.6px solid var(--red);
+  box-shadow:0 0 0 7px var(--bg);
+  transition:background .22s var(--ease),color .22s var(--ease),transform .22s var(--ease);
+}
+.cc-go svg{width:21px;height:21px}
+.career-card:hover .cc-go{background:var(--red);color:#fff;transform:translate(2px,-2px)}
+
+.cc-body{padding:22px 0 0;display:flex;flex-direction:column;flex:1}
+.cc-name{font-size:18px;font-weight:600;color:var(--ink);line-height:1.2;min-width:0}
+.career-card:hover .cc-name{color:var(--red)}
+.cc-desc{
+  margin-top:9px;font-size:12.5px;color:var(--body);line-height:1.5;flex:1;
+  /* Nunca mas de dos lineas: si una carrera trae un texto largo
+     se recorta en vez de descuadrar la altura de la fila. */
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+}
+
+.cc-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.cc-tag{
+  font-size:11.5px;font-weight:500;
+  color:var(--red);background:#FBF0C4;padding:6px 13px;border-radius:999px;
+  white-space:nowrap;
+}
+
+.career-card.is-hidden{display:none}
+.grid-empty{grid-column:1/-1;text-align:center;padding:56px 0;color:var(--muted);font-size:16px}
+
+/* ============================================================
+   SISE EN CIFRAS
+   ============================================================ */
+.cifras{background:transparent;padding:88px 0 92px}
+/* La bajada de esta sección va en una sola línea en el diseño */
+.cifras .section-head{max-width:1000px}
+.stats-card{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  border:1.5px solid #E2E3E8;border-radius:24px;
+  padding:44px 26px;background:#fff;
+  box-shadow:0 14px 40px rgba(18,19,26,.06);
+}
+.stat{
+  display:flex;align-items:center;justify-content:center;gap:16px;text-align:left;
+  padding:4px 20px;
+}
+/* Separador vertical tenue entre columnas */
+.stat + .stat{border-left:1px solid rgba(18,19,26,.10)}
+/* justify-content:center es lo que equilibra los extremos. Las cuatro
+   columnas no miden igual (las marca el ancho de su numero: "+150.000"
+   pide mucho mas que "+30"), asi que con el contenido pegado a la
+   izquierda todo el sobrante de cada celda se acumulaba a su derecha:
+   el margen izquierdo de la tarjeta quedaba en 51 px y el derecho en
+   29. Centrado, el sobrante se reparte a los dos lados. */
+.stat-ico{display:block;width:56px;height:56px;flex:none;color:var(--red)}
+.stat-ico svg{width:100%;height:100%;display:block}
+/* Cada icono en un color de marca */
+.stat:nth-child(1) .stat-ico{color:var(--red)}
+.stat:nth-child(2) .stat-ico{color:#E8B400}
+.stat:nth-child(3) .stat-ico{color:#4642A6}
+.stat:nth-child(4) .stat-ico{color:var(--red)}
+.stat-txt{min-width:0}
+.stat-num{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:clamp(36px,3.6vw,52px);color:var(--ink);line-height:1;letter-spacing:.01em;
+  white-space:nowrap;
+}
+/* En una sola linea: con "+150.000" marcando el ancho minimo de su
+   columna, a las demas les quedaba menos sitio y "Convenios laborales"
+   partia en dos. Al no poder partirse, su ancho entra en el minimo de
+   la celda y la rejilla le reserva el hueco. */
+.stat-label{margin-top:6px;font-size:14.5px;color:var(--body);line-height:1.3;white-space:nowrap}
+/* Rebote de la cifra al terminar el conteo */
+.stat-num.is-pop{animation:statPop .4s var(--ease)}
+@keyframes statPop{0%{transform:scale(1)}40%{transform:scale(1.13)}100%{transform:scale(1)}}
+.stat-num{transform-origin:left center;display:inline-block}
+
+/* ============================================================
+   ¿POR QUÉ ELEGIR SISE?
+   ============================================================ */
+/* ¿Por qué elegir SISE? — visor con marco compartido: el mismo recuadro
+   muestra el video o la foto del espacio elegido, y las minivistas
+   (Video + 5 espacios) lo controlan. */
+/* Banda negra a sangre, sin redondeos.
+   Nota para el futuro: no intentar fundirla contra el gris de la
+   pagina con un degradado ni con un blur. Cualquier transicion entre
+   #F4F4F4 y #000 atraviesa los grises intermedios y esa franja sucia
+   se ve peor que el corte limpio. Ya se probo. */
+.porque{
+  position:relative;background:#000;
+  padding-top:104px;padding-bottom:96px;
+}
+.porque .section-title{color:#fff}
+.porque .section-sub{color:rgba(255,255,255,.72)}
+
+/* El visor va fuera del .shell, a ancho completo: con 100vh de alto,
+   un recuadro de 1040px dejaria franjas negras enormes arriba y abajo.
+   Se saca en el HTML y no con 100vw a proposito, porque 100vw incluye
+   la barra de desplazamiento y el .shell no: se desalineaban 8px. */
+.pq-viewer{width:100%}
+/* Escritorio: el marco ocupa la pantalla completa y el video se
+   agranda hasta cubrirlo, recortando por el lado que sobre. */
+.pq-screen{
+  position:relative;height:100vh;overflow:hidden;background:#000;
+}
+.pq-view{position:absolute;inset:0}
+.pq-view[hidden]{display:none}
+.pq-view-video iframe{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:max(100%,calc(100vh * 16 / 9));
+  height:max(100vh,calc(100vw * 9 / 16));
+  border:0;
+}
+
+/* Portada del video: sin autoplay, se carga al pulsar el play */
+.pq-poster{position:absolute;inset:0;background:#000 center/cover no-repeat}
+.pq-poster::after{content:'';position:absolute;inset:0;background:rgba(8,9,14,.24)}
+.pq-play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;
+  width:clamp(74px,7vw,104px);height:clamp(74px,7vw,104px);
+  filter:drop-shadow(0 10px 26px rgba(0,0,0,.45));
+  transition:transform .28s var(--ease);
+}
+.pq-play:hover{transform:translate(-50%,-50%) scale(1.08)}
+.pq-play svg{width:100%;height:100%;display:block}
+
+/* Foto del espacio + velo + textos */
+.pq-stage{position:absolute;inset:0;background:#12131A center/cover no-repeat;overflow:hidden}
+.pq-stage.is-zoom{animation:pqZoom 16s linear both}
+@keyframes pqZoom{from{transform:scale(1.02)}to{transform:scale(1.09)}}
+.pq-view-photo .pq-veil{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,rgba(8,9,14,.9) 2%,rgba(8,9,14,.5) 30%,rgba(8,9,14,.12) 55%,transparent 78%),
+             linear-gradient(100deg,rgba(8,9,14,.6) 0%,rgba(8,9,14,.15) 45%,transparent 72%);
+}
+.pq-screen-copy{
+  position:absolute;left:50%;transform:translateX(-50%);bottom:0;z-index:2;
+  width:min(100%,var(--shell));padding:clamp(24px,3.4vw,44px) var(--gut);
+  color:#fff;
+}
+.pq-screen-copy > *{max-width:560px}
+.pq-now{display:flex;align-items:center;gap:12px}
+.pq-now-name{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:clamp(24px,2.6vw,34px);line-height:1.05;text-transform:uppercase;color:#fff;
+}
+.pq-now-count{
+  position:relative;flex:none;padding-left:12px;font-size:12.5px;font-weight:600;
+  letter-spacing:.08em;color:rgba(255,255,255,.7);
+}
+.pq-now-count::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:13px;background:rgba(255,255,255,.34)}
+.pq-now-desc{margin-top:8px;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.9);max-width:440px}
+.pq-cta{margin-top:16px;background:var(--red);color:#fff;box-shadow:0 12px 28px rgba(255,14,73,.3)}
+.pq-cta:hover{background:#fff;color:var(--red)}
+.pq-cta .ico-arrow{transition:transform .25s var(--ease)}
+.pq-cta:hover .ico-arrow{transform:translate(3px,-3px)}
+
+/* En movil y tableta el marco se ajusta al contenido en vez de ocupar
+   la pantalla: 100vh en vertical son 800-1200 px para un video 16:9,
+   asi que habria que recortarle casi todo el encuadre. Con
+   aspect-ratio el video entra exacto, sin recortes ni franjas. */
+@media (max-width:900px){
+  .pq-screen{height:auto;aspect-ratio:16/9}
+  .pq-view-video iframe{top:0;left:0;transform:none;width:100%;height:100%}
+}
+
+/* Tira de minivistas: Video + espacios */
+.pq-thumbs{
+  display:flex;gap:12px;margin-top:18px;
+  max-width:var(--shell);margin-inline:auto;padding-inline:var(--gut);
+  overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-block:4px 8px;cursor:grab;
+}
+.pq-thumbs::-webkit-scrollbar{display:none}
+.pq-thumbs.is-dragging{cursor:grabbing;scroll-snap-type:none}
+
+.pq-thumb{
+  position:relative;flex:0 0 clamp(150px,17vw,186px);aspect-ratio:16/10;
+  border-radius:13px;overflow:hidden;scroll-snap-align:start;
+  background:#22242E center/cover no-repeat;border:2px solid transparent;opacity:.72;
+  transition:opacity .25s var(--ease),border-color .25s var(--ease),transform .3s var(--ease);
+}
+.pq-thumb:hover{opacity:1;transform:translateY(-3px)}
+.pq-thumb.is-on{opacity:1;border-color:var(--red)}
+.pq-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,9,14,.7),transparent 60%)}
+.pq-thumb-name{
+  position:absolute;left:8px;bottom:8px;right:8px;z-index:2;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;
+  text-transform:uppercase;letter-spacing:.02em;color:#fff;line-height:1.1;
+}
+/* Minivista del video: fondo rojo + icono play */
+.pq-thumb-video{background:var(--red);opacity:.9}
+.pq-thumb-video.is-on{opacity:1;border-color:#fff}
+.pq-thumb-video::after{background:none}
+.pq-thumb-play{
+  position:absolute;inset:0;z-index:2;display:grid;place-content:center;color:#fff;
+}
+.pq-thumb-play svg{width:34px;height:34px}
+
+@media (max-width:600px){
+  .pq-thumb{flex:0 0 46%}
+  .pq-screen-copy{max-width:none}
+}
+
+/* ============================================================
+   SEDES — dos columnas: texto sobre el fondo de página, foto aparte.
+   Así el texto nunca depende del encuadre de la fotografía, y la
+   foto (vertical) va en un marco vertical: ni se estira ni se recorta.
+   ============================================================ */
+/* Banda propia. Salvo "Por que elegir SISE", que va en negro, todas
+   las secciones comparten el gris de la pagina y esta se perdia entre
+   ellas. Aqui el fondo pasa a blanco: el mismo blanco de las tarjetas
+   del sitio, asi que no se introduce ningun color nuevo, pero el corte
+   contra el gris marca el bloque. La pincelada es la misma pieza del
+   bloque "Que quieres estudiar", en azul y del otro lado para que
+   rimen sin parecer la misma seccion. */
+.sedes{position:relative;background:#fff;padding:96px 0 100px;margin-bottom:0;overflow:hidden}
+.sedes .shell{position:relative;z-index:1}
+.sedes::before{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  left:-60px;top:-40px;width:360px;height:360px;
+  background-color:#4642A6;
+  -webkit-mask-image:url("../img/brush.webp");mask-image:url("../img/brush.webp");
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  opacity:.1;
+}
+.sedes::after{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  right:-50px;bottom:-30px;width:300px;height:300px;
+  background-color:var(--red);
+  -webkit-mask-image:url("../img/brush.webp");mask-image:url("../img/brush.webp");
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  transform:scaleX(-1);
+  opacity:.11;
+}
+
+/* Áreas para que en móvil el orden sea título → foto → listado.
+   Sin ellas la foto acababa por encima del título. */
+.sedes-head{text-align:center;max-width:760px;margin:0 auto 34px}
+.sedes-title{display:inline-flex;flex-direction:column;text-transform:uppercase;color:var(--ink)}
+.sedes-title .sm{font-weight:700;font-size:clamp(24px,2.6vw,36px);letter-spacing:.02em}
+.sedes-title .lg{font-weight:900;font-size:clamp(38px,5vw,62px);letter-spacing:.005em;margin-top:-.06em;color:var(--red)}
+.sedes-sub{margin-top:14px;color:var(--body);font-size:16.5px}
+.sedes-sub strong{font-weight:700;color:var(--ink)}
+
+/* Grid de cards de sede: mismo lenguaje que las cards de carrera */
+/* ---------- Selector de sede ---------- */
+.sede-chips{margin-bottom:30px}
+
+/* El desplegable solo aparece en movil; en escritorio mandan las
+   pastillas. Los dos estan siempre en el DOM y se mantienen en sincro. */
+.sede-select{display:none;position:relative;max-width:420px;margin:0 auto 30px}
+.sede-select select{
+  width:100%;height:52px;padding:0 46px 0 18px;
+  border:1.5px solid var(--line);border-radius:999px;
+  font:inherit;font-size:15.5px;font-weight:500;color:var(--ink);background:#fff;
+  appearance:none;-webkit-appearance:none;cursor:pointer;
+}
+.sede-select select:focus{outline:0;border-color:var(--red);box-shadow:0 0 0 3px rgba(255,14,73,.13)}
+.sede-select::after{
+  content:'';position:absolute;right:20px;top:50%;width:10px;height:10px;
+  border-right:2px solid var(--red);border-bottom:2px solid var(--red);
+  transform:translateY(-70%) rotate(45deg);pointer-events:none;
+}
+
+/* ---------- Ficha de la sede + mapa ---------- */
+.sede-panel{
+  display:grid;grid-template-columns:minmax(0,.42fr) minmax(0,1fr);
+  gap:20px;align-items:stretch;max-width:1150px;margin-inline:auto;
+}
+/* La foto ocupa la caja entera y los datos van encima, sobre un velo
+   que se oscurece hacia abajo: sin el, el texto blanco se pierde en
+   las zonas claras de la foto (cielos, fachadas). */
+.sede-info{
+  position:relative;isolation:isolate;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  min-height:588px;border-radius:24px;color:#fff;background:#1B1C22;
+  box-shadow:0 14px 40px rgba(18,19,26,.14);
+}
+.sede-foto{
+  position:absolute;inset:0;z-index:-2;
+  background:#1B1C22 center/cover no-repeat;
+}
+.sede-foto-vacia{
+  background-image:linear-gradient(135deg,rgba(255,14,73,.5),rgba(41,37,138,.6));
+}
+.sede-info::after{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(to top,
+    rgba(8,9,14,.82) 2%,rgba(8,9,14,.56) 22%,rgba(8,9,14,.2) 46%,transparent 70%);
+}
+
+.sede-datos{position:relative;display:flex;flex-direction:column;gap:11px;padding:24px 22px 28px}
+.sede-nombre{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(22px,2.2vw,27px);line-height:1.05;color:#fff;
+}
+.sede-dato{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.92)}
+.sede-dato-ico{display:block;width:17px;height:17px;flex:none;margin-top:3px;color:#fff;opacity:.8}
+.sede-dato-ico svg{width:100%;height:100%;display:block}
+.sede-dato b{display:block;font-weight:600;color:#fff;margin-bottom:3px}
+.sede-hora{display:block}
+
+/* El iframe de Maps se inserta por JS al acercarse la seccion: son 12
+   sedes y cargarlos todos de golpe seria absurdo. */
+.sede-mapa{
+  position:relative;border-radius:24px;overflow:hidden;background:#EDEFF4;
+  min-height:520px;box-shadow:0 14px 40px rgba(18,19,26,.10);
+}
+.sede-mapa iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+@media (max-width:700px){
+  /* 12 pastillas ocupan media pantalla de un movil */
+  .sede-chips{display:none}
+  .sede-select{display:block}
+}
+@media (max-width:900px){
+  .sede-panel{grid-template-columns:1fr;gap:16px;max-width:560px}
+  .sede-info{min-height:525px}
+  /* Sin aspect-ratio: con min-height, el alto mandaba y le daba al
+     mapa 427px de ancho dentro de una columna de 347. */
+  .sede-mapa{min-height:330px}
+}
+
+/* ============================================================
+   EXPERIENCIAS REALES
+   ============================================================ */
+/* Ahora que el menú se aparta al bajar, la sección se queda con la
+   pantalla entera: los tres videos centrados y sin nada alrededor.
+   Es min-height, no height: en pantallas bajas crece en vez de recortar. */
+/* Sin alto forzado: se ajusta a lo que hay dentro. Los 100vh venian de
+   cuando la tarjeta llevaba foto, cita y autor; con solo tres Shorts
+   sobraba casi media pantalla de aire. */
+/* Tinte claro del tercer color de marca (#4642A6, el de las tarjetas
+   de Idiomas y las pinceladas de Sedes). Los tres colores de la marca
+   tienen su version clara y esta es la unica que no estaba en uso:
+   --red-soft es el rosa, #FBF0C4 el crema. Al ser frio, las miniaturas
+   de los Shorts -llenas de rojo y tonos calidos- resaltan mas que
+   sobre un fondo tambien calido. */
+.experiencias{position:relative;background:#EAE9F4;overflow:hidden}
+.experiencias > .shell{position:relative;z-index:1;width:100%}
+/* Patron de iconos de carrera, solo en las dos esquinas superiores.
+   Mismo mecanismo que la pincelada -la imagen es la mascara y el color
+   lo pone background-color-, con un mosaico armado a partir de los
+   iconos SOLIDOS del proyecto: los de trazo tienen lineas de 1,5 px y
+   a esta opacidad desaparecen o ensucian.
+   Se pinta un mosaico entero por esquina (mask-size:contain, sin
+   repetir) para que ningun icono quede cortado por el borde del
+   recuadro; la de la derecha va reflejada para que no se lea como la
+   misma estampa dos veces. */
+.experiencias::before,
+.experiencias::after{
+  content:'';position:absolute;top:-14px;z-index:0;pointer-events:none;
+  width:clamp(220px,26vw,340px);aspect-ratio:1;
+  background-color:#4642A6;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20300%22%3E%3Cg%20transform%3D%22rotate%28-8%2048.0%2052.0%29%20translate%2826%2030%29%20scale%281.8333%29%22%3E%3Cpath%20d%3D%22M4%205.25C4%204.65326%204.23705%204.08097%204.65901%203.65901C5.08097%203.23705%205.65326%203%206.25%203H15.75C16.3467%203%2016.919%203.23705%2017.341%203.65901C17.7629%204.08097%2018%204.65326%2018%205.25V14H22V17.75C22%2018.1768%2021.9159%2018.5994%2021.7526%2018.9937C21.5893%2019.388%2021.3499%2019.7463%2021.0481%2020.0481C20.7463%2020.3499%2020.388%2020.5893%2019.9937%2020.7526C19.5994%2020.9159%2019.1768%2021%2018.75%2021H12.95C12.9833%2020.838%2013%2020.6713%2013%2020.5V19.5H16.5V5.25C16.5%205.05109%2016.421%204.86032%2016.2803%204.71967C16.1397%204.57902%2015.9489%204.5%2015.75%204.5H6.25C6.05109%204.5%205.86032%204.57902%205.71967%204.71967C5.57902%204.86032%205.5%205.05109%205.5%205.25V14H4V5.25ZM18%2019.5H18.75C19.2141%2019.5%2019.6592%2019.3156%2019.9874%2018.9874C20.3156%2018.6592%2020.5%2018.2141%2020.5%2017.75V15.5H18V19.5ZM8.25%207C8.05109%207%207.86032%207.07902%207.71967%207.21967C7.57902%207.36032%207.5%207.55109%207.5%207.75C7.5%207.94891%207.57902%208.13968%207.71967%208.28033C7.86032%208.42098%208.05109%208.5%208.25%208.5H13.75C13.9489%208.5%2014.1397%208.42098%2014.2803%208.28033C14.421%208.13968%2014.5%207.94891%2014.5%207.75C14.5%207.55109%2014.421%207.36032%2014.2803%207.21967C14.1397%207.07902%2013.9489%207%2013.75%207H8.25ZM7.5%2011.75C7.5%2011.5511%207.57902%2011.3603%207.71967%2011.2197C7.86032%2011.079%208.05109%2011%208.25%2011H13.75C13.9489%2011%2014.1397%2011.079%2014.2803%2011.2197C14.421%2011.3603%2014.5%2011.5511%2014.5%2011.75C14.5%2011.9489%2014.421%2012.1397%2014.2803%2012.2803C14.1397%2012.421%2013.9489%2012.5%2013.75%2012.5H8.25C8.05109%2012.5%207.86032%2012.421%207.71967%2012.2803C7.57902%2012.1397%207.5%2011.9489%207.5%2011.75ZM2.5%2015C2.10218%2015%201.72064%2015.158%201.43934%2015.4393C1.15804%2015.7206%201%2016.1022%201%2016.5V20.5C1%2020.8978%201.15804%2021.2794%201.43934%2021.5607C1.72064%2021.842%202.10218%2022%202.5%2022H10.5C10.8978%2022%2011.2794%2021.842%2011.5607%2021.5607C11.842%2021.2794%2012%2020.8978%2012%2020.5V16.5C12%2016.1022%2011.842%2015.7206%2011.5607%2015.4393C11.2794%2015.158%2010.8978%2015%2010.5%2015H2.5ZM10%2016C10%2016.2652%2010.1054%2016.5196%2010.2929%2016.7071C10.4804%2016.8946%2010.7348%2017%2011%2017V18C10.4696%2018%209.96086%2017.7893%209.58579%2017.4142C9.21071%2017.0391%209%2016.5304%209%2016H10ZM9%2021C9%2020.4696%209.21071%2019.9609%209.58579%2019.5858C9.96086%2019.2107%2010.4696%2019%2011%2019V20C10.7348%2020%2010.4804%2020.1054%2010.2929%2020.2929C10.1054%2020.4804%2010%2020.7348%2010%2021H9ZM2%2017C2.26522%2017%202.51957%2016.8946%202.70711%2016.7071C2.89464%2016.5196%203%2016.2652%203%2016H4C4%2016.5304%203.78929%2017.0391%203.41421%2017.4142C3.03914%2017.7893%202.53043%2018%202%2018V17ZM2%2019C2.53043%2019%203.03914%2019.2107%203.41421%2019.5858C3.78929%2019.9609%204%2020.4696%204%2021H3C3%2020.7348%202.89464%2020.4804%202.70711%2020.2929C2.51957%2020.1054%202.26522%2020%202%2020V19ZM6.5%2016.75C6.96413%2016.75%207.40925%2016.9344%207.73744%2017.2626C8.06563%2017.5908%208.25%2018.0359%208.25%2018.5C8.25%2018.9641%208.06563%2019.4092%207.73744%2019.7374C7.40925%2020.0656%206.96413%2020.25%206.5%2020.25C6.03587%2020.25%205.59075%2020.0656%205.26256%2019.7374C4.93437%2019.4092%204.75%2018.9641%204.75%2018.5C4.75%2018.0359%204.93437%2017.5908%205.26256%2017.2626C5.59075%2016.9344%206.03587%2016.75%206.5%2016.75Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%2810%20195.0%2097.0%29%20translate%28172%2074%29%20scale%281.9167%29%22%3E%3Cpath%20d%3D%22M20%2010H18L13.21%206.5C13.4517%206.33104%2013.6495%206.10675%2013.7869%205.84582C13.9244%205.58489%2013.9974%205.29489%2014%205C13.9951%204.65141%2013.9006%204.30996%2013.7254%204.00853C13.5503%203.7071%2013.3004%203.45585%2013%203.279V2H12V4C12.1978%204%2012.3911%204.05865%2012.5556%204.16853C12.72%204.27841%2012.8482%204.43459%2012.9239%204.61732C12.9996%204.80004%2013.0194%205.00111%2012.9808%205.19509C12.9422%205.38907%2012.847%205.56725%2012.7071%205.70711C12.5673%205.84696%2012.3891%205.9422%2012.1951%205.98079C12.0011%206.01937%2011.8%205.99957%2011.6173%205.92388C11.4346%205.84819%2011.2784%205.72002%2011.1685%205.55557C11.0586%205.39112%2011%205.19778%2011%205H10C10.0033%205.29542%2010.0772%205.58576%2010.2157%205.84673C10.3542%206.10769%2010.5532%206.3317%2010.796%206.5L6%2010H4C3.46957%2010%202.96086%2010.2107%202.58579%2010.5858C2.21071%2010.9609%202%2011.4696%202%2012V20C2%2020.5304%202.21071%2021.0391%202.58579%2021.4142C2.96086%2021.7893%203.46957%2022%204%2022H20C20.2628%2022.0004%2020.523%2021.9489%2020.7658%2021.8486C21.0087%2021.7482%2021.2293%2021.6009%2021.4151%2021.4151C21.6009%2021.2293%2021.7482%2021.0087%2021.8486%2020.7658C21.9489%2020.523%2022.0004%2020.2628%2022%2020V12C22%2011.4696%2021.7893%2010.9609%2021.4142%2010.5858C21.0391%2010.2107%2020.5304%2010%2020%2010ZM12%207C12.006%207%2016%2010%2016%2010H8L12%207ZM20%2020H4V12H20V20Z%22%20fill%3D%22%23000%22%2F%3E%3Cpath%20d%3D%22M14%2019C14.2652%2019%2014.5196%2018.8946%2014.7071%2018.7071C14.8946%2018.5196%2015%2018.2652%2015%2018V14C15%2013.7348%2014.8946%2013.4804%2014.7071%2013.2929C14.5196%2013.1054%2014.2652%2013%2014%2013C13.7348%2013%2013.4804%2013.1054%2013.2929%2013.2929C13.1054%2013.4804%2013%2013.7348%2013%2014V18C13%2018.2652%2013.1054%2018.5196%2013.2929%2018.7071C13.4804%2018.8946%2013.7348%2019%2014%2019ZM18%2019C18.2652%2019%2018.5196%2018.8946%2018.7071%2018.7071C18.8946%2018.5196%2019%2018.2652%2019%2018V14C19%2013.7348%2018.8946%2013.4804%2018.7071%2013.2929C18.5196%2013.1054%2018.2652%2013%2018%2013C17.7348%2013%2017.4804%2013.1054%2017.2929%2013.2929C17.1054%2013.4804%2017%2013.7348%2017%2014V18C17%2018.2652%2017.1054%2018.5196%2017.2929%2018.7071C17.4804%2018.8946%2017.7348%2019%2018%2019ZM6%2019C6.26522%2019%206.51957%2018.8946%206.70711%2018.7071C6.89464%2018.5196%207%2018.2652%207%2018V14C7%2013.7348%206.89464%2013.4804%206.70711%2013.2929C6.51957%2013.1054%206.26522%2013%206%2013C5.73478%2013%205.48043%2013.1054%205.29289%2013.2929C5.10536%2013.4804%205%2013.7348%205%2014V18C5%2018.2652%205.10536%2018.5196%205.29289%2018.7071C5.48043%2018.8946%205.73478%2019%206%2019ZM10%2019C10.2652%2019%2010.5196%2018.8946%2010.7071%2018.7071C10.8946%2018.5196%2011%2018.2652%2011%2018V14C11%2013.7348%2010.8946%2013.4804%2010.7071%2013.2929C10.5196%2013.1054%2010.2652%2013%2010%2013C9.73478%2013%209.48043%2013.1054%209.29289%2013.2929C9.10536%2013.4804%209%2013.7348%209%2014V18C9%2018.2652%209.10536%2018.5196%209.29289%2018.7071C9.48043%2018.8946%209.73478%2019%2010%2019Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%286%2083.0%20187.0%29%20translate%2862%20166%29%20scale%281.7500%29%22%3E%3Cpath%20d%3D%22M7.75%2011.5C7.55109%2011.5%207.36032%2011.579%207.21967%2011.7197C7.07902%2011.8603%207%2012.0511%207%2012.25C7%2012.4489%207.07902%2012.6397%207.21967%2012.7803C7.36032%2012.921%207.55109%2013%207.75%2013C7.94891%2013%208.13968%2012.921%208.28033%2012.7803C8.42098%2012.6397%208.5%2012.4489%208.5%2012.25C8.5%2012.0511%208.42098%2011.8603%208.28033%2011.7197C8.13968%2011.579%207.94891%2011.5%207.75%2011.5ZM7%2015.25C7%2015.0511%207.07902%2014.8603%207.21967%2014.7197C7.36032%2014.579%207.55109%2014.5%207.75%2014.5C7.94891%2014.5%208.13968%2014.579%208.28033%2014.7197C8.42098%2014.8603%208.5%2015.0511%208.5%2015.25C8.5%2015.4489%208.42098%2015.6397%208.28033%2015.7803C8.13968%2015.921%207.94891%2016%207.75%2016C7.55109%2016%207.36032%2015.921%207.21967%2015.7803C7.07902%2015.6397%207%2015.4489%207%2015.25ZM10%2012.25C10%2012.0511%2010.079%2011.8603%2010.2197%2011.7197C10.3603%2011.579%2010.5511%2011.5%2010.75%2011.5H13.804C14.0029%2011.5%2014.1937%2011.579%2014.3343%2011.7197C14.475%2011.8603%2014.554%2012.0511%2014.554%2012.25C14.554%2012.4489%2014.475%2012.6397%2014.3343%2012.7803C14.1937%2012.921%2014.0029%2013%2013.804%2013H10.75C10.5511%2013%2010.3603%2012.921%2010.2197%2012.7803C10.079%2012.6397%2010%2012.4489%2010%2012.25ZM10.75%2014.5C10.5511%2014.5%2010.3603%2014.579%2010.2197%2014.7197C10.079%2014.8603%2010%2015.0511%2010%2015.25C10%2015.4489%2010.079%2015.6397%2010.2197%2015.7803C10.3603%2015.921%2010.5511%2016%2010.75%2016H13.804C14.0029%2016%2014.1937%2015.921%2014.3343%2015.7803C14.475%2015.6397%2014.554%2015.4489%2014.554%2015.25C14.554%2015.0511%2014.475%2014.8603%2014.3343%2014.7197C14.1937%2014.579%2014.0029%2014.5%2013.804%2014.5H10.75ZM6.25%202C5.65326%202%205.08097%202.23705%204.65901%202.65901C4.23705%203.08097%204%203.65326%204%204.25V17.25C4%2017.8467%204.23705%2018.419%204.65901%2018.841C5.08097%2019.2629%205.65326%2019.5%206.25%2019.5H15.25C15.8467%2019.5%2016.419%2019.2629%2016.841%2018.841C17.2629%2018.419%2017.5%2017.8467%2017.5%2017.25V8.869C17.5%208.57353%2017.4418%208.28094%2017.3287%208.00796C17.2157%207.73497%2017.0499%207.48693%2016.841%207.278L12.222%202.659C11.8003%202.23729%2011.2284%202.00026%2010.632%202H6.25ZM5.5%204.25C5.5%204.05109%205.57902%203.86032%205.71967%203.71967C5.86032%203.57902%206.05109%203.5%206.25%203.5H10.504V6.748C10.504%207.04347%2010.5622%207.33606%2010.6753%207.60904C10.7883%207.88202%2010.9541%208.13006%2011.163%208.33899C11.585%208.76095%2012.1573%208.998%2012.754%208.998H16V17.25C16%2017.4489%2015.921%2017.6397%2015.7803%2017.7803C15.6397%2017.921%2015.4489%2018%2015.25%2018H6.25C6.05109%2018%205.86032%2017.921%205.71967%2017.7803C5.57902%2017.6397%205.5%2017.4489%205.5%2017.25V4.25ZM12.004%206.748V4.562L14.939%207.498H12.754C12.5551%207.498%2012.3643%207.41898%2012.2237%207.27833C12.083%207.13768%2012.004%206.94691%2012.004%206.748ZM8.75%2022C8.2846%2022.0001%207.8306%2021.856%207.45056%2021.5873C7.07052%2021.3187%206.78313%2020.9388%206.628%2020.5H15.25C16.112%2020.5%2016.9386%2020.1576%2017.5481%2019.5481C18.1576%2018.9386%2018.5%2018.112%2018.5%2017.25V8.937L19.34%209.777C19.763%2010.2%2020%2010.772%2020%2011.369V17.25C20%2017.8738%2019.8771%2018.4915%2019.6384%2019.0677C19.3997%2019.644%2019.0498%2020.1677%2018.6088%2020.6088C18.1677%2021.0498%2017.644%2021.3997%2017.0677%2021.6384C16.4915%2021.8771%2015.8738%2022%2015.25%2022H8.75Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28-12%20218.0%20230.0%29%20translate%28196%20208%29%20scale%280.6286%29%22%3E%3Cpath%20d%3D%22M63.3208%2025.4041C66.9667%2021.7582%2065.3042%2017.4999%2063.3208%2015.4291L54.5708%206.67906C50.8958%203.03323%2046.6667%204.69573%2044.5958%206.67906L39.6375%2011.6666H32.0833C26.5417%2011.6666%2023.3333%2014.5832%2021.7%2017.9374L8.75%2030.8874V42.5541L6.67917%2044.5957C3.03333%2048.2707%204.69583%2052.4999%206.67917%2054.5707L15.4292%2063.3207C17.0042%2064.8957%2018.6958%2065.4791%2020.3%2065.4791C22.3708%2065.4791%2024.2667%2064.4582%2025.4042%2063.3207L33.2792%2055.4166H43.75C48.7083%2055.4166%2051.2167%2052.3249%2052.1208%2049.2916C55.4167%2048.4166%2057.225%2045.9082%2057.9542%2043.4582C62.475%2042.2916%2064.1667%2038.0041%2064.1667%2034.9999V26.2499H62.4458L63.3208%2025.4041ZM58.3333%2034.9999C58.3333%2036.3124%2057.7792%2037.9166%2055.4167%2037.9166H52.5V40.8332C52.5%2042.1457%2051.9458%2043.7499%2049.5833%2043.7499H46.6667V46.6666C46.6667%2047.9791%2046.1125%2049.5832%2043.75%2049.5832H30.8875L21.3208%2059.1499C20.4167%2059.9957%2019.8917%2059.4999%2019.5708%2059.1791L10.85%2050.4874C10.0042%2049.5832%2010.5%2049.0582%2010.8208%2048.7374L14.5833%2044.9457V33.2791L20.4167%2027.4457V32.0832C20.4167%2035.6124%2022.75%2040.8332%2029.1667%2040.8332C35.5833%2040.8332%2037.9167%2035.6124%2037.9167%2032.0832H58.3333V34.9999ZM59.1792%2021.2624L54.2208%2026.2499H32.0833V32.0832C32.0833%2033.3957%2031.5292%2034.9999%2029.1667%2034.9999C26.8042%2034.9999%2026.25%2033.3957%2026.25%2032.0832V23.3332C26.25%2021.9916%2026.7458%2017.4999%2032.0833%2017.4999H42.0292L48.6792%2010.8499C49.5833%2010.0041%2050.1083%2010.4999%2050.4292%2010.8207L59.15%2019.5124C59.9958%2020.4166%2059.5%2020.9416%2059.1792%2021.2624Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28-6%20269.0%20151.0%29%20translate%28250%20132%29%20scale%281.5833%29%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M12%2021V15H13.5V21H21V7.50005H22.5V21C22.5%2021.3979%2022.342%2021.7794%2022.0607%2022.0607C21.7794%2022.342%2021.3978%2022.5%2021%2022.5H3C2.60218%2022.5%202.22064%2022.342%201.93934%2022.0607C1.65804%2021.7794%201.5%2021.3979%201.5%2021V18H3V21H12ZM19.2795%205.78105L14.781%2010.281C15.0216%2010.7819%2015.0684%2011.3542%2014.9123%2011.8875C14.7562%2012.4208%2014.4082%2012.8774%2013.9355%2013.1695C13.4627%2013.4616%2012.8986%2013.5684%2012.3518%2013.4693C11.805%2013.3703%2011.3143%2013.0724%2010.974%2012.633L6.903%2013.989L6%2014.2906C5.99054%2014.8213%205.79374%2015.3316%205.44439%2015.7312C5.09504%2016.1309%204.61565%2016.3941%204.09095%2016.4745C3.56625%2016.5549%203.03004%2016.4471%202.57711%2016.1703C2.12417%2015.8935%201.78368%2015.4655%201.61582%2014.9619C1.44796%2014.4584%201.46355%2013.9117%201.65982%2013.4185C1.8561%2012.9253%202.22042%2012.5174%202.68839%2012.2668C3.15636%2012.0163%203.69784%2011.9393%204.21711%2012.0494C4.73637%2012.1595%205.19999%2012.4496%205.526%2012.8686L10.5%2011.2095C10.5067%2010.8329%2010.6078%2010.464%2010.7941%2010.1367C10.9804%209.80931%2011.2459%209.53395%2011.5663%209.33584C11.8867%209.13774%2012.2516%209.02324%2012.6278%209.00283C13.0039%208.98243%2013.3791%209.05677%2013.719%209.21905L18.219%204.71905C17.9902%204.24011%2017.9381%203.69571%2018.0719%203.18207C18.2057%202.66844%2018.5168%202.21864%2018.9502%201.91219C19.3836%201.60573%2019.9113%201.46235%2020.4402%201.50738C20.969%201.55242%2021.465%201.78297%2021.8403%202.15828C22.2156%202.5336%2022.4461%203.02951%2022.4912%203.55837C22.5362%204.08723%2022.3928%204.61499%2022.0864%205.04836C21.7799%205.48173%2021.3301%205.7928%2020.8165%205.92661C20.3028%206.06041%2019.7584%206.00832%2019.2795%205.77955%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20300%22%3E%3Cg%20transform%3D%22rotate%28-8%2048.0%2052.0%29%20translate%2826%2030%29%20scale%281.8333%29%22%3E%3Cpath%20d%3D%22M4%205.25C4%204.65326%204.23705%204.08097%204.65901%203.65901C5.08097%203.23705%205.65326%203%206.25%203H15.75C16.3467%203%2016.919%203.23705%2017.341%203.65901C17.7629%204.08097%2018%204.65326%2018%205.25V14H22V17.75C22%2018.1768%2021.9159%2018.5994%2021.7526%2018.9937C21.5893%2019.388%2021.3499%2019.7463%2021.0481%2020.0481C20.7463%2020.3499%2020.388%2020.5893%2019.9937%2020.7526C19.5994%2020.9159%2019.1768%2021%2018.75%2021H12.95C12.9833%2020.838%2013%2020.6713%2013%2020.5V19.5H16.5V5.25C16.5%205.05109%2016.421%204.86032%2016.2803%204.71967C16.1397%204.57902%2015.9489%204.5%2015.75%204.5H6.25C6.05109%204.5%205.86032%204.57902%205.71967%204.71967C5.57902%204.86032%205.5%205.05109%205.5%205.25V14H4V5.25ZM18%2019.5H18.75C19.2141%2019.5%2019.6592%2019.3156%2019.9874%2018.9874C20.3156%2018.6592%2020.5%2018.2141%2020.5%2017.75V15.5H18V19.5ZM8.25%207C8.05109%207%207.86032%207.07902%207.71967%207.21967C7.57902%207.36032%207.5%207.55109%207.5%207.75C7.5%207.94891%207.57902%208.13968%207.71967%208.28033C7.86032%208.42098%208.05109%208.5%208.25%208.5H13.75C13.9489%208.5%2014.1397%208.42098%2014.2803%208.28033C14.421%208.13968%2014.5%207.94891%2014.5%207.75C14.5%207.55109%2014.421%207.36032%2014.2803%207.21967C14.1397%207.07902%2013.9489%207%2013.75%207H8.25ZM7.5%2011.75C7.5%2011.5511%207.57902%2011.3603%207.71967%2011.2197C7.86032%2011.079%208.05109%2011%208.25%2011H13.75C13.9489%2011%2014.1397%2011.079%2014.2803%2011.2197C14.421%2011.3603%2014.5%2011.5511%2014.5%2011.75C14.5%2011.9489%2014.421%2012.1397%2014.2803%2012.2803C14.1397%2012.421%2013.9489%2012.5%2013.75%2012.5H8.25C8.05109%2012.5%207.86032%2012.421%207.71967%2012.2803C7.57902%2012.1397%207.5%2011.9489%207.5%2011.75ZM2.5%2015C2.10218%2015%201.72064%2015.158%201.43934%2015.4393C1.15804%2015.7206%201%2016.1022%201%2016.5V20.5C1%2020.8978%201.15804%2021.2794%201.43934%2021.5607C1.72064%2021.842%202.10218%2022%202.5%2022H10.5C10.8978%2022%2011.2794%2021.842%2011.5607%2021.5607C11.842%2021.2794%2012%2020.8978%2012%2020.5V16.5C12%2016.1022%2011.842%2015.7206%2011.5607%2015.4393C11.2794%2015.158%2010.8978%2015%2010.5%2015H2.5ZM10%2016C10%2016.2652%2010.1054%2016.5196%2010.2929%2016.7071C10.4804%2016.8946%2010.7348%2017%2011%2017V18C10.4696%2018%209.96086%2017.7893%209.58579%2017.4142C9.21071%2017.0391%209%2016.5304%209%2016H10ZM9%2021C9%2020.4696%209.21071%2019.9609%209.58579%2019.5858C9.96086%2019.2107%2010.4696%2019%2011%2019V20C10.7348%2020%2010.4804%2020.1054%2010.2929%2020.2929C10.1054%2020.4804%2010%2020.7348%2010%2021H9ZM2%2017C2.26522%2017%202.51957%2016.8946%202.70711%2016.7071C2.89464%2016.5196%203%2016.2652%203%2016H4C4%2016.5304%203.78929%2017.0391%203.41421%2017.4142C3.03914%2017.7893%202.53043%2018%202%2018V17ZM2%2019C2.53043%2019%203.03914%2019.2107%203.41421%2019.5858C3.78929%2019.9609%204%2020.4696%204%2021H3C3%2020.7348%202.89464%2020.4804%202.70711%2020.2929C2.51957%2020.1054%202.26522%2020%202%2020V19ZM6.5%2016.75C6.96413%2016.75%207.40925%2016.9344%207.73744%2017.2626C8.06563%2017.5908%208.25%2018.0359%208.25%2018.5C8.25%2018.9641%208.06563%2019.4092%207.73744%2019.7374C7.40925%2020.0656%206.96413%2020.25%206.5%2020.25C6.03587%2020.25%205.59075%2020.0656%205.26256%2019.7374C4.93437%2019.4092%204.75%2018.9641%204.75%2018.5C4.75%2018.0359%204.93437%2017.5908%205.26256%2017.2626C5.59075%2016.9344%206.03587%2016.75%206.5%2016.75Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%2810%20195.0%2097.0%29%20translate%28172%2074%29%20scale%281.9167%29%22%3E%3Cpath%20d%3D%22M20%2010H18L13.21%206.5C13.4517%206.33104%2013.6495%206.10675%2013.7869%205.84582C13.9244%205.58489%2013.9974%205.29489%2014%205C13.9951%204.65141%2013.9006%204.30996%2013.7254%204.00853C13.5503%203.7071%2013.3004%203.45585%2013%203.279V2H12V4C12.1978%204%2012.3911%204.05865%2012.5556%204.16853C12.72%204.27841%2012.8482%204.43459%2012.9239%204.61732C12.9996%204.80004%2013.0194%205.00111%2012.9808%205.19509C12.9422%205.38907%2012.847%205.56725%2012.7071%205.70711C12.5673%205.84696%2012.3891%205.9422%2012.1951%205.98079C12.0011%206.01937%2011.8%205.99957%2011.6173%205.92388C11.4346%205.84819%2011.2784%205.72002%2011.1685%205.55557C11.0586%205.39112%2011%205.19778%2011%205H10C10.0033%205.29542%2010.0772%205.58576%2010.2157%205.84673C10.3542%206.10769%2010.5532%206.3317%2010.796%206.5L6%2010H4C3.46957%2010%202.96086%2010.2107%202.58579%2010.5858C2.21071%2010.9609%202%2011.4696%202%2012V20C2%2020.5304%202.21071%2021.0391%202.58579%2021.4142C2.96086%2021.7893%203.46957%2022%204%2022H20C20.2628%2022.0004%2020.523%2021.9489%2020.7658%2021.8486C21.0087%2021.7482%2021.2293%2021.6009%2021.4151%2021.4151C21.6009%2021.2293%2021.7482%2021.0087%2021.8486%2020.7658C21.9489%2020.523%2022.0004%2020.2628%2022%2020V12C22%2011.4696%2021.7893%2010.9609%2021.4142%2010.5858C21.0391%2010.2107%2020.5304%2010%2020%2010ZM12%207C12.006%207%2016%2010%2016%2010H8L12%207ZM20%2020H4V12H20V20Z%22%20fill%3D%22%23000%22%2F%3E%3Cpath%20d%3D%22M14%2019C14.2652%2019%2014.5196%2018.8946%2014.7071%2018.7071C14.8946%2018.5196%2015%2018.2652%2015%2018V14C15%2013.7348%2014.8946%2013.4804%2014.7071%2013.2929C14.5196%2013.1054%2014.2652%2013%2014%2013C13.7348%2013%2013.4804%2013.1054%2013.2929%2013.2929C13.1054%2013.4804%2013%2013.7348%2013%2014V18C13%2018.2652%2013.1054%2018.5196%2013.2929%2018.7071C13.4804%2018.8946%2013.7348%2019%2014%2019ZM18%2019C18.2652%2019%2018.5196%2018.8946%2018.7071%2018.7071C18.8946%2018.5196%2019%2018.2652%2019%2018V14C19%2013.7348%2018.8946%2013.4804%2018.7071%2013.2929C18.5196%2013.1054%2018.2652%2013%2018%2013C17.7348%2013%2017.4804%2013.1054%2017.2929%2013.2929C17.1054%2013.4804%2017%2013.7348%2017%2014V18C17%2018.2652%2017.1054%2018.5196%2017.2929%2018.7071C17.4804%2018.8946%2017.7348%2019%2018%2019ZM6%2019C6.26522%2019%206.51957%2018.8946%206.70711%2018.7071C6.89464%2018.5196%207%2018.2652%207%2018V14C7%2013.7348%206.89464%2013.4804%206.70711%2013.2929C6.51957%2013.1054%206.26522%2013%206%2013C5.73478%2013%205.48043%2013.1054%205.29289%2013.2929C5.10536%2013.4804%205%2013.7348%205%2014V18C5%2018.2652%205.10536%2018.5196%205.29289%2018.7071C5.48043%2018.8946%205.73478%2019%206%2019ZM10%2019C10.2652%2019%2010.5196%2018.8946%2010.7071%2018.7071C10.8946%2018.5196%2011%2018.2652%2011%2018V14C11%2013.7348%2010.8946%2013.4804%2010.7071%2013.2929C10.5196%2013.1054%2010.2652%2013%2010%2013C9.73478%2013%209.48043%2013.1054%209.29289%2013.2929C9.10536%2013.4804%209%2013.7348%209%2014V18C9%2018.2652%209.10536%2018.5196%209.29289%2018.7071C9.48043%2018.8946%209.73478%2019%2010%2019Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%286%2083.0%20187.0%29%20translate%2862%20166%29%20scale%281.7500%29%22%3E%3Cpath%20d%3D%22M7.75%2011.5C7.55109%2011.5%207.36032%2011.579%207.21967%2011.7197C7.07902%2011.8603%207%2012.0511%207%2012.25C7%2012.4489%207.07902%2012.6397%207.21967%2012.7803C7.36032%2012.921%207.55109%2013%207.75%2013C7.94891%2013%208.13968%2012.921%208.28033%2012.7803C8.42098%2012.6397%208.5%2012.4489%208.5%2012.25C8.5%2012.0511%208.42098%2011.8603%208.28033%2011.7197C8.13968%2011.579%207.94891%2011.5%207.75%2011.5ZM7%2015.25C7%2015.0511%207.07902%2014.8603%207.21967%2014.7197C7.36032%2014.579%207.55109%2014.5%207.75%2014.5C7.94891%2014.5%208.13968%2014.579%208.28033%2014.7197C8.42098%2014.8603%208.5%2015.0511%208.5%2015.25C8.5%2015.4489%208.42098%2015.6397%208.28033%2015.7803C8.13968%2015.921%207.94891%2016%207.75%2016C7.55109%2016%207.36032%2015.921%207.21967%2015.7803C7.07902%2015.6397%207%2015.4489%207%2015.25ZM10%2012.25C10%2012.0511%2010.079%2011.8603%2010.2197%2011.7197C10.3603%2011.579%2010.5511%2011.5%2010.75%2011.5H13.804C14.0029%2011.5%2014.1937%2011.579%2014.3343%2011.7197C14.475%2011.8603%2014.554%2012.0511%2014.554%2012.25C14.554%2012.4489%2014.475%2012.6397%2014.3343%2012.7803C14.1937%2012.921%2014.0029%2013%2013.804%2013H10.75C10.5511%2013%2010.3603%2012.921%2010.2197%2012.7803C10.079%2012.6397%2010%2012.4489%2010%2012.25ZM10.75%2014.5C10.5511%2014.5%2010.3603%2014.579%2010.2197%2014.7197C10.079%2014.8603%2010%2015.0511%2010%2015.25C10%2015.4489%2010.079%2015.6397%2010.2197%2015.7803C10.3603%2015.921%2010.5511%2016%2010.75%2016H13.804C14.0029%2016%2014.1937%2015.921%2014.3343%2015.7803C14.475%2015.6397%2014.554%2015.4489%2014.554%2015.25C14.554%2015.0511%2014.475%2014.8603%2014.3343%2014.7197C14.1937%2014.579%2014.0029%2014.5%2013.804%2014.5H10.75ZM6.25%202C5.65326%202%205.08097%202.23705%204.65901%202.65901C4.23705%203.08097%204%203.65326%204%204.25V17.25C4%2017.8467%204.23705%2018.419%204.65901%2018.841C5.08097%2019.2629%205.65326%2019.5%206.25%2019.5H15.25C15.8467%2019.5%2016.419%2019.2629%2016.841%2018.841C17.2629%2018.419%2017.5%2017.8467%2017.5%2017.25V8.869C17.5%208.57353%2017.4418%208.28094%2017.3287%208.00796C17.2157%207.73497%2017.0499%207.48693%2016.841%207.278L12.222%202.659C11.8003%202.23729%2011.2284%202.00026%2010.632%202H6.25ZM5.5%204.25C5.5%204.05109%205.57902%203.86032%205.71967%203.71967C5.86032%203.57902%206.05109%203.5%206.25%203.5H10.504V6.748C10.504%207.04347%2010.5622%207.33606%2010.6753%207.60904C10.7883%207.88202%2010.9541%208.13006%2011.163%208.33899C11.585%208.76095%2012.1573%208.998%2012.754%208.998H16V17.25C16%2017.4489%2015.921%2017.6397%2015.7803%2017.7803C15.6397%2017.921%2015.4489%2018%2015.25%2018H6.25C6.05109%2018%205.86032%2017.921%205.71967%2017.7803C5.57902%2017.6397%205.5%2017.4489%205.5%2017.25V4.25ZM12.004%206.748V4.562L14.939%207.498H12.754C12.5551%207.498%2012.3643%207.41898%2012.2237%207.27833C12.083%207.13768%2012.004%206.94691%2012.004%206.748ZM8.75%2022C8.2846%2022.0001%207.8306%2021.856%207.45056%2021.5873C7.07052%2021.3187%206.78313%2020.9388%206.628%2020.5H15.25C16.112%2020.5%2016.9386%2020.1576%2017.5481%2019.5481C18.1576%2018.9386%2018.5%2018.112%2018.5%2017.25V8.937L19.34%209.777C19.763%2010.2%2020%2010.772%2020%2011.369V17.25C20%2017.8738%2019.8771%2018.4915%2019.6384%2019.0677C19.3997%2019.644%2019.0498%2020.1677%2018.6088%2020.6088C18.1677%2021.0498%2017.644%2021.3997%2017.0677%2021.6384C16.4915%2021.8771%2015.8738%2022%2015.25%2022H8.75Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28-12%20218.0%20230.0%29%20translate%28196%20208%29%20scale%280.6286%29%22%3E%3Cpath%20d%3D%22M63.3208%2025.4041C66.9667%2021.7582%2065.3042%2017.4999%2063.3208%2015.4291L54.5708%206.67906C50.8958%203.03323%2046.6667%204.69573%2044.5958%206.67906L39.6375%2011.6666H32.0833C26.5417%2011.6666%2023.3333%2014.5832%2021.7%2017.9374L8.75%2030.8874V42.5541L6.67917%2044.5957C3.03333%2048.2707%204.69583%2052.4999%206.67917%2054.5707L15.4292%2063.3207C17.0042%2064.8957%2018.6958%2065.4791%2020.3%2065.4791C22.3708%2065.4791%2024.2667%2064.4582%2025.4042%2063.3207L33.2792%2055.4166H43.75C48.7083%2055.4166%2051.2167%2052.3249%2052.1208%2049.2916C55.4167%2048.4166%2057.225%2045.9082%2057.9542%2043.4582C62.475%2042.2916%2064.1667%2038.0041%2064.1667%2034.9999V26.2499H62.4458L63.3208%2025.4041ZM58.3333%2034.9999C58.3333%2036.3124%2057.7792%2037.9166%2055.4167%2037.9166H52.5V40.8332C52.5%2042.1457%2051.9458%2043.7499%2049.5833%2043.7499H46.6667V46.6666C46.6667%2047.9791%2046.1125%2049.5832%2043.75%2049.5832H30.8875L21.3208%2059.1499C20.4167%2059.9957%2019.8917%2059.4999%2019.5708%2059.1791L10.85%2050.4874C10.0042%2049.5832%2010.5%2049.0582%2010.8208%2048.7374L14.5833%2044.9457V33.2791L20.4167%2027.4457V32.0832C20.4167%2035.6124%2022.75%2040.8332%2029.1667%2040.8332C35.5833%2040.8332%2037.9167%2035.6124%2037.9167%2032.0832H58.3333V34.9999ZM59.1792%2021.2624L54.2208%2026.2499H32.0833V32.0832C32.0833%2033.3957%2031.5292%2034.9999%2029.1667%2034.9999C26.8042%2034.9999%2026.25%2033.3957%2026.25%2032.0832V23.3332C26.25%2021.9916%2026.7458%2017.4999%2032.0833%2017.4999H42.0292L48.6792%2010.8499C49.5833%2010.0041%2050.1083%2010.4999%2050.4292%2010.8207L59.15%2019.5124C59.9958%2020.4166%2059.5%2020.9416%2059.1792%2021.2624Z%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22rotate%28-6%20269.0%20151.0%29%20translate%28250%20132%29%20scale%281.5833%29%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M12%2021V15H13.5V21H21V7.50005H22.5V21C22.5%2021.3979%2022.342%2021.7794%2022.0607%2022.0607C21.7794%2022.342%2021.3978%2022.5%2021%2022.5H3C2.60218%2022.5%202.22064%2022.342%201.93934%2022.0607C1.65804%2021.7794%201.5%2021.3979%201.5%2021V18H3V21H12ZM19.2795%205.78105L14.781%2010.281C15.0216%2010.7819%2015.0684%2011.3542%2014.9123%2011.8875C14.7562%2012.4208%2014.4082%2012.8774%2013.9355%2013.1695C13.4627%2013.4616%2012.8986%2013.5684%2012.3518%2013.4693C11.805%2013.3703%2011.3143%2013.0724%2010.974%2012.633L6.903%2013.989L6%2014.2906C5.99054%2014.8213%205.79374%2015.3316%205.44439%2015.7312C5.09504%2016.1309%204.61565%2016.3941%204.09095%2016.4745C3.56625%2016.5549%203.03004%2016.4471%202.57711%2016.1703C2.12417%2015.8935%201.78368%2015.4655%201.61582%2014.9619C1.44796%2014.4584%201.46355%2013.9117%201.65982%2013.4185C1.8561%2012.9253%202.22042%2012.5174%202.68839%2012.2668C3.15636%2012.0163%203.69784%2011.9393%204.21711%2012.0494C4.73637%2012.1595%205.19999%2012.4496%205.526%2012.8686L10.5%2011.2095C10.5067%2010.8329%2010.6078%2010.464%2010.7941%2010.1367C10.9804%209.80931%2011.2459%209.53395%2011.5663%209.33584C11.8867%209.13774%2012.2516%209.02324%2012.6278%209.00283C13.0039%208.98243%2013.3791%209.05677%2013.719%209.21905L18.219%204.71905C17.9902%204.24011%2017.9381%203.69571%2018.0719%203.18207C18.2057%202.66844%2018.5168%202.21864%2018.9502%201.91219C19.3836%201.60573%2019.9113%201.46235%2020.4402%201.50738C20.969%201.55242%2021.465%201.78297%2021.8403%202.15828C22.2156%202.5336%2022.4461%203.02951%2022.4912%203.55837C22.5362%204.08723%2022.3928%204.61499%2022.0864%205.04836C21.7799%205.48173%2021.3301%205.7928%2020.8165%205.92661C20.3028%206.06041%2019.7584%206.00832%2019.2795%205.77955%22%20fill%3D%22%23000%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  opacity:.09;
+}
+.experiencias::before{left:-24px}
+.experiencias::after{right:-24px;transform:scaleX(-1)}
+.exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.exp-card{
+  /* En columna: con el rotulo debajo, una fila ponia miniatura y texto
+     lado a lado y encogia la imagen a 227px dentro de 377. */
+  display:flex;flex-direction:column;cursor:pointer;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.exp-card:hover{transform:translateY(-6px)}
+
+/* Sin tarjeta ni mascara de bocadillo: el Short manda, en su 9:16 y a
+   todo el ancho de la columna. */
+.exp-media{
+  container-type:inline-size;
+  position:relative;width:100%;aspect-ratio:9/16;
+  border-radius:22px;overflow:hidden;
+  background:#111 center/cover no-repeat;cursor:pointer;
+  box-shadow:0 10px 30px rgba(18,19,26,.14);
+  transition:box-shadow .3s var(--ease);
+}
+.exp-card:hover .exp-media{box-shadow:0 20px 46px rgba(18,19,26,.22)}
+.exp-play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;
+  width:64px;height:64px;color:#F4511E;
+  display:grid;place-content:center;
+  filter:drop-shadow(0 6px 18px rgba(0,0,0,.55));
+  transition:transform .25s var(--ease);
+}
+.exp-play svg{width:64px;height:64px;display:block}
+.exp-card:hover .exp-play{transform:translate(-50%,-50%) scale(1.1)}
+.exp-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:4}
+
+/* Titulo del Short sobre la portada. Lleva su propio velo porque cada
+   miniatura viene con los colores del video: sin el, el texto blanco
+   caia sobre un cielo claro en uno y sobre negro en otro. */
+/* Titulo del Short sobre la portada. Lleva su propio velo porque cada
+   miniatura viene con los colores del video: sin el, el texto blanco
+   caia sobre un cielo claro en uno y sobre negro en otro. */
+.exp-titulo{
+  position:absolute;left:0;right:0;bottom:0;z-index:3;
+  padding:44px 18px 18px;
+  font-size:15px;font-weight:600;line-height:1.35;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.5);
+  background:linear-gradient(to top,rgba(8,9,14,.9) 0,rgba(8,9,14,.55) 45%,transparent 100%);
+  /* Como maximo tres lineas: los titulos largos no deben comerse el video */
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+
+
+
+/* ============================================================
+   NOVEDADES
+   ============================================================ */
+.novedades{background:transparent}
+/* Blog / Eventos son solo dos y caben en cualquier pantalla: se libran
+   de la tira arrastrable que .chips adopta por debajo de 1024px para
+   los 8 filtros de carreras, y se quedan centradas siempre. Va fuera de
+   la media query y despues de ella, que es lo que la deja ganar. */
+.chips-center{
+  margin-bottom:44px;
+  justify-content:center;flex-wrap:wrap;overflow-x:visible;padding-bottom:0;
+  -webkit-mask-image:none;mask-image:none;
+}
+.news-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.news-card{
+  display:flex;flex-direction:column;background:#fff;
+  border-radius:18px;padding:14px 14px 20px;
+  box-shadow:0 6px 22px rgba(18,19,26,.07);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.news-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+
+.news-media{position:relative}
+.news-thumb{aspect-ratio:4/3.1;border-radius:12px;background:#EDEFF4 center/cover no-repeat}
+/* El botón lleva un anillo del color de la tarjeta: parece un recorte */
+.news-go{
+  position:absolute;right:-4px;bottom:-10px;
+  width:46px;height:46px;border-radius:50%;
+  display:grid;place-content:center;
+  background:#fff;color:var(--red);
+  border:1.6px solid var(--red);
+  box-shadow:0 0 0 7px #fff;
+  transition:background .22s var(--ease),color .22s var(--ease),transform .22s var(--ease);
+}
+.news-go svg{width:21px;height:21px}
+.news-card:hover .news-go{background:var(--red);color:#fff;transform:translate(2px,-2px)}
+
+.news-body{padding:22px 6px 0;display:flex;flex-direction:column;flex:1}
+.news-title{font-size:18px;font-weight:600;color:var(--ink);line-height:1.2}
+.news-card:hover .news-title{color:var(--red)}
+.news-excerpt{margin-top:9px;font-size:12.5px;color:var(--body);line-height:1.5;flex:1}
+.news-tag{
+  margin-top:22px;align-self:flex-start;font-size:11.5px;font-weight:500;
+  color:var(--red);background:#FBF0C4;padding:6px 13px;border-radius:999px;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer{
+  position:relative;background:#272423;color:rgba(255,255,255,.72);
+  padding-top:70px;font-size:14.5px;overflow:hidden;
+}
+/* Marca de agua del fondo */
+.footer-mark{
+  position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:clamp(90px,13vw,190px);line-height:1;letter-spacing:.01em;
+  color:#fff;opacity:.045;white-space:nowrap;pointer-events:none;user-select:none;
+}
+.footer-grid{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:48px;padding-bottom:46px;
+}
+.fcol-title{
+  display:flex;align-items:center;gap:11px;
+  font-size:21px;text-transform:uppercase;letter-spacing:.055em;color:#fff;margin-bottom:30px;
+}
+.fcol-title .chev{display:block;width:12px;height:16px;color:var(--red);flex:none}
+.fcol-title .chev svg{width:100%;height:100%;display:block}
+
+.fcol-sub{
+  margin:26px 0 14px;font-weight:500;color:rgba(255,255,255,.62);
+  font-size:14.5px;text-transform:uppercase;letter-spacing:.06em;
+}
+.fcol-text{color:rgba(255,255,255,.72)}
+
+/* Teléfonos */
+.tel-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tel-list li{display:flex;align-items:center;gap:12px}
+.tel-list [data-ico]{width:22px;height:22px;flex:none;color:rgba(255,255,255,.85)}
+.tel-list a{color:rgba(255,255,255,.78);transition:color .2s var(--ease)}
+.tel-list a:hover{color:#fff}
+
+/* Horario */
+.horario{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.horario li{display:flex;flex-direction:column;gap:5px;line-height:1.35}
+.horario strong{font-weight:400;color:rgba(255,255,255,.78)}
+.horario span{color:rgba(255,255,255,.66)}
+
+.fcol-list li{margin-bottom:17px}
+.fcol-list a{color:rgba(255,255,255,.72);transition:color .2s var(--ease),padding-left .2s var(--ease);display:inline-block}
+.fcol-list a:hover{color:#fff;padding-left:5px}
+
+/* Redes: círculo blanco, glifo oscuro */
+.social{display:flex;gap:14px;margin-bottom:34px}
+.social a{
+  width:44px;height:44px;border-radius:50%;display:grid;place-content:center;
+  background:#fff;color:#272423;
+  transition:transform .22s var(--ease),background .22s var(--ease),color .22s var(--ease);
+}
+.social svg{width:23px;height:23px}
+.social a:hover{background:var(--red);color:#fff;transform:translateY(-3px)}
+
+/* Libro de reclamaciones */
+.reclamaciones{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  width:170px;padding:14px 16px 12px;border-radius:12px;
+  background:#fff;color:#0B4EA2;
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease);
+}
+.reclamaciones:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.rec-txt{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;line-height:1.12;
+  text-transform:uppercase;letter-spacing:.03em;text-align:center;color:#0B4EA2;
+}
+.rec-book{width:76px;height:auto;color:#1668C4}
+
+/* Barra inferior */
+.footer-bar{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.35);padding:24px 0 28px}
+.footer-bar-inner{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;font-size:14.5px}
+.footer-bar p{color:rgba(255,255,255,.82)}
+.footer-bar nav{display:flex;gap:38px;flex-wrap:wrap}
+.footer-bar nav a{color:rgba(255,255,255,.82);text-decoration:underline;text-underline-offset:3px}
+.footer-bar nav a:hover{color:var(--red)}
+
+/* ---------- SISE en cifras: cortes propios ----------
+   Las etiquetas no se parten, asi que su ancho entra en el minimo de
+   cada celda: las cuatro en fila piden unos 1100 px. Por eso la
+   tarjeta cambia de forma antes que el resto de la pagina. */
+@media (max-width:1200px){
+  .stats-card{padding:38px 20px}
+  .stat{gap:12px;padding:4px 14px}
+  .stat-ico{width:46px;height:46px}
+  .stat-num{font-size:clamp(30px,3.4vw,40px)}
+  .stat-label{font-size:13px}
+}
+@media (max-width:1000px){
+  /* Dos columnas: en fila ya no caben cuatro etiquetas enteras */
+  .stats-card{grid-template-columns:1fr 1fr;gap:26px 0;padding:34px 16px}
+  .stat{align-items:center;gap:12px;padding:4px 16px}
+  .stat + .stat{border-left:0}
+  .stat:nth-child(even){border-left:1px solid rgba(18,19,26,.10)}
+  .stat-ico{width:44px;height:44px}
+  .stat-num{font-size:clamp(28px,4.4vw,38px)}
+  .stat-label{font-size:13.5px}
+}
+@media (max-width:560px){
+  .stats-card{padding:26px 8px}
+  .stat{gap:9px;padding:4px 9px}
+  .stat-ico{width:32px;height:32px}
+  .stat-num{font-size:22px}
+  .stat-label{font-size:11.5px;margin-top:3px}
+}
+@media (max-width:440px){
+  /* Se mantiene el 2x2, pero con el icono ENCIMA en vez de al lado:
+     en horizontal, icono + hueco + etiqueta de una linea no caben en
+     media pantalla, y era lo que obligaba a bajar a una columna. */
+  .stats-card{grid-template-columns:1fr 1fr;gap:22px 0;padding:24px 10px}
+  .stat{flex-direction:column;align-items:center;text-align:center;gap:7px;padding:4px 8px}
+  .stat-txt{text-align:center}
+  .stat-ico{width:34px;height:34px}
+  .stat-num{font-size:26px}
+  .stat-num{transform-origin:center}
+  .stat-label{font-size:11.5px}
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1180px){
+  .main-nav{display:none}
+  /* El separador lo daba .main-nav con margin-inline:auto. Al ocultarlo,
+     la hamburguesa se quedaba pegada al logo. */
+  .nav-pill{justify-content:space-between;padding-right:14px}
+  /* Empleabilidad y la hamburguesa hacen grupo a la derecha. El auto va
+     en el boton y no en la hamburguesa: puesto en la hamburguesa, el
+     espacio sobrante caia ENTRE los dos y Empleabilidad se quedaba
+     colgando en mitad de la pastilla, pegada al logo. */
+  .btn-empleo{margin-left:auto}
+  .burger{margin-left:0}
+  .career-grid{grid-template-columns:repeat(3,1fr)}
+  .news-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media (max-width:1024px){
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .hero-copy{max-width:none}
+  .lead-card{max-width:560px;width:100%;margin-inline:auto}
+  .sedes-head{text-align:center}
+  .sedes-title{align-items:center}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:38px}
+}
+
+@media (max-width:820px){
+  :root{--gut:14px;--header-h:66px}
+
+  /* ---- Banner en móvil ----
+     La foto deja de ser fondo de toda la sección y pasa a ser un bloque
+     completo arriba; el formulario baja debajo, sobre el fondo de página.
+     display:contents sube los hijos de .hero-grid a la rejilla de .hero,
+     que es lo que permite repartirlos en dos zonas. */
+  .hero{
+    display:grid;grid-template-columns:1fr;
+    grid-template-areas:"media" "form";
+    padding:0;min-height:0;overflow:visible;
+  }
+  .hero-grid{display:contents}
+  .hero-bg,.hero-veil,.hero-copy,.hero-nav{grid-area:media}
+  .hero-bg{
+    position:relative;inset:auto;
+    /* 3/4 = la proporción de las imágenes de móvil: así no se recortan */
+    aspect-ratio:3/4;min-height:380px;max-height:76vh;
+    overflow:hidden;
+  }
+  .hero-veil{position:relative;inset:auto;pointer-events:none}
+  .hero-copy{
+    position:relative;z-index:2;align-self:end;
+    /* Tope de columna: sin el, en tableta el bloque llegaba a 780px y
+       el lettering tenia que estirarse hasta tamanos absurdos para
+       alcanzar el borde. */
+    max-width:620px;
+    padding:0 var(--gut) 62px;
+    /* Contenedor de consulta: deja medir el lettering contra el ancho
+       real de esta columna y no contra el de la ventana. */
+    container-type:inline-size;
+  }
+  .hero-nav{
+    position:relative;inset:auto;z-index:3;
+    align-self:end;justify-self:center;padding-bottom:22px;
+  }
+  /* El formulario sale del banner y pasa a emergente: en movil ocupaba
+     media pantalla nada mas entrar y empujaba el resto de la pagina
+     muy abajo. Se abre desde el flotante rojo. */
+  .hero{grid-template-areas:"media"}
+  .lead-card{
+    position:fixed;z-index:210;
+    left:50%;top:50%;transform:translate(-50%,-50%) scale(.97);
+    width:min(94vw,440px);max-height:88vh;overflow-y:auto;
+    margin:0;background:#fff;
+    opacity:0;visibility:hidden;
+    transition:opacity .22s var(--ease),transform .26s var(--ease),visibility 0s linear .26s;
+  }
+  body.form-abierto .lead-card{
+    opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1);
+    transition:opacity .22s var(--ease),transform .26s var(--ease),visibility 0s;
+  }
+  .lead-cerrar{display:grid}
+  .floater-form{display:grid}
+  /* Con el formulario ya en el flotante, el enlace de llamar se queda
+     en el menu y en el pie: tres botones apilados tapaban la pagina. */
+  .floater-call{display:none}
+  .hero-title .l1{font-size:clamp(34px,9vw,52px)}
+  /* El lettering llena el ancho util y arranca alineado con las otras
+     dos lineas, como en escritorio.
+     El 7.55 esta medido: el rotulador ocupa 7.55px de ancho por cada px
+     de tamaño, asi que dividiendo el ancho de la columna (100cqw) sale
+     el tamaño que la llena justo. Antes iba a 11.4vw fijo y se quedaba
+     24px corto por la derecha.
+     El margen compensa lo que el skew saca por la izquierda (.0705em
+     medidos): sin el, esta linea empezaba 3px antes que las otras y por
+     eso se veia descuadrada. */
+  .hero-title .l2{
+    font-size:clamp(30px,calc((100cqw - 4px) / 7.55),78px);
+    margin-left:.0705em;
+    -webkit-text-stroke-width:2px;
+  }
+
+  .site-header{inset:12px 0 auto 0}
+  .nav-pill{padding:9px 9px 9px 20px}
+  .brand-logo{height:23px}
+  .section{padding:70px 0}
+  .career-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+  .career-card{min-height:330px}
+  .exp-grid{
+    display:flex;gap:14px;max-width:none;
+    margin-inline:calc(var(--gut) * -1);
+    padding:4px var(--gut) 20px;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .exp-grid::-webkit-scrollbar{display:none}
+  .exp-card{flex:0 0 78%;scroll-snap-align:center}
+  .exp-card:hover{transform:none}
+  /* Empleabilidad tambien en movil. En compacto: con el logo y la
+     hamburguesa al lado, a tamano completo no cabe en 375px. */
+  .btn-empleo{
+    padding:8px 12px;font-size:13px;gap:7px;
+    white-space:nowrap;flex:none;
+  }
+  .btn-empleo .lottie{width:20px;height:20px}
+  .nav-pill{padding-left:24px}
+}
+
+/* Objetivos táctiles: mínimo 44px en pantallas de dedo.
+   Solo añade padding, no cambia el aspecto. */
+@media (pointer:coarse){
+  .fcol-list a,.footer-bar nav a{padding-block:11px}
+  .tel-list a{padding-block:10px}
+  .drop a{padding-block:13px}
+  .sel-opt{padding-block:13px}
+  .check .txt a{padding-block:6px;display:inline-block}
+  .social a{width:46px;height:46px}
+  .menu-close{width:46px;height:46px;display:grid;place-content:center}
+}
+
+@media (max-width:600px){
+  body{font-size:16px}
+  .hero-bg{min-height:360px}
+  .hero-nav{padding-bottom:18px}
+  /* En móvil la tarjeta cae sobre la parte clara de la foto:
+     al 85% los campos se leían mal. */
+  .lead-card{padding:24px 18px;border-radius:24px}
+  .lead-form{grid-template-columns:1fr}
+  /* Las dos modalidades en una fila, como en escritorio. Estaban
+     apiladas porque a tamano completo "Semipresencial" no entraba en
+     media tarjeta; con el texto y el relleno mas justos, si. */
+  .mod-switch{grid-template-columns:1fr 1fr;gap:10px}
+  .mod-opt{padding:10px 12px;font-size:13px;gap:6px}
+  .mod-opt [data-ico],.mod-opt svg{width:18px;height:18px}
+  .lead-title{font-size:27px}
+  .submit-btn{width:100%;justify-content:center;padding-inline:24px}
+  /* Carrusel horizontal: apiladas, las 6 carreras ocupaban 4,4 pantallas
+     y las 4 novedades otras 2,7. Con deslizamiento lateral se quedan
+     en una pantalla cada sección y se ve que hay más contenido. */
+  .career-grid,.news-grid{
+    display:flex;gap:14px;max-width:none;
+    margin-inline:calc(var(--gut) * -1);
+    padding:4px var(--gut) 20px;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .career-grid::-webkit-scrollbar,.news-grid::-webkit-scrollbar{display:none}
+  .career-card,.news-card{flex:0 0 76%;scroll-snap-align:center}
+  .career-card{aspect-ratio:auto;min-height:0}
+  .news-card:hover,.career-card:hover{transform:none}
+  .grid-empty{flex:1 0 100%}
+
+  /* El texto justificado abre huecos enormes en una columna estrecha */
+  .check-just .txt{text-align:left}
+  .sedes{padding:62px 0 72px}
+
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bar-inner{flex-direction:column;text-align:center}
+  .footer-bar nav{gap:18px;justify-content:center}
+  .footer-mark{font-size:74px}
+  .floaters{right:14px;bottom:16px}
+  .floater{width:46px;height:46px}
+  .floater svg{width:23px;height:23px}
+}
+
+/* Accesibilidad: sin animaciones */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .reveal,.reveal-stagger > *{opacity:1!important;transform:none!important}
+  body,.hero-copy,.lead-card{animation:none!important}
+  /* Sin movimiento el menu no se aparta: aparecer y desaparecer
+     de golpe marea mas que dejarlo fijo. */
+  .site-header.is-hidden{transform:none!important;opacity:1!important;pointer-events:auto!important}
+}
+
+
+/* ============================================================
+   CONVENIOS — dos columnas verticales
+   ============================================================ */
+.convenios{background:transparent;overflow:hidden}
+.conv-2col{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+  gap:clamp(28px,4vw,64px);align-items:center;
+}
+.conv-txt .section-head{margin-bottom:26px}
+.conv-cta{display:inline-flex}
+
+/* Las dos columnas corren en sentidos opuestos */
+.conv-rails{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.conv-rail{
+  height:clamp(360px,44vw,520px);overflow:hidden;
+  /* Se difuminan arriba y abajo con una mascara (a transparente, no a
+     un color): funciona igual sobre cualquier fondo y las tarjetas no
+     aparecen ni se cortan de golpe. */
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 13%,#000 87%,transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 13%,#000 87%,transparent);
+}
+/* flow-root es imprescindible: sin el, el margen de la ultima tarjeta
+   se colapsa fuera del alto del track, el -50% cae 8px corto y el bucle
+   da un salto visible en cada vuelta. */
+.conv-track{display:flow-root}
+.conv-track--sube{animation:convSube 34s linear infinite}
+.conv-track--baja{animation:convBaja 34s linear infinite}
+@keyframes convSube{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@keyframes convBaja{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+.conv-rails:hover .conv-track{animation-play-state:paused}
+
+/* Alto fijo y separacion por margin: es lo que hace que el -50% del
+   bucle caiga exactamente donde empieza la copia. */
+.conv-item{
+  height:96px;margin-bottom:16px;display:grid;place-items:center;
+  padding:0 16px;background:#fff;border-radius:18px;
+  box-shadow:0 6px 20px rgba(18,19,26,.06);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.conv-item:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(18,19,26,.1)}
+.conv-item img{width:88%;height:auto}
+/* Respaldo mientras no esta el archivo del logo */
+.conv-word{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;
+  letter-spacing:.02em;text-transform:uppercase;color:#9AA0AE;text-align:center;line-height:1.05;
+}
+
+@media (prefers-reduced-motion:reduce){
+  /* Sin movimiento automatico: cada columna se recorre a mano */
+  .conv-track{animation:none}
+  .conv-rail{overflow-y:auto;scrollbar-width:none}
+  .conv-rail::-webkit-scrollbar{display:none}
+}
+@media (max-width:900px){
+  .conv-2col{grid-template-columns:1fr;gap:30px}
+  .conv-txt .section-head{text-align:center;max-width:640px;margin-inline:auto}
+  .conv-txt .section-head .section-sub{margin-inline:auto}
+  .conv-txt{text-align:center}
+  .conv-rail{height:clamp(320px,58vw,420px)}
+}
+@media (max-width:560px){
+  .conv-rails{gap:12px}
+  .conv-item{height:78px;margin-bottom:12px;padding:0 12px;border-radius:15px}
+  .conv-word{font-size:16px}
+}
+
+/* ============================================================
+   REPRODUCTOR DE TESTIMONIOS (ventana)
+   ============================================================
+   Los testimonios son Shorts verticales: dentro de la tarjeta se veian
+   diminutos. Se abren aqui, a pantalla, con el resto de la pagina
+   apagada detras. */
+.video-modal{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(16px,4vw,48px);
+  background:rgba(8,9,14,.88);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  /* La entrada va con animacion y no con una clase que se anade al
+     fotograma siguiente: si el navegador no emite ese fotograma (pestana
+     en segundo plano, vista incrustada) la ventana se quedaba invisible
+     con el video sonando detras. */
+  animation:vmEntra .25s var(--ease);
+}
+@keyframes vmEntra{from{opacity:0}to{opacity:1}}
+.vm-caja{
+  position:relative;
+  /* 9:16 de los Shorts, limitado por el alto disponible */
+  aspect-ratio:9/16;height:min(86vh,900px);max-width:100%;
+  border-radius:20px;overflow:hidden;background:#000;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);
+  animation:vmCaja .3s var(--ease);
+}
+@keyframes vmCaja{from{transform:scale(.96)}to{transform:none}}
+.vm-caja iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vm-cerrar{
+  position:absolute;top:clamp(12px,2.5vw,26px);right:clamp(12px,2.5vw,26px);z-index:2;
+  width:46px;height:46px;display:grid;place-content:center;border-radius:50%;
+  background:rgba(255,255,255,.14);color:#fff;
+  transition:background .2s var(--ease),transform .25s var(--ease);
+}
+.vm-cerrar svg{width:24px;height:24px;display:block}
+.vm-cerrar:hover{background:var(--red);transform:rotate(90deg)}
+
+@media (prefers-reduced-motion:reduce){
+  .video-modal,.vm-caja{animation:none}
+}
+
+/* ==== CARRERA (pagina interna de carrera) ====
+   Mismo sistema que el home: tipografia .section-title / .section-sub,
+   fondo --bg, tarjetas blancas con sombra suave y la misma paleta de
+   los hub cards. Aqui solo van las piezas que el home no tiene. */
+
+/* Variante alineada a la izquierda del encabezado de seccion.
+   Mismos tamanos y familia; solo cambia la alineacion, porque en la
+   columna de texto un titulo centrado partiria la lectura. */
+.section-head--left{text-align:left;max-width:none;margin:0 0 22px}
+.section-head--left .section-title{font-size:clamp(30px,3.4vw,44px)}
+.section-head--left .section-sub{max-width:640px}
+
+/* ---------- Hero ---------- */
+.car-hero{position:relative;min-height:clamp(320px,40vw,460px);display:flex;align-items:flex-end;overflow:hidden}
+.car-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.car-hero-veil{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(8,9,14,.78) 0%,rgba(8,9,14,.42) 48%,rgba(8,9,14,.08) 82%),
+             linear-gradient(0deg,rgba(8,9,14,.62),transparent 58%);
+}
+.car-hero-inner{position:relative;z-index:2;padding-top:calc(var(--header-h) + 54px);padding-bottom:clamp(30px,4vw,58px)}
+.car-tag{
+  display:inline-block;background:var(--red);color:#fff;
+  font-family:'Barlow',sans-serif;font-size:12.5px;font-weight:600;
+  letter-spacing:.05em;text-transform:uppercase;
+  padding:8px 16px;border-radius:999px;margin-bottom:14px;
+}
+.car-hero-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  color:#fff;font-size:clamp(36px,5.2vw,64px);line-height:.98;letter-spacing:.01em;
+  text-shadow:0 2px 14px rgba(0,0,0,.35);
+}
+.car-hero-title em{font-style:normal;color:var(--red)}
+.car-hero-sub{margin-top:12px;color:rgba(255,255,255,.9);font-size:16.5px;font-weight:500;max-width:520px}
+
+/* ---------- Bloque principal: contenido + formulario que acompana ---------- */
+.car-lead{padding-top:clamp(38px,4.4vw,60px)}
+.car-lead-grid{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,392px);
+  gap:clamp(30px,3.6vw,58px);align-items:start;
+}
+/* El formulario ocupa las dos filas de la columna derecha, asi acompana
+   la lectura completa (ficha + por que estudiarla). En el HTML va en
+   medio de las dos: en movil, al caer todo a una columna, queda justo
+   despues de la introduccion y no al final del bloque. */
+.car-lead-main{min-width:0;grid-column:1;grid-row:1}
+.car-form-wrap{grid-column:2;grid-row:1 / span 2}
+.car-why-block{grid-column:1;grid-row:2;min-width:0;margin-top:clamp(34px,4vw,56px)}
+
+.crumb{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);margin-bottom:18px}
+.crumb a{color:var(--body);font-weight:500;transition:color .2s var(--ease)}
+.crumb a:hover{color:var(--red)}
+.crumb .crumb-now{color:var(--ink);font-weight:600}
+.crumb .sep{color:#C7CBD6}
+
+/* Los conmutadores de modalidad reutilizan .mod-opt del formulario */
+.car-modos{display:inline-flex;gap:10px;margin-bottom:20px}
+.car-modos .mod-opt{padding:10px 18px}
+
+.car-p{font-size:16.5px;line-height:1.72;color:var(--body)}
+.car-p + .car-p{margin-top:12px}
+
+/* Subtitulo interno: misma familia condensada que los titulos del home */
+.car-h{
+  display:flex;align-items:center;gap:11px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:23px;letter-spacing:.01em;color:var(--ink);
+  margin:32px 0 12px;
+}
+.car-h::before{content:'';flex:none;width:26px;height:4px;border-radius:999px;background:var(--red)}
+
+/* Datos rapidos */
+.car-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:26px 0 0}
+.fact{
+  display:flex;align-items:center;gap:12px;
+  background:#fff;border:2px solid transparent;border-radius:18px;padding:15px 16px;
+  box-shadow:0 8px 24px rgba(18,19,26,.06);
+  transition:transform .3s var(--ease),border-color .25s var(--ease),box-shadow .3s var(--ease);
+}
+.fact:hover{transform:translateY(-4px);border-color:var(--red);box-shadow:0 14px 32px rgba(18,19,26,.1)}
+.fact-ico{display:block;width:28px;height:28px;flex:none;color:var(--red)}
+.fact-ico svg{width:100%;height:100%;display:block}
+.fact-t{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:13px;letter-spacing:.06em;color:var(--muted);line-height:1.2}
+.fact-v{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.3;margin-top:2px}
+
+/* Grado y titulo */
+.car-grado{
+  display:flex;gap:16px;align-items:flex-start;margin-top:26px;
+  background:#fff;border-radius:22px;padding:22px 24px;
+  box-shadow:0 8px 24px rgba(18,19,26,.06);
+  border-left:5px solid var(--red);
+}
+.car-grado-ico{display:block;width:34px;height:34px;flex:none;color:var(--red);margin-top:2px}
+.car-grado-ico svg{width:100%;height:100%;display:block}
+.car-grado p{font-size:15.5px;color:var(--body);line-height:1.6}
+.car-grado strong{color:var(--ink);font-weight:700}
+.car-grado ul{margin:10px 0 0;display:grid;gap:7px}
+.car-grado li{position:relative;padding-left:16px;font-size:15px;color:var(--ink)}
+.car-grado li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+
+/* Formulario: el mismo componente del home, en columna pegajosa */
+.car-form-wrap{position:sticky;top:calc(var(--header-h) + 20px)}
+.lead-card--carrera{background:#fff;box-shadow:var(--shadow-md);animation:none;padding:24px 22px}
+.lead-card--carrera .lead-title{font-size:23px}
+.lead-card--carrera .lead-note{
+  text-align:center;font-size:13px;color:var(--muted);margin:-4px 0 13px;
+}
+.field-full{grid-column:1/-1}
+
+/* ---------- Por que estudiar (mismos colores suaves que los hub cards) ---------- */
+.why-rail{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.why-card{
+  border-radius:22px;padding:24px 22px;color:#fff;
+  display:flex;flex-direction:column;gap:9px;
+  box-shadow:0 10px 26px rgba(18,19,26,.08);
+  transition:transform .32s var(--ease),box-shadow .32s var(--ease);
+}
+.why-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(18,19,26,.14)}
+.why--rojo{background:#FF3D6A}
+.why--azul{background:#4642A6}
+.why--amarillo{background:#FBDD6E;color:#272423}
+.why--amarillo h3{font-weight:900}
+.why-ico{display:block;width:32px;height:32px}
+.why-ico svg{width:100%;height:100%;display:block}
+.why-card h3{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:22px;line-height:1;letter-spacing:.01em;color:inherit;
+}
+.why-card p{font-size:14.5px;line-height:1.55;opacity:.95}
+
+/* ---------- Laboratorios ---------- */
+.labs-rail{
+  display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
+  scrollbar-width:none;padding-bottom:6px;scroll-padding-inline:24px;
+}
+.labs-rail::-webkit-scrollbar{display:none}
+.lab-slide{
+  flex:0 0 min(720px,84%);aspect-ratio:16/8.4;border-radius:24px;
+  background-size:cover;background-position:center;scroll-snap-align:center;
+  box-shadow:0 10px 26px rgba(18,19,26,.1);
+}
+
+/* ---------- Campo laboral ---------- */
+.campo-grid{display:grid;grid-template-columns:0.85fr 1fr;gap:44px;align-items:center}
+.campo-img{aspect-ratio:4/4.3;border-radius:24px;background-size:cover;background-position:center;box-shadow:0 10px 26px rgba(18,19,26,.1)}
+.campo-txt .car-h:first-child{margin-top:0}
+.campo-roles{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px}
+.campo-roles li{
+  background:#fff;border-radius:12px;padding:11px 14px;
+  border-left:3px solid var(--red);
+  font-size:14.5px;color:var(--ink);font-weight:500;
+  box-shadow:0 4px 16px rgba(18,19,26,.05);
+}
+
+/* ---------- Convenios ---------- */
+.conv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1000px;margin-inline:auto}
+.conv-logo{
+  display:grid;place-content:center;height:112px;background:#fff;border-radius:20px;
+  box-shadow:0 8px 24px rgba(18,19,26,.06);
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:23px;
+  color:#9AA0AE;letter-spacing:.03em;text-transform:uppercase;
+}
+.conv-logo img{width:88%;height:auto}
+.conv-note{margin-top:14px;font-size:12.5px;color:var(--muted);text-align:center}
+
+/* ---------- Malla ---------- */
+.malla-resumen{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;
+  max-width:980px;margin:0 auto 20px;
+}
+.malla-dato{
+  background:#fff;border-radius:18px;padding:16px 20px;text-align:center;
+  box-shadow:0 8px 24px rgba(18,19,26,.06);
+}
+.malla-dato b{
+  display:block;color:var(--red);font-family:'Barlow Condensed',sans-serif;
+  font-weight:800;font-size:34px;line-height:1;
+}
+.malla-dato span{display:block;margin-top:5px;font-size:14px;color:var(--body)}
+
+.malla-acc{max-width:980px;margin-inline:auto}
+.malla-year{background:#fff;border-radius:18px;margin-bottom:14px;overflow:hidden;box-shadow:0 8px 24px rgba(18,19,26,.06)}
+.malla-toggle{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 24px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:21px;letter-spacing:.01em;color:var(--ink);
+  transition:background .25s var(--ease),color .25s var(--ease);
+}
+.malla-caret{
+  width:11px;height:11px;flex:none;margin-top:-4px;
+  border-right:2.4px solid currentColor;border-bottom:2.4px solid currentColor;
+  transform:rotate(45deg);transition:transform .25s var(--ease);
+}
+.malla-year.is-open .malla-toggle{background:var(--red);color:#fff}
+.malla-year.is-open .malla-caret{transform:rotate(-135deg);margin-top:4px}
+.malla-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s var(--ease)}
+.malla-year.is-open .malla-body{grid-template-rows:1fr}
+.malla-body > .malla-inner{overflow:hidden;min-height:0}
+.malla-inner-pad{padding:0 24px}
+.malla-year.is-open .malla-inner-pad{padding:22px 24px 26px}
+.malla-ciclos{display:grid;gap:26px}
+@media(min-width:700px){.malla-ciclos{grid-template-columns:1fr 1fr;gap:30px}}
+.malla-ciclo h4{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:20px;color:var(--red);margin-bottom:10px;
+}
+.malla-ciclo ul{display:grid;gap:7px}
+.malla-ciclo li{position:relative;padding-left:15px;font-size:14.5px;color:var(--ink);line-height:1.45}
+.malla-ciclo li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+.malla-soon{color:var(--muted);font-size:14.5px}
+
+/* ---------- Certificaciones ---------- */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:1100px;margin-inline:auto}
+.cert-grid--3{max-width:760px}
+.cert-card{
+  background:#fff;border:2px solid transparent;border-radius:18px;padding:20px 18px;text-align:center;
+  display:flex;flex-direction:column;gap:9px;justify-content:center;min-height:132px;
+  box-shadow:0 8px 24px rgba(18,19,26,.06);
+  transition:transform .3s var(--ease),border-color .25s var(--ease),box-shadow .3s var(--ease);
+}
+.cert-card:hover{transform:translateY(-5px);border-color:var(--red);box-shadow:0 14px 32px rgba(18,19,26,.1)}
+.cert-n{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:16px;letter-spacing:.04em;color:var(--red);
+}
+.cert-card p{font-size:14px;color:var(--ink);line-height:1.4;font-weight:500}
+
+/* ---------- Egresado ---------- */
+.egr-grid{display:grid;grid-template-columns:0.62fr 1fr;align-items:stretch;max-width:1100px;margin-inline:auto;border-radius:24px;overflow:hidden;box-shadow:0 10px 26px rgba(18,19,26,.1)}
+.egr-label{background:var(--red);color:#fff;padding:34px 30px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.egr-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:24px;line-height:1}
+.egr-quote{font-style:italic;font-size:15.5px;line-height:1.6;opacity:.95}
+.egr-role{font-size:14px;font-weight:600;opacity:.92}
+.egr-video{position:relative;aspect-ratio:16/9;background:#0b0b0f center/cover no-repeat;overflow:hidden}
+.egr-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.egr-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;width:70px;height:70px;transition:transform .25s var(--ease)}
+.egr-play:hover{transform:translate(-50%,-50%) scale(1.08)}
+.egr-play svg{width:100%;height:100%;display:block}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1060px){
+  .car-lead-grid{grid-template-columns:1fr}
+  .car-lead-main,.car-form-wrap,.car-why-block{grid-column:auto;grid-row:auto}
+  .car-form-wrap{position:static;max-width:520px;margin-inline:auto;width:100%}
+  .campo-grid{grid-template-columns:1fr;gap:24px}
+  .campo-img{aspect-ratio:16/9}
+  .conv-grid{grid-template-columns:repeat(2,1fr)}
+  .egr-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .why-rail{grid-template-columns:1fr}
+  .car-modos{width:100%}
+  .car-modos .mod-opt{flex:1;justify-content:center}
+  .cert-grid{grid-template-columns:repeat(2,1fr)}
+  .lab-slide{flex-basis:88%}
+}

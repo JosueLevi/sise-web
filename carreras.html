@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SISE · Carreras</title>
+<meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
+<meta name="theme-color" content="#FF0E49">
+
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=239">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Barlow+Condensed:wght@500;600;700;800;900&family=Permanent+Marker&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="assets/css/style.css?v=239">
+</head>
+<body>
+<header class="site-header" id="siteHeader">
+  <div class="header-shell">
+    <div class="nav-pill">
+      <a class="brand" href="#inicio" aria-label="SISE — Instituto Superior">
+        <span class="brand-logo" data-ico="logo" aria-hidden="true"></span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Navegación principal"></nav>
+
+      <a class="btn-empleo" href="#">
+        Empleabilidad
+        <span class="lottie" data-lottie="assets/anim/empleabilidad.json" aria-hidden="true"></span>
+      </a>
+
+      <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
+        <span class="burger-abrir" data-ico="menu" aria-hidden="true"></span>
+        <svg class="burger-cerrar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Menú desplegado (lo abre la hamburguesa) -->
+<aside class="site-menu" id="mobileMenu" aria-hidden="true" aria-label="Men&uacute; principal">
+  <div class="sm-sheet">
+    <span class="sm-deco" aria-hidden="true">
+      <span class="sm-deco-1" data-ico="chevron-doble"></span>
+    </span>
+
+    <div class="sm-top">
+      <a class="sm-brand" href="index.html" aria-label="SISE &mdash; Instituto Superior">
+        <span class="sm-brand-logo" data-ico="logo" aria-hidden="true"></span>
+        <span class="sm-brand-sub">Instituto Superior</span>
+      </a>
+      <button class="menu-close" id="menuClose" type="button" aria-label="Cerrar men&uacute;">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <div class="sm-body">
+      <nav class="sm-cols" id="menuNav" aria-label="Mapa del sitio"></nav>
+      <div class="sm-side" id="menuSide"></div>
+    </div>
+
+    <div class="sm-foot">
+      <div class="sm-contacto" id="menuContacto"></div>
+      <ul class="sm-social" id="menuRedes"></ul>
+    </div>
+  </div>
+</aside>
+
+
+<main id="main">
+<section class="section carreras oferta-page" id="oferta">
+  <div class="bg-chevron" data-ico="chevron-doble" aria-hidden="true"></div>
+  <div class="shell">
+    <nav class="crumb reveal" aria-label="Ruta"><a href="index.html">Inicio</a><span>/</span><span>Carreras</span></nav>
+    <header class="section-head reveal">
+      <h2 class="section-title">Nuestras Carreras</h2>
+      <p class="section-sub">Elige tu carrera y estudia semipresencial o 100% virtual.</p>
+    </header>
+    <div class="chips reveal" role="tablist" aria-label="Filtrar por area" id="areaChips"></div>
+    <div class="career-grid reveal reveal-stagger" id="careerGrid" data-tipo="carreras"></div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer" id="contacto">
+  <span class="footer-mark" aria-hidden="true">HAZLABIEN</span>
+
+  <div class="shell footer-grid reveal reveal-stagger">
+    <div class="fcol fcol-contacto">
+      <h3 class="fcol-title"><span class="chev" data-ico="chevron-simple" aria-hidden="true"></span>Contáctanos</h3>
+
+      <ul class="tel-list">
+        <li><span data-ico="whatsapp" aria-hidden="true"></span><a href="https://wa.me/51924298424" target="_blank" rel="noopener">924 298 424</a></li>
+        <li><span data-ico="telefono" aria-hidden="true"></span><a href="tel:+51924298424">924 298 424</a></li>
+      </ul>
+
+      <p class="fcol-sub">Horario de atención</p>
+      <ul class="horario">
+        <li><strong>Lunes a Viernes</strong><span>8:00 am a 9:00 pm</span></li>
+        <li><strong>Sábados</strong><span>9:00 am a 6:00 pm</span></li>
+      </ul>
+
+      <p class="fcol-sub">Sede principal</p>
+      <p class="fcol-text">Av. Arequipa N° 1290, Lima</p>
+    </div>
+
+    <div class="fcol">
+      <h3 class="fcol-title"><span class="chev" data-ico="chevron-simple" aria-hidden="true"></span>Enlaces rápidos</h3>
+      <ul class="fcol-list">
+        <li><a href="#carreras">Carreras</a></li>
+        <li><a href="#carreras">Cursos y Especializaciones</a></li>
+        <li><a href="#">Idiomas</a></li>
+        <li><a href="#porque">Por qué SISE</a></li>
+        <li><a href="#sedes">Sedes</a></li>
+        <li><a href="#">Empleabilidad</a></li>
+      </ul>
+    </div>
+
+    <div class="fcol">
+      <h3 class="fcol-title"><span class="chev" data-ico="chevron-simple" aria-hidden="true"></span>Conócenos</h3>
+      <ul class="social">
+        <li><a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.05 1.8.25 2.2.42.6.22 1 .48 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2m0 3.2A6.6 6.6 0 1 0 18.6 12 6.6 6.6 0 0 0 12 5.4m0 10.9A4.3 4.3 0 1 1 16.3 12 4.3 4.3 0 0 1 12 16.3m6.9-11a1.5 1.5 0 1 1-1.6-1.6 1.5 1.5 0 0 1 1.6 1.6"/></svg></a></li>
+        <li><a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M16.6 5.8a4.8 4.8 0 0 1-1.1-3.1h-3.2v12.6a2.9 2.9 0 1 1-2-2.8V9.2a6 6 0 1 0 5.2 6V9a7.9 7.9 0 0 0 4.6 1.5V7.3a4.7 4.7 0 0 1-3.5-1.5"/></svg></a></li>
+        <li><a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.4 8.4h-2v-1.6c0-.7.5-.9.8-.9h1.2V3.1L13.6 3c-2 0-2.5 1.5-2.5 2.5v1.9H9.4v2.6h1.7V21h3.3v-8.9h2z"/></svg></a></li>
+        <li><a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5M3 9h4v12H3zM10 9h3.8v1.7h.05a4.2 4.2 0 0 1 3.75-2c4 0 4.75 2.6 4.75 6V21h-4v-5.3c0-1.3 0-2.9-1.8-2.9s-2.05 1.4-2.05 2.8V21h-4z"/></svg></a></li>
+        <li><a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M23 12s0-3.4-.4-5a2.6 2.6 0 0 0-1.8-1.8C19.2 4.7 12 4.7 12 4.7s-7.2 0-8.8.5A2.6 2.6 0 0 0 1.4 7C1 8.6 1 12 1 12s0 3.4.4 5a2.6 2.6 0 0 0 1.8 1.8c1.6.5 8.8.5 8.8.5s7.2 0 8.8-.5a2.6 2.6 0 0 0 1.8-1.8c.4-1.6.4-5 .4-5M9.8 15.3V8.7l6 3.3z"/></svg></a></li>
+      </ul>
+
+      <a class="reclamaciones" href="#" target="_blank" rel="noopener" aria-label="Libro de Reclamaciones Virtual">
+        <span class="rec-txt">Libro de<br>Reclamaciones<br>Virtual</span>
+        <svg class="rec-book" viewBox="0 0 64 30" aria-hidden="true">
+          <path fill="currentColor" d="M32 6.2C26.6 2.4 19.4.8 11 1.4L4 2v20.4l7-.6c8-.7 14.9.8 20 4.4V6.2Z"/>
+          <path fill="currentColor" d="M32 6.2c5.4-3.8 12.6-5.4 21-4.8l7 .6v20.4l-7-.6c-8-.7-14.9.8-20 4.4V6.2Z" opacity=".85"/>
+          <path fill="currentColor" d="M2 24.6 32 28l30-3.4v3.9L32 32 2 28.5Z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <div class="shell footer-bar-inner">
+      <p>Copyright SISE - Instituto de Educación Superior</p>
+      <nav aria-label="Enlaces legales">
+        <a href="#">Políticas de Privacidad</a>
+        <a href="#">Términos y Condiciones</a>
+        <a href="#">Portal de Transparencia</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+<!-- Formulario emergente y botones flotantes -->
+<div class="form-velo" id="formVelo" hidden></div>
+<div class="floaters">
+  <a class="floater floater-wa" href="https://wa.me/51999999999" target="_blank" rel="noopener" aria-label="Escr&iacute;benos por WhatsApp"><span class="floater-badge">1</span><span data-ico="whatsapp" aria-hidden="true"></span></a>
+  <a class="floater floater-call" href="tel:+5116255656" aria-label="Ll&aacute;manos"><span data-ico="telefono" aria-hidden="true"></span></a>
+  <button class="floater floater-form" id="abrirForm" type="button" aria-label="Solicitar informaci&oacute;n" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h9A1.5 1.5 0 0 1 16 5.5v13A1.5 1.5 0 0 1 14.5 20h-9A1.5 1.5 0 0 1 4 18.5z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 8.5h6M7 12h6M7 15.5h3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m17 12.6 3.6-3.6 2 2-3.6 3.6-2.6.6z" fill="currentColor"/></svg>
+  </button>
+</div>
+
+<script src="assets/js/icons.js?v=239"></script>
+<script src="assets/js/data.js?v=239"></script>
+<script src="assets/js/main.js?v=239"></script>
+
+</body>
+</html>
