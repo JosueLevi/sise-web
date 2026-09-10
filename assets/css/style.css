@@ -583,6 +583,28 @@ p{margin:0}
   border-radius:26px;padding:26px 24px;box-shadow:var(--shadow-lg);
   animation:riseIn .8s var(--ease) .28s backwards;
 }
+/* Cerrar del emergente. Solo aparece en movil: es ahi donde el
+   formulario sale del banner y se abre encima de la pagina.
+
+   Va pegajoso y no absoluto porque la tarjeta se desplaza por dentro
+   -el formulario es mas alto que la pantalla-, y con absoluto el aspa
+   se perdia de vista en cuanto bajabas dos campos.
+
+   El margen inferior negativo le devuelve a la tarjeta el alto que
+   ocuparia: asi se apoya sobre la fila del titulo en lugar de empujarlo
+   todo hacia abajo. */
+.lead-cerrar{
+  display:none;
+  position:sticky;top:6px;z-index:3;
+  width:34px;height:34px;border-radius:999px;
+  margin:0 -4px -34px auto;
+  place-content:center;
+  background:#EEF0F3;color:var(--ink-2);
+  transition:background .18s var(--ease),color .18s var(--ease);
+}
+.lead-cerrar svg{width:17px;height:17px;display:block}
+.lead-cerrar:hover{background:#E2E5EA;color:var(--ink)}
+
 .lead-title{
   text-align:center;font-size:24px;font-weight:800;color:var(--ink);
   letter-spacing:.005em;margin-bottom:11px;
@@ -766,45 +788,86 @@ p{margin:0}
 .form-msg.err{color:var(--red)}
 
 /* Flotantes */
-.floaters{position:fixed;right:20px;bottom:24px;z-index:90;display:flex;flex-direction:column;gap:12px}
+.floaters{
+  position:fixed;right:20px;bottom:24px;z-index:90;
+  display:flex;flex-direction:column;align-items:flex-end;gap:12px;
+}
 .floater{
-  width:52px;height:52px;border-radius:50%;display:grid;place-content:center;color:#fff;
-  box-shadow:0 8px 24px rgba(0,0,0,.24);transition:transform .22s var(--ease),box-shadow .22s var(--ease);
+  position:relative;
+  width:52px;height:52px;border-radius:999px;flex:none;
+  display:grid;place-content:center;color:#fff;
+  box-shadow:0 8px 24px rgba(0,0,0,.24);
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease);
 }
 .floater svg{width:26px;height:26px}
 .floater:hover{transform:scale(1.09) translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.32)}
 .floater-wa{background:#25D366}
-.floater{position:relative}
+/* El de llamar queda fuera de la columna: el telefono ya esta en el
+   menu desplegado y en el pie, y tres flotantes apilados tapan
+   demasiada pagina. Para recuperarlo basta con quitar el display:none. */
+.floater-call{background:var(--red);display:none}
 .floater-badge{
   position:absolute;top:-2px;right:-2px;min-width:20px;height:20px;padding:0 5px;
   border-radius:999px;background:var(--red);color:#fff;
   font-size:11.5px;font-weight:700;line-height:20px;text-align:center;
   border:2px solid #fff;
 }
-.floater-call{background:var(--red)}
-/* Abre el formulario. Solo en movil: en escritorio el formulario ya
-   esta a la vista dentro del banner. */
-.floater-form{display:none;background:var(--red)}
-.floater-form svg{width:26px;height:26px}
 
-/* Velo del formulario emergente */
-.form-velo{
-  position:fixed;inset:0;z-index:200;
-  background:rgba(8,9,14,.62);
-  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
-  animation:fadeVelo .22s var(--ease);
+/* ---------- Boton de registro: circulo que se abre en pastilla ----------
+   El ancho se anima con grid-template-columns y no con max-width: con
+   max-width hay que poner un valor a ojo y la apertura sale a trompicones
+   si el texto es mas corto; con 0fr -> 1fr el navegador mide el texto. */
+.floater-form{
+  /* El aire de los tres huecos -antes del icono, entre icono y texto, y
+     despues del texto- sale del mismo calculo, asi que la pastilla
+     queda simetrica sola aunque cambie el tamano del boton. */
+  --fh:52px;   /* alto del boton */
+  --fi:26px;   /* tamano del icono */
+  --aire:calc((var(--fh) - var(--fi)) / 2);
+  background:var(--red);
+  width:auto;min-width:var(--fh);height:var(--fh);
+  display:flex;align-items:center;gap:0;padding:0;
 }
-@keyframes fadeVelo{from{opacity:0}to{opacity:1}}
+/* Con .floater .floater-ico y no solo .floater-ico: al pasar el icono a
+   data-ico entro en juego la regla .floater [data-ico]{width:26px}, que
+   por especificidad le comia el ancho a la caja y dejaba el icono
+   pegado al borde izquierdo. */
+.floater .floater-ico{
+  display:grid;place-content:center;
+  width:var(--fh);height:var(--fh);flex:none;
+}
+.floater-ico svg{width:var(--fi);height:var(--fi);display:block}
+/* El ancho se anima con max-width y el valor exacto lo mide el JS en
+   --wtxt. El truco de 0fr -> 1fr, que si funciona para alto, aqui no:
+   el ancho del contenedor lo fija su propio contenido, asi que la
+   pastilla nacia abierta. */
+.floater-txt{
+  max-width:0;overflow:hidden;
+  font-size:14.5px;font-weight:600;white-space:nowrap;
+  transition:max-width .3s var(--ease);
+}
+.floater-txt > span{display:block;padding-right:var(--aire)}
+.floater-form:hover .floater-txt,
+.floater-form:focus-visible .floater-txt{max-width:var(--wtxt,240px)}
+.floater-form:hover{transform:translateY(-2px)}
 
-/* Boton de cierre de la tarjeta: solo se ve cuando es emergente */
-.lead-cerrar{
-  display:none;position:absolute;top:12px;right:12px;z-index:2;
-  width:38px;height:38px;border-radius:50%;place-content:center;
-  background:#F1F2F5;color:var(--ink);
-  transition:background .2s var(--ease),color .2s var(--ease);
+/* ---------- Menu de WhatsApp ---------- */
+.wa-caja{position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.wa-menu{
+  background:var(--red);color:#fff;border-radius:16px;
+  padding:6px 18px;min-width:196px;
+  box-shadow:0 14px 34px rgba(0,0,0,.28);
+  animation:waEntra .2s var(--ease);
 }
-.lead-cerrar svg{width:20px;height:20px;display:block}
-.lead-cerrar:hover{background:var(--red);color:#fff}
+@keyframes waEntra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wa-op{
+  display:flex;align-items:center;gap:9px;
+  padding:13px 0;font-size:14.5px;font-weight:600;color:#fff;
+  transition:opacity .18s var(--ease),transform .18s var(--ease);
+}
+.wa-op + .wa-op{border-top:1.5px dashed rgba(255,255,255,.55)}
+.wa-op svg{width:19px;height:19px;flex:none}
+.wa-op:hover{opacity:.85;transform:translateX(2px)}
 
 /* ============================================================
    Cabeceras de sección
@@ -1724,10 +1787,9 @@ p{margin:0}
     transition:opacity .22s var(--ease),transform .26s var(--ease),visibility 0s;
   }
   .lead-cerrar{display:grid}
-  .floater-form{display:grid}
-  /* Con el formulario ya en el flotante, el enlace de llamar se queda
-     en el menu y en el pie: tres botones apilados tapaban la pagina. */
-  .floater-call{display:none}
+  /* flex, no grid: con grid el icono y la etiqueta se apilaban y el
+     texto se salia por debajo de la pastilla. */
+  .floater-form{display:flex}
   .hero-title .l1{font-size:clamp(34px,9vw,52px)}
   /* El lettering llena el ancho util y arranca alineado con las otras
      dos lineas, como en escritorio.
@@ -1827,6 +1889,17 @@ p{margin:0}
   .floaters{right:14px;bottom:16px}
   .floater{width:46px;height:46px}
   .floater svg{width:23px;height:23px}
+  /* En tactil no hay hover: la etiqueta se queda abierta, que es lo
+     unico que le dice al usuario para que sirve el boton. */
+  /* width:auto tiene que repetirse aqui: .floater{width:46px} de este
+     mismo bloque va despues de la regla base y, con igual especificidad,
+     le clavaba el ancho al boton. El texto -que es elemento flexible- se
+     encogia a cero y la etiqueta no aparecia nunca. */
+  .floater-form{--fh:46px;--fi:23px;width:auto;min-width:var(--fh);height:var(--fh)}
+  .floater-txt{flex:none}
+  .floater-txt{max-width:var(--wtxt,240px);font-size:13.5px}
+  .wa-menu{min-width:180px;padding:4px 16px}
+  .wa-op{padding:11px 0;font-size:13.5px}
 }
 
 /* Accesibilidad: sin animaciones */

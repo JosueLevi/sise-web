@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=239">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=253">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Barlow+Condensed:wght@500;600;700;800;900&family=Permanent+Marker&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="assets/css/style.css?v=239">
+<link rel="stylesheet" href="assets/css/style.css?v=253">
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -154,16 +154,22 @@
 <!-- Formulario emergente y botones flotantes -->
 <div class="form-velo" id="formVelo" hidden></div>
 <div class="floaters">
-  <a class="floater floater-wa" href="https://wa.me/51999999999" target="_blank" rel="noopener" aria-label="Escr&iacute;benos por WhatsApp"><span class="floater-badge">1</span><span data-ico="whatsapp" aria-hidden="true"></span></a>
+  <div class="wa-caja">
+    <div class="wa-menu" id="waMenu" role="menu" aria-label="Elige con qui&eacute;n hablar" hidden></div>
+    <button class="floater floater-wa" id="abrirWa" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="waMenu" aria-label="Escr&iacute;benos por WhatsApp">
+      <span class="floater-badge">1</span><span data-ico="whatsapp" aria-hidden="true"></span>
+    </button>
+  </div>
   <a class="floater floater-call" href="tel:+5116255656" aria-label="Ll&aacute;manos"><span data-ico="telefono" aria-hidden="true"></span></a>
-  <button class="floater floater-form" id="abrirForm" type="button" aria-label="Solicitar informaci&oacute;n" aria-expanded="false">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h9A1.5 1.5 0 0 1 16 5.5v13A1.5 1.5 0 0 1 14.5 20h-9A1.5 1.5 0 0 1 4 18.5z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 8.5h6M7 12h6M7 15.5h3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m17 12.6 3.6-3.6 2 2-3.6 3.6-2.6.6z" fill="currentColor"/></svg>
+  <button class="floater floater-form" id="abrirForm" type="button" aria-expanded="false">
+    <span class="floater-ico" data-ico="telefono" aria-hidden="true"></span>
+    <span class="floater-txt" id="txtRegistro"></span>
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=239"></script>
-<script src="assets/js/data.js?v=239"></script>
-<script src="assets/js/main.js?v=239"></script>
+<script src="assets/js/icons.js?v=253"></script>
+<script src="assets/js/data.js?v=253"></script>
+<script src="assets/js/main.js?v=253"></script>
 
 </body>
 </html>

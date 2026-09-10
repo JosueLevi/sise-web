@@ -557,6 +557,82 @@
      duplica, solo cambia de sitio por CSS. Asi todo lo que ya tiene
      enganchado -desplegables a medida, validacion, envio- sigue
      funcionando sin tocar una linea. */
+  /* ---- Etiqueta del boton de registro y menu de WhatsApp ---- */
+  if (typeof FLOTANTES !== 'undefined') {
+    const txtReg = $('#txtRegistro');
+    if (txtReg && FLOTANTES.registro) {
+      txtReg.innerHTML = `<span>${esc(FLOTANTES.registro.etiqueta)}</span>`;
+      const btnReg = txtReg.closest('.floater-form');
+      if (btnReg) {
+        btnReg.setAttribute('aria-label', FLOTANTES.registro.etiqueta);
+        /* Se mide el ancho real del texto para que la apertura termine
+           justo donde acaba la palabra.
+
+           Se mide con un Range sobre el texto y no con scrollWidth: la
+           etiqueta vive dentro de una caja con max-width:0, asi que
+           mientras esta cerrada el navegador da anchos que no valen y la
+           medida se quedaba con el ancho que hubiera en ese momento. El
+           Range devuelve lo que ocupa la linea de texto tal cual, este
+           la pastilla abierta o cerrada.
+
+           Hay que repetirla: la tipografia tarda en llegar y el cuerpo
+           de letra cambia en movil, de modo que una sola medida se queda
+           corta y el texto sale cortado. */
+        const mide = () => {
+          const linea = txtReg.firstElementChild;
+          if (!linea) return;
+          const r = document.createRange();
+          r.selectNodeContents(linea);
+          const aire = parseFloat(getComputedStyle(linea).paddingRight) || 0;
+          const ancho = Math.ceil(r.getBoundingClientRect().width + aire);
+          if (ancho > 0) btnReg.style.setProperty('--wtxt', ancho + 'px');
+        };
+        mide();
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(mide);
+        window.addEventListener('load', mide);
+        window.addEventListener('resize', mide, { passive: true });
+        /* Y justo antes de abrirla, por si el ancho cambio sin que
+           saltara ninguno de los avisos de arriba. */
+        btnReg.addEventListener('pointerenter', mide);
+        btnReg.addEventListener('focus', mide);
+      }
+    }
+
+    const waBtn  = $('#abrirWa');
+    const waMenu = $('#waMenu');
+    if (waBtn && waMenu && FLOTANTES.whatsapp) {
+      const wa = FLOTANTES.whatsapp;
+      waMenu.innerHTML = (wa.opciones || []).map((o) => {
+        /* Manda el enlace corto de wa.link si lo hay; si no, se arma el
+           de siempre con el numero y el mensaje. */
+        const num = (o.numero || wa.numero || '').replace(/\D/g, '');
+        const url = o.url || ('https://wa.me/' + num +
+          (o.texto ? '?text=' + encodeURIComponent(o.texto) : ''));
+        return `<a class="wa-op" role="menuitem" href="${esc(url)}" target="_blank" rel="noopener">
+                  ${ico('whatsapp')}<span>${esc(o.label)}</span>
+                </a>`;
+      }).join('');
+
+      function abreWa(v) {
+        waMenu.hidden = !v;
+        waBtn.setAttribute('aria-expanded', String(v));
+      }
+      waBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        abreWa(waMenu.hidden);
+      });
+      // Pulsar fuera o Escape lo cierra
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.wa-caja')) abreWa(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') abreWa(false);
+      });
+      // Al elegir una opcion se abre WhatsApp: el menu ya no pinta nada
+      waMenu.addEventListener('click', () => abreWa(false));
+    }
+  }
+
   const abrirForm  = $('#abrirForm');
   const cerrarForm = $('#cerrarForm');
   const formVelo   = $('#formVelo');

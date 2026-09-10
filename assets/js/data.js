@@ -28,6 +28,30 @@ const CONVENIOS = [
 ];
 
 /* ============================================================
+   BOTONES FLOTANTES
+   ============================================================
+   Cada opcion de WhatsApp lleva su enlace corto de wa.link: el numero
+   de destino y el mensaje que aparece ya escrito se administran desde
+   el panel de wa.link, no desde aqui. Para cambiar a quien le llega una
+   consulta se edita ese enlace y la web no se toca.
+
+   Si alguna vez hiciera falta apuntar a un numero directo, en lugar de
+   "url" se le pone { numero: '51...', texto: '...' } a esa opcion. */
+const FLOTANTES = {
+  registro: {
+    etiqueta: '¿Listo para comenzar?',
+    url: 'index.html#form'
+  },
+  whatsapp: {
+    opciones: [
+      { label: 'Carreras',   url: 'https://wa.link/g16qrt' },
+      { label: 'Cursos',     url: 'https://wa.link/zgq8zu' },
+      { label: 'Soy Alumno', url: 'https://wa.link/8kjxf0' }
+    ]
+  }
+};
+
+/* ============================================================
    MENU DESPLEGADO (el que abre la hamburguesa)
    ============================================================
    Mapa del sitio completo. Es el unico menu en movil, asi que la
