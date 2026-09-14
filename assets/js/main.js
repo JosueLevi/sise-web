@@ -1454,42 +1454,7 @@
   const egr = $('#egrVideo');
   if (egr) {
     const play = $('.egr-play', egr);
-    if (play) play.addEventListener('click', () => {
-      const id = egr.dataset.yt;
-      const f = document.createElement('iframe');
-      /* playsinline evita que el movil se lleve el video a pantalla
-         completa nada mas empezar; el resto es para quitar sugerencias
-         y marca. Si el navegador bloquea el autoplay -en movil pasa a
-         menudo- el reproductor igual se ve y basta con tocarlo. */
-      f.src = 'https://www.youtube-nocookie.com/embed/' + id +
-        '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
-      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-      f.setAttribute('allowfullscreen', '');
-      f.loading = 'eager';
-      f.title = 'Testimonio egresado';
-
-      /* Si el incrustado no llega a cargar -extension de privacidad,
-         bloqueo de terceros, red del colegio- el visitante se quedaba
-         mirando un recuadro vacio: el boton ya no estaba y no habia
-         forma de llegar al video. Se le da una salida a YouTube. */
-      let cargo = false;
-      f.addEventListener('load', () => { cargo = true; });
-      setTimeout(() => {
-        if (cargo || !egr.contains(f)) return;
-        f.remove();
-        const a = document.createElement('a');
-        a.className = 'egr-play egr-play--enlace';
-        a.href = 'https://youtu.be/' + id;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.setAttribute('aria-label', 'Ver el testimonio en YouTube');
-        a.innerHTML = play.innerHTML;
-        egr.appendChild(a);
-      }, 4000);
-
-      egr.appendChild(f);
-      play.remove();
-    });
+    if (play) play.addEventListener('click', () => abreVideo(egr));
   }
 
   /* ============================================================
@@ -1579,6 +1544,58 @@
   /* ============================================================
      8. EXPERIENCIAS REALES — Shorts de YouTube (carga diferida)
      ============================================================ */
+  /* ============================================================
+     7d. VISOR DE VIDEO (compartido)
+     ============================================================
+     Una sola ventana para toda la web. Estaba metida dentro del bloque
+     de Experiencias, que solo existe en el inicio, asi que la ficha de
+     carrera no podia usarla y tenia su propio incrustado dentro de la
+     tarjeta. En movil ese incrustado se quedaba en blanco.
+
+     Abrir en ventana tiene ademas dos ventajas: solo hay un iframe a la
+     vez, y el video se ve al tamano que pide en vez de dentro de un
+     hueco de tarjeta. */
+  const vModal  = $('#videoModal');
+  const vCaja   = $('#vmCaja');
+  const vCerrar = $('#vmCerrar');
+  let vDesde = null;   // a donde devolver el foco al cerrar
+
+  function abreVideo(box) {
+    if (!vModal || !vCaja) return;
+    vDesde = box;
+    const id = box.dataset.yt;
+    // 9:16 para los Shorts, 16:9 para lo demas
+    vCaja.classList.toggle('vm-caja--ancha', box.dataset.forma === 'ancha');
+    const f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) +
+            '?autoplay=1&rel=0&playsinline=1';
+    f.title = 'Testimonio SISE';
+    f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    f.allowFullscreen = true;
+    vCaja.innerHTML = '';
+    vCaja.appendChild(f);
+    vModal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    vCerrar.focus();
+  }
+
+  function cierraVideo() {
+    if (!vModal || vModal.hidden) return;
+    vModal.hidden = true;
+    vCaja.innerHTML = '';          // quitar el iframe corta el sonido
+    document.body.style.overflow = '';
+    if (vDesde) { vDesde.focus(); vDesde = null; }
+  }
+
+  if (vModal) {
+    vCerrar.addEventListener('click', cierraVideo);
+    // Pulsar el fondo cierra; pulsar el video, no
+    vModal.addEventListener('click', (e) => { if (e.target === vModal) cierraVideo(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') cierraVideo();
+    });
+  }
+
   const expGrid = $('#expGrid');
 
   if (expGrid && typeof EXPERIENCIAS !== 'undefined') {
@@ -1600,49 +1617,6 @@
         </div>
       </article>`).join('');
     observarNuevos(expGrid);
-
-    /* El video se abre en una ventana sobre la pagina y no dentro de la
-       tarjeta: son Shorts verticales y en el hueco de la miniatura se
-       veian diminutos, con el resto de la seccion compitiendo al lado.
-       Aparte, asi solo existe un iframe a la vez. */
-    const vModal  = $('#videoModal');
-    const vCaja   = $('#vmCaja');
-    const vCerrar = $('#vmCerrar');
-    let vDesde = null;   // a donde devolver el foco al cerrar
-
-    function abreVideo(box) {
-      if (!vModal || !vCaja) return;
-      vDesde = box;
-      const id = box.dataset.yt;
-      const f = document.createElement('iframe');
-      f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) +
-              '?autoplay=1&rel=0&playsinline=1';
-      f.title = 'Testimonio SISE';
-      f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-      f.allowFullscreen = true;
-      vCaja.innerHTML = '';
-      vCaja.appendChild(f);
-      vModal.hidden = false;
-      document.body.style.overflow = 'hidden';
-      vCerrar.focus();
-    }
-
-    function cierraVideo() {
-      if (!vModal || vModal.hidden) return;
-      vModal.hidden = true;
-      vCaja.innerHTML = '';          // quitar el iframe corta el sonido
-      document.body.style.overflow = '';
-      if (vDesde) { vDesde.focus(); vDesde = null; }
-    }
-
-    if (vModal) {
-      vCerrar.addEventListener('click', cierraVideo);
-      // Pulsar el fondo cierra; pulsar el video, no
-      vModal.addEventListener('click', (e) => { if (e.target === vModal) cierraVideo(); });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') cierraVideo();
-      });
-    }
 
     const playVideo = abreVideo;
 
