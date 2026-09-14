@@ -1859,7 +1859,17 @@ p{margin:0}
        movil; ahora se usa la misma apaisada en las dos y el cuadrado es
        el punto en el que cabe casi entera -se pierde poco de los lados-
        sin quedarse en una tira demasiado baja para un banner de inicio. */
-    aspect-ratio:1/1;min-height:340px;max-height:76vh;
+    /* Cuadrada, con suelo de 500px: en un movil corriente el cuadrado
+       daba 375 y el banner se quedaba corto. A partir de 500 de ancho
+       manda otra vez la proporcion, asi que en pantallas grandes crece
+       sola. El techo del 76% del alto de la ventana evita que en un
+       movil bajito se coma la pantalla entera. */
+    /* width:100% es obligatorio con las dos cosas juntas: aspect-ratio
+       trabaja en los dos sentidos, asi que al forzar 500 de alto el
+       navegador deducia 500 de ANCHO y la foto se salia de la pantalla
+       en cualquier movil de menos de 500px. Con el ancho fijado, el
+       cuadrado solo manda mientras no choque con el suelo de 500. */
+    width:100%;aspect-ratio:1/1;min-height:500px;max-height:76vh;
     overflow:hidden;
   }
   .hero-veil{position:relative;inset:auto;pointer-events:none}
@@ -1961,7 +1971,7 @@ p{margin:0}
 
 @media (max-width:600px){
   body{font-size:16px}
-  .hero-bg{min-height:320px}
+  .hero-bg{min-height:500px}
   .hero-nav{padding-bottom:18px}
   /* En móvil la tarjeta cae sobre la parte clara de la foto:
      al 85% los campos se leían mal. */
