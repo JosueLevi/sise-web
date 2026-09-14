@@ -1455,12 +1455,38 @@
   if (egr) {
     const play = $('.egr-play', egr);
     if (play) play.addEventListener('click', () => {
+      const id = egr.dataset.yt;
       const f = document.createElement('iframe');
-      f.src = 'https://www.youtube-nocookie.com/embed/' + egr.dataset.yt +
+      /* playsinline evita que el movil se lleve el video a pantalla
+         completa nada mas empezar; el resto es para quitar sugerencias
+         y marca. Si el navegador bloquea el autoplay -en movil pasa a
+         menudo- el reproductor igual se ve y basta con tocarlo. */
+      f.src = 'https://www.youtube-nocookie.com/embed/' + id +
         '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
-      f.allow = 'autoplay; encrypted-media; picture-in-picture';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
       f.setAttribute('allowfullscreen', '');
+      f.loading = 'eager';
       f.title = 'Testimonio egresado';
+
+      /* Si el incrustado no llega a cargar -extension de privacidad,
+         bloqueo de terceros, red del colegio- el visitante se quedaba
+         mirando un recuadro vacio: el boton ya no estaba y no habia
+         forma de llegar al video. Se le da una salida a YouTube. */
+      let cargo = false;
+      f.addEventListener('load', () => { cargo = true; });
+      setTimeout(() => {
+        if (cargo || !egr.contains(f)) return;
+        f.remove();
+        const a = document.createElement('a');
+        a.className = 'egr-play egr-play--enlace';
+        a.href = 'https://youtu.be/' + id;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.setAttribute('aria-label', 'Ver el testimonio en YouTube');
+        a.innerHTML = play.innerHTML;
+        egr.appendChild(a);
+      }, 4000);
+
       egr.appendChild(f);
       play.remove();
     });

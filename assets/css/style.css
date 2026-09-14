@@ -2819,16 +2819,9 @@ p{margin:0}
 }
 .cert-card p{font-size:14px;color:var(--ink);line-height:1.4;font-weight:500}
 
-.cert-grid > .cert-card:nth-child(1){--paso:#FFA8BE}
-.cert-grid > .cert-card:nth-child(2){--paso:#FF8FAC}
-.cert-grid > .cert-card:nth-child(3){--paso:#FF6B8F}
-.cert-grid > .cert-card:nth-child(4){--paso:#FF4E79}
-.cert-grid > .cert-card:nth-child(5){--paso:#FF2E60}
-.cert-grid > .cert-card:nth-child(6){--paso:var(--red)}
-/* En modulares solo hay tres: que lleguen igualmente hasta el rojo */
-.cert-grid--3 > .cert-card:nth-child(1){--paso:#FF8FAC}
-.cert-grid--3 > .cert-card:nth-child(2){--paso:#FF4E79}
-.cert-grid--3 > .cert-card:nth-child(3){--paso:var(--red)}
+/* Todos los rotulos del mismo rojo: el degradado por pasos hacia que
+   los primeros ciclos se leyeran mas flojos que los ultimos, y no son
+   menos importantes. */
 
 /* ---------- Egresado ---------- */
 /* Apilado: la cita a 289px de ancho salia en renglones de seis
