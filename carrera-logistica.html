@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=253">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=343">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Barlow+Condensed:wght@500;600;700;800;900&family=Permanent+Marker&display=swap" rel="stylesheet">
 
 <link rel="preload" as="image" href="assets/img/carrera-logistica.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=253">
+<link rel="stylesheet" href="assets/css/style.css?v=343">
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -74,7 +74,7 @@
 <main id="main" class="carrera-page">
 
 <!-- ============ HERO ============ -->
-<section class="car-hero">
+<section class="car-hero car-hero--hub">
   <div class="car-hero-bg" style="background-image:url('assets/img/carrera-logistica.webp')"></div>
   <div class="car-hero-veil"></div>
   <div class="shell car-hero-inner">
@@ -84,30 +84,31 @@
   </div>
 </section>
 
+<div class="car-cuerpo">
+
 <!-- ============ CONTENIDO + FORMULARIO ============ -->
 <section class="section car-lead">
   <div class="shell car-lead-grid">
 
     <div class="car-lead-main">
-      <nav class="crumb" aria-label="Ruta">
-        <a href="index.html">Inicio</a><span class="sep">/</span>
-        <a href="carreras.html">Carreras</a><span class="sep">/</span>
-        <a href="carreras.html">Gesti&oacute;n</a><span class="sep">/</span>
+      <nav class="crumb crumb--ruta" aria-label="Ruta">
+        <a href="index.html"><span class="crumb-ico" data-ico="home" aria-hidden="true"></span>Inicio</a><span class="sep" aria-hidden="true">&rsaquo;</span>
+        <a href="carreras.html">Carreras</a><span class="sep" aria-hidden="true">&rsaquo;</span>
+        <a href="carreras.html">Gesti&oacute;n</a><span class="sep" aria-hidden="true">&rsaquo;</span>
         <span class="crumb-now">Administraci&oacute;n Log&iacute;stica</span>
       </nav>
 
       <div class="car-modos" role="radiogroup" aria-label="Modalidad de estudio">
         <button type="button" class="mod-opt is-on" role="radio" aria-checked="true">
-          <span>Semipresencial</span><span data-ico="semipresencial" aria-hidden="true"></span>
+          <span>Semipresencial</span>
         </button>
         <button type="button" class="mod-opt" role="radio" aria-checked="false">
-          <span>Virtual</span><span data-ico="virtual" aria-hidden="true"></span>
+          <span>Virtual</span>
         </button>
       </div>
 
-      <header class="section-head section-head--left reveal">
+      <header class="section-head section-head--left section-head--raya reveal">
         <h2 class="section-title">Carrera de <em>Administraci&oacute;n Log&iacute;stica</em></h2>
-        <p class="section-sub">Gestiona la cadena de suministro de punta a punta y convi&eacute;rtete en la pieza clave de cualquier empresa.</p>
       </header>
 
       <h3 class="car-h">&iquest;Qu&eacute; aprender&aacute;s?</h3>
@@ -115,11 +116,11 @@
 
       <div class="car-facts reveal reveal-stagger">
         <div class="fact">
-          <span class="fact-ico" data-ico="calendario" aria-hidden="true"></span>
+          <span class="fact-ico" data-ico="inicio" aria-hidden="true"></span>
           <div><p class="fact-t">Inicio</p><p class="fact-v">5 de enero</p></div>
         </div>
         <div class="fact">
-          <span class="fact-ico" data-ico="reloj" aria-hidden="true"></span>
+          <span class="fact-ico" data-ico="turno" aria-hidden="true"></span>
           <div><p class="fact-t">Turnos</p><p class="fact-v">Ma&ntilde;ana / Tarde / Noche</p></div>
         </div>
         <div class="fact">
@@ -127,13 +128,13 @@
           <div><p class="fact-t">Modalidad</p><p class="fact-v" data-fact="modalidad">Semipresencial</p></div>
         </div>
         <div class="fact">
-          <span class="fact-ico" data-ico="cifra-anios" aria-hidden="true"></span>
+          <span class="fact-ico" data-ico="duracion" aria-hidden="true"></span>
           <div><p class="fact-t">Duraci&oacute;n</p><p class="fact-v">3 a&ntilde;os</p></div>
         </div>
       </div>
 
       <div class="car-grado reveal">
-        <span class="car-grado-ico" data-ico="administracion" aria-hidden="true"></span>
+        <img class="car-grado-ilu" src="assets/img/grado-titulo.svg" alt="" width="466" height="757" loading="lazy" decoding="async">
         <div>
           <p>Al finalizar el tercer a&ntilde;o de estudios recibes el <strong>grado y t&iacute;tulo a nombre del Ministerio de Educaci&oacute;n</strong>:</p>
           <ul>
@@ -145,8 +146,273 @@
 
     </div>
 
-    <aside class="car-form-wrap">
+
+    <div class="car-why-block">
+    <header class="section-head section-head--left section-head--raya reveal">
+      <h2 class="section-title">&iquest;Por qu&eacute; estudiarla <em>en SISE?</em></h2>
+    </header>
+    <div class="why-rail reveal reveal-stagger">
+      <article class="why-card">
+        <span class="why-cifra"><span class="counter" data-to="98" data-dur="1500">0</span><i>%</i></span>
+        <h3>Trabaja en el rubro</h3>
+        <p>De nuestros egresados, con los ingresos m&aacute;s altos del pa&iacute;s. Fuente: Ponte en Carrera, 2023.</p>
+      </article>
+      <article class="why-card">
+        <span class="why-cifra"><span class="counter" data-to="9" data-dur="1100">0</span></span>
+        <h3>Certificaciones</h3>
+        <p>Tres modulares y seis de empleabilidad, que te llevas mientras estudias.</p>
+      </article>
+      <article class="why-card">
+        <span class="why-cifra"><i>Ciclo</i>&nbsp;1</span>
+        <h3>Empiezas a practicar</h3>
+        <p>En laboratorios de almac&eacute;n, inventario y distribuci&oacute;n. Aprender haciendo, no mirando.</p>
+      </article>
+      <article class="why-card">
+        <span class="why-cifra"><i>+</i><span class="counter" data-to="30" data-dur="1400">0</span></span>
+        <h3>Empresas aliadas</h3>
+        <p>Convenios laborales que abren sus puertas para pr&aacute;cticas y primer empleo.</p>
+      </article>
+    </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ MALLA CURRICULAR ============ -->
+<section class="section car-malla">
+  <div class="shell">
+    <header class="section-head section-head--left section-head--raya malla-cabecera reveal">
+      <h2 class="section-title">Malla <em>curricular</em></h2>
+      <p class="section-sub">Tres a&ntilde;os, seis ciclos y pr&aacute;ctica desde el primero.</p>
+      <a class="btn btn-pill btn-ghost malla-btn" href="#">Descargar malla
+        <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </header>
+
+    <div class="malla-resumen reveal">
+      <p class="malla-linea malla-linea--exp"><b>05</b> Cursos de <strong>Experiencia laboral</strong></p>
+      <p class="malla-linea malla-linea--emp"><b>08</b> Cursos de <strong>Empleabilidad</strong></p>
+      <p class="malla-linea malla-linea--esp"><b>34</b> Cursos de <strong>Especialidad de carrera</strong></p>
+    </div>
+
+    <div class="malla-acc reveal">
+      <div class="malla-year is-open">
+        <button class="malla-toggle" type="button" aria-expanded="true">Primer a&ntilde;o<span class="malla-caret" aria-hidden="true"></span></button>
+        <div class="malla-body"><div class="malla-inner"><div class="malla-inner-pad"><div class="malla-ciclos">
+          <div class="malla-ciclo">
+            <h4>Ciclo 01</h4>
+            <ul>
+              <li data-t="esp">Administraci&oacute;n general</li>
+              <li data-t="esp">Fundamentos de marketing</li>
+              <li data-t="emp">Metodolog&iacute;a para un aprendizaje eficaz</li>
+              <li data-t="esp">Introducci&oacute;n a la log&iacute;stica</li>
+              <li data-t="esp">Matem&aacute;tica comercial</li>
+              <li data-t="emp">Taller de inform&aacute;tica para la empleabilidad</li>
+            </ul>
+          </div>
+          <div class="malla-ciclo">
+            <h4>Ciclo 02</h4>
+            <ul>
+              <li data-t="esp">Estad&iacute;stica aplicada a los negocios</li>
+              <li data-t="esp">Contabilidad 1</li>
+              <li data-t="emp">Creatividad e innovaci&oacute;n</li>
+              <li data-t="emp">T&eacute;cnicas de comunicaci&oacute;n efectiva</li>
+              <li data-t="esp">C&aacute;lculo y negociaci&oacute;n de fletes terrestres</li>
+              <li data-t="esp">Distribuci&oacute;n f&iacute;sica internacional</li>
+              <li data-t="emp">Taller de inform&aacute;tica para la redacci&oacute;n</li>
+              <li data-t="exp">Experiencias formativas 1</li>
+            </ul>
+          </div>
+        </div></div></div></div>
+      </div>
+
+      <div class="malla-year">
+        <button class="malla-toggle" type="button" aria-expanded="false">Segundo a&ntilde;o<span class="malla-caret" aria-hidden="true"></span></button>
+        <div class="malla-body"><div class="malla-inner"><div class="malla-inner-pad"><div class="malla-ciclos">
+          <div class="malla-ciclo">
+            <h4>Ciclo 03</h4>
+            <ul>
+              <li data-t="esp">Administraci&oacute;n general</li>
+              <li data-t="esp">Fundamentos de marketing</li>
+              <li data-t="emp">Metodolog&iacute;a para un aprendizaje eficaz</li>
+              <li data-t="esp">Introducci&oacute;n a la log&iacute;stica</li>
+              <li data-t="esp">Matem&aacute;tica comercial</li>
+              <li data-t="emp">Taller de inform&aacute;tica para la empleabilidad</li>
+            </ul>
+          </div>
+          <div class="malla-ciclo">
+            <h4>Ciclo 04</h4>
+            <ul>
+              <li data-t="esp">Estad&iacute;stica aplicada a los negocios</li>
+              <li data-t="esp">Contabilidad 1</li>
+              <li data-t="emp">Creatividad e innovaci&oacute;n</li>
+              <li data-t="emp">T&eacute;cnicas de comunicaci&oacute;n efectiva</li>
+              <li data-t="esp">C&aacute;lculo y negociaci&oacute;n de fletes terrestres</li>
+              <li data-t="esp">Distribuci&oacute;n f&iacute;sica internacional</li>
+              <li data-t="emp">Taller de inform&aacute;tica para la redacci&oacute;n</li>
+              <li data-t="exp">Experiencias formativas 1</li>
+            </ul>
+          </div>
+        </div></div></div></div>
+      </div>
+
+      <div class="malla-year">
+        <button class="malla-toggle" type="button" aria-expanded="false">Tercer a&ntilde;o<span class="malla-caret" aria-hidden="true"></span></button>
+        <div class="malla-body"><div class="malla-inner"><div class="malla-inner-pad"><div class="malla-ciclos">
+          <div class="malla-ciclo">
+            <h4>Ciclo 05</h4>
+            <ul>
+              <li data-t="esp">Administraci&oacute;n general</li>
+              <li data-t="esp">Fundamentos de marketing</li>
+              <li data-t="emp">Metodolog&iacute;a para un aprendizaje eficaz</li>
+              <li data-t="esp">Introducci&oacute;n a la log&iacute;stica</li>
+              <li data-t="esp">Matem&aacute;tica comercial</li>
+              <li data-t="emp">Taller de inform&aacute;tica para la empleabilidad</li>
+            </ul>
+          </div>
+          <div class="malla-ciclo">
+            <h4>Ciclo 06</h4>
+            <ul>
+              <li data-t="esp">Estad&iacute;stica aplicada a los negocios</li>
+              <li data-t="esp">Contabilidad 1</li>
+              <li data-t="emp">Creatividad e innovaci&oacute;n</li>
+              <li data-t="emp">T&eacute;cnicas de comunicaci&oacute;n efectiva</li>
+              <li data-t="esp">C&aacute;lculo y negociaci&oacute;n de fletes terrestres</li>
+              <li data-t="esp">Distribuci&oacute;n f&iacute;sica internacional</li>
+              <li data-t="emp">Taller de inform&aacute;tica para la redacci&oacute;n</li>
+              <li data-t="exp">Experiencias formativas 1</li>
+            </ul>
+          </div>
+        </div></div></div></div>
+      </div>
+    </div>
+
+      </div>
+</section>
+
+<!-- ============ LABORATORIOS ============ -->
+<section class="section car-labs">
+  <div class="shell">
+    <header class="section-head section-head--left section-head--raya reveal">
+      <h2 class="section-title">Laboratorios <em>especializados</em></h2>
+      <p class="section-sub">Espacios equipados para practicar los procesos reales de almac&eacute;n, inventario y distribuci&oacute;n.</p>
+    </header>
+    <div class="labs-rail reveal" id="labsRail">
+      <div class="lab-slide" style="background-image:url('assets/img/porque-sise-02.webp')"></div>
+      <div class="lab-slide" style="background-image:url('assets/img/porque-sise-04.webp')"></div>
+      <div class="lab-slide" style="background-image:url('assets/img/porque-sise-03.webp')"></div>
+    </div>
+    <div class="labs-nav" id="labsNav" role="tablist" aria-label="Laboratorios"></div>
+  </div>
+</section>
+
+<!-- ============ CAMPO LABORAL ============ -->
+<section class="section car-campo">
+  <div class="shell">
+    <header class="section-head section-head--left section-head--raya reveal">
+      <h2 class="section-title">Campo laboral y <em>empleabilidad</em></h2>
+      <p class="section-sub">Un perfil que necesitan todos los rubros: retail, banca, miner&iacute;a, construcci&oacute;n y comercio exterior.</p>
+    </header>
+
+    <div class="campo-grid reveal">
+      <div class="campo-img" style="background-image:url('assets/img/carrera-logistica.webp')"></div>
+      <div class="campo-txt">
+        <h3 class="car-h">D&oacute;nde trabajar&aacute;s</h3>
+        <p class="car-p">Empresas dedicadas al control y gesti&oacute;n de stock, compras y abastecimiento. Multinacionales de transporte de mercader&iacute;as y aduanas. &Aacute;reas de control de inventarios, producci&oacute;n y distribuci&oacute;n de empresas de cualquier rubro: banca, retail, telefon&iacute;a. Constructoras y mineras de car&aacute;cter p&uacute;blico y privado.</p>
+
+        <h3 class="car-h">Podr&aacute;s desempe&ntilde;arte como</h3>
+        <ul class="campo-roles">
+          <li>Jefe de Log&iacute;stica</li>
+          <li>Coordinador de Log&iacute;stica</li>
+          <li>Jefe de Almac&eacute;n</li>
+          <li>Supervisor de Almac&eacute;n</li>
+          <li>Analista de Operaciones</li>
+          <li>Analista de Inventario</li>
+          <li>Supervisor de Distribuci&oacute;n</li>
+        </ul>
+      </div>
+    </div>
+
+      </div>
+</section>
+
+<!-- ============ CONVENIOS ============ -->
+<section class="section car-convenios" id="convenios">
+  <div class="shell">
+    <header class="section-head section-head--left section-head--raya reveal">
+      <h2 class="section-title">Convenios <em>laborales</em></h2>
+      <p class="section-sub">Empresas que reciben a nuestros estudiantes para pr&aacute;cticas y primer empleo.</p>
+    </header>
+    <div class="conv-cinta reveal"><div class="conv-cinta-track" id="convGrid"></div></div>
+  </div>
+</section>
+
+<!-- ============ CERTIFICACIONES ============ -->
+<section class="section car-cert">
+  <div class="shell">
+    <header class="section-head section-head--left section-head--raya reveal">
+      <h2 class="section-title">Certificaciones <em>que te llevas</em></h2>
+      <p class="section-sub">Cada m&oacute;dulo aprobado se convierte en un certificado, y cada ciclo cerrado en un perfil laboral nuevo.</p>
+    </header>
+
+    <div class="chips cert-tabs reveal" role="tablist" aria-label="Tipo de certificaci&oacute;n" data-tabs>
+      <button class="chip is-active" type="button" role="tab" id="tabCertMod"
+              aria-selected="true" aria-controls="certMod">Modulares</button>
+      <button class="chip" type="button" role="tab" id="tabCertEmp"
+              aria-selected="false" aria-controls="certEmp" tabindex="-1">De empleabilidad</button>
+    </div>
+
+    <div class="cert-grid cert-grid--3 reveal reveal-stagger" id="certMod"
+         role="tabpanel" aria-labelledby="tabCertMod">
+      <article class="cert-card"><span class="cert-n">1&deg; M&oacute;dulo</span><p>Administraci&oacute;n de Operaciones Log&iacute;sticas</p></article>
+      <article class="cert-card"><span class="cert-n">2&deg; M&oacute;dulo</span><p>Coordinaci&oacute;n de Operaciones de Compras</p></article>
+      <article class="cert-card"><span class="cert-n">3&deg; M&oacute;dulo</span><p>Administraci&oacute;n de Servicios de Transporte</p></article>
+    </div>
+    <div class="cert-grid reveal reveal-stagger" id="certEmp"
+         role="tabpanel" aria-labelledby="tabCertEmp" hidden>
+      <article class="cert-card"><span class="cert-n">1&deg; Ciclo</span><p>Auxiliar Log&iacute;stico</p></article>
+      <article class="cert-card"><span class="cert-n">2&deg; Ciclo</span><p>Asistente Log&iacute;stico</p></article>
+      <article class="cert-card"><span class="cert-n">3&deg; Ciclo</span><p>Asistente de Compras</p></article>
+      <article class="cert-card"><span class="cert-n">4&deg; Ciclo</span><p>Asistente de Almac&eacute;n</p></article>
+      <article class="cert-card"><span class="cert-n">5&deg; Ciclo</span><p>Asistente Supply Chain Management</p></article>
+      <article class="cert-card"><span class="cert-n">6&deg; Ciclo</span><p>Analista de Procesos Log&iacute;sticos</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EGRESADOS ============ -->
+<section class="section car-egresado">
+  <div class="shell">
+    <header class="section-head section-head--left section-head--raya reveal">
+      <h2 class="section-title">Egresados de <em>&eacute;xito</em></h2>
+      <p class="section-sub">Historias reales de quienes ya est&aacute;n liderando la cadena de suministro.</p>
+    </header>
+
+    <div class="egr-grid reveal">
+      <div class="egr-label">
+        <span class="egr-comillas" data-ico="comillas" aria-hidden="true"></span>
+        <p class="egr-quote">La malla curricular de SISE me ayud&oacute; bastante, porque mientras llevaba los cursos iba teniendo las certificaciones y las pod&iacute;a presentar en un trabajo.</p>
+        <span class="egr-role">Jefe de Cadena de Retail &mdash; Per&uacute; Forus</span>
+      </div>
+      <div class="egr-video" id="egrVideo" data-yt="Eu18djh5W-Q"
+           style="background-image:url('https://i.ytimg.com/vi/Eu18djh5W-Q/maxresdefault.jpg')">
+        <button class="egr-play" type="button" aria-label="Reproducir testimonio">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.4)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- El formulario vive fuera de las secciones para poder
+       acompanarlas todas: el carril ocupa el alto del cuerpo y el
+       formulario se pega dentro de el. -->
+  <aside class="car-form-rail">
+  <aside class="car-form-wrap">
       <div class="lead-card lead-card--carrera" id="form">
+        <button class="lead-cerrar" id="cerrarForm" type="button" aria-label="Cerrar formulario">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
         <h2 class="lead-title">&iexcl;M&aacute;s informaci&oacute;n <em>aqu&iacute;!</em></h2>
         <p class="lead-note">Un asesor te contacta el mismo d&iacute;a.</p>
 
@@ -199,222 +465,8 @@
         </form>
       </div>
     </aside>
-
-    <div class="car-why-block">
-    <header class="section-head section-head--left reveal">
-      <h2 class="section-title">&iquest;Por qu&eacute; estudiarla <em>en SISE?</em></h2>
-    </header>
-    <div class="why-rail reveal reveal-stagger">
-      <article class="why-card why--rojo">
-        <span class="why-ico" data-ico="cifra-egresados" aria-hidden="true"></span>
-        <h3>Top 1 en empleabilidad</h3>
-        <p>98% de nuestros egresados trabaja en el rubro, con los ingresos m&aacute;s altos del pa&iacute;s. Fuente: Ponte en Carrera, 2023.</p>
-      </article>
-      <article class="why-card why--amarillo">
-        <span class="why-ico" data-ico="cifra-convenios" aria-hidden="true"></span>
-        <h3>Certificaciones mientras estudias</h3>
-        <p>Sales al mercado con certificaciones en operaciones, compras, transporte y distribuci&oacute;n desde el primer ciclo.</p>
-      </article>
-      <article class="why-card why--azul">
-        <span class="why-ico" data-ico="administracion" aria-hidden="true"></span>
-        <h3>Plana docente del sector</h3>
-        <p>Aprendes con jefes y analistas en ejercicio, que ense&ntilde;an con casos reales de la industria log&iacute;stica.</p>
-      </article>
-      <article class="why-card why--rojo">
-        <span class="why-ico" data-ico="cifra-sedes" aria-hidden="true"></span>
-        <h3>Pr&aacute;ctica desde el primer ciclo</h3>
-        <p>Laboratorios de almac&eacute;n, inventario y distribuci&oacute;n para aprender haciendo, no solo mirando.</p>
-      </article>
-    </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ============ LABORATORIOS ============ -->
-<section class="section car-labs">
-  <div class="shell">
-    <header class="section-head reveal">
-      <h2 class="section-title">Laboratorios <em>especializados</em></h2>
-      <p class="section-sub">Espacios equipados para practicar los procesos reales de almac&eacute;n, inventario y distribuci&oacute;n.</p>
-    </header>
-    <div class="labs-rail reveal">
-      <div class="lab-slide" style="background-image:url('assets/img/porque-sise-02.webp')"></div>
-      <div class="lab-slide" style="background-image:url('assets/img/porque-sise-04.webp')"></div>
-      <div class="lab-slide" style="background-image:url('assets/img/porque-sise-03.webp')"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CAMPO LABORAL ============ -->
-<section class="section car-campo">
-  <div class="shell">
-    <header class="section-head reveal">
-      <h2 class="section-title">Campo laboral y <em>empleabilidad</em></h2>
-      <p class="section-sub">Un perfil que necesitan todos los rubros: retail, banca, miner&iacute;a, construcci&oacute;n y comercio exterior.</p>
-    </header>
-
-    <div class="campo-grid reveal">
-      <div class="campo-img" style="background-image:url('assets/img/carrera-logistica.webp')"></div>
-      <div class="campo-txt">
-        <h3 class="car-h">D&oacute;nde trabajar&aacute;s</h3>
-        <p class="car-p">Empresas dedicadas al control y gesti&oacute;n de stock, compras y abastecimiento. Multinacionales de transporte de mercader&iacute;as y aduanas. &Aacute;reas de control de inventarios, producci&oacute;n y distribuci&oacute;n de empresas de cualquier rubro: banca, retail, telefon&iacute;a. Constructoras y mineras de car&aacute;cter p&uacute;blico y privado.</p>
-
-        <h3 class="car-h">Podr&aacute;s desempe&ntilde;arte como</h3>
-        <ul class="campo-roles">
-          <li>Jefe de Log&iacute;stica</li>
-          <li>Coordinador de Log&iacute;stica</li>
-          <li>Jefe de Almac&eacute;n</li>
-          <li>Supervisor de Almac&eacute;n</li>
-          <li>Analista de Operaciones</li>
-          <li>Analista de Inventario</li>
-          <li>Supervisor de Distribuci&oacute;n</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="section-cta">
-      <a class="btn btn-pill btn-primary" href="#convenios">Ver convenios laborales
-        <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7m0 0H9m8 0v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CONVENIOS ============ -->
-<section class="section car-convenios" id="convenios">
-  <div class="shell">
-    <header class="section-head reveal">
-      <h2 class="section-title">Convenios <em>laborales</em></h2>
-      <p class="section-sub">Empresas que reciben a nuestros estudiantes para pr&aacute;cticas y primer empleo.</p>
-    </header>
-    <div class="conv-grid reveal reveal-stagger" id="convGrid"></div>
-  </div>
-</section>
-
-<!-- ============ MALLA CURRICULAR ============ -->
-<section class="section car-malla">
-  <div class="shell">
-    <header class="section-head reveal">
-      <h2 class="section-title">Malla <em>curricular</em></h2>
-      <p class="section-sub">Tres a&ntilde;os, seis ciclos y pr&aacute;ctica desde el primero.</p>
-    </header>
-
-    <div class="malla-resumen reveal reveal-stagger">
-      <div class="malla-dato"><b>05</b><span>Cursos de experiencia laboral</span></div>
-      <div class="malla-dato"><b>08</b><span>Cursos de empleabilidad</span></div>
-      <div class="malla-dato"><b>34</b><span>Cursos de especialidad</span></div>
-    </div>
-
-    <div class="malla-acc reveal">
-      <div class="malla-year is-open">
-        <button class="malla-toggle" type="button" aria-expanded="true">Primer a&ntilde;o<span class="malla-caret" aria-hidden="true"></span></button>
-        <div class="malla-body"><div class="malla-inner"><div class="malla-inner-pad"><div class="malla-ciclos">
-          <div class="malla-ciclo">
-            <h4>Ciclo 01</h4>
-            <ul>
-              <li>Administraci&oacute;n general</li>
-              <li>Fundamentos de marketing</li>
-              <li>Metodolog&iacute;a para un aprendizaje eficaz</li>
-              <li>Introducci&oacute;n a la log&iacute;stica</li>
-              <li>Matem&aacute;tica comercial</li>
-              <li>Taller de inform&aacute;tica para la empleabilidad</li>
-            </ul>
-          </div>
-          <div class="malla-ciclo">
-            <h4>Ciclo 02</h4>
-            <ul>
-              <li>Estad&iacute;stica aplicada a los negocios</li>
-              <li>Contabilidad 1</li>
-              <li>Creatividad e innovaci&oacute;n</li>
-              <li>T&eacute;cnicas de comunicaci&oacute;n efectiva</li>
-              <li>C&aacute;lculo y negociaci&oacute;n de fletes terrestres</li>
-              <li>Distribuci&oacute;n f&iacute;sica internacional</li>
-              <li>Taller de inform&aacute;tica para la redacci&oacute;n</li>
-              <li>Experiencias formativas 1</li>
-            </ul>
-          </div>
-        </div></div></div></div>
-      </div>
-
-      <div class="malla-year">
-        <button class="malla-toggle" type="button" aria-expanded="false">Segundo a&ntilde;o<span class="malla-caret" aria-hidden="true"></span></button>
-        <div class="malla-body"><div class="malla-inner"><div class="malla-inner-pad">
-          <p class="malla-soon">Contenido pendiente de cargar.</p>
-        </div></div></div>
-      </div>
-
-      <div class="malla-year">
-        <button class="malla-toggle" type="button" aria-expanded="false">Tercer a&ntilde;o<span class="malla-caret" aria-hidden="true"></span></button>
-        <div class="malla-body"><div class="malla-inner"><div class="malla-inner-pad">
-          <p class="malla-soon">Contenido pendiente de cargar.</p>
-        </div></div></div>
-      </div>
-    </div>
-
-    <div class="section-cta">
-      <a class="btn btn-pill btn-primary" href="#">Descargar malla completa
-        <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CERTIFICACIONES MODULARES ============ -->
-<section class="section car-cert">
-  <div class="shell">
-    <header class="section-head reveal">
-      <h2 class="section-title">Certificaciones <em>modulares</em></h2>
-      <p class="section-sub">Cada m&oacute;dulo aprobado se convierte en un certificado que ya puedes presentar.</p>
-    </header>
-    <div class="cert-grid cert-grid--3 reveal reveal-stagger">
-      <article class="cert-card"><span class="cert-n">1&deg; M&oacute;dulo</span><p>Administraci&oacute;n de Operaciones Log&iacute;sticas</p></article>
-      <article class="cert-card"><span class="cert-n">2&deg; M&oacute;dulo</span><p>Coordinaci&oacute;n de Operaciones de Compras</p></article>
-      <article class="cert-card"><span class="cert-n">3&deg; M&oacute;dulo</span><p>Administraci&oacute;n de Servicios de Transporte</p></article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CERTIFICACIONES DE EMPLEABILIDAD ============ -->
-<section class="section car-cert">
-  <div class="shell">
-    <header class="section-head reveal">
-      <h2 class="section-title">Certificaciones de <em>empleabilidad</em></h2>
-      <p class="section-sub">Un perfil laboral nuevo al cierre de cada ciclo.</p>
-    </header>
-    <div class="cert-grid reveal reveal-stagger">
-      <article class="cert-card"><span class="cert-n">1&deg; Ciclo</span><p>Auxiliar Log&iacute;stico</p></article>
-      <article class="cert-card"><span class="cert-n">2&deg; Ciclo</span><p>Asistente Log&iacute;stico</p></article>
-      <article class="cert-card"><span class="cert-n">3&deg; Ciclo</span><p>Asistente de Compras</p></article>
-      <article class="cert-card"><span class="cert-n">4&deg; Ciclo</span><p>Asistente de Almac&eacute;n</p></article>
-      <article class="cert-card"><span class="cert-n">5&deg; Ciclo</span><p>Asistente Supply Chain Management</p></article>
-      <article class="cert-card"><span class="cert-n">6&deg; Ciclo</span><p>Analista de Procesos Log&iacute;sticos</p></article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ EGRESADOS ============ -->
-<section class="section car-egresado">
-  <div class="shell">
-    <header class="section-head reveal">
-      <h2 class="section-title">Egresados de <em>&eacute;xito</em></h2>
-      <p class="section-sub">Historias reales de quienes ya est&aacute;n liderando la cadena de suministro.</p>
-    </header>
-
-    <div class="egr-grid reveal">
-      <div class="egr-label">
-        <span class="egr-eyebrow">Egresado de &eacute;xito</span>
-        <p class="egr-quote">&laquo;La malla curricular de SISE me ayud&oacute; bastante, porque mientras llevaba los cursos iba teniendo las certificaciones y las pod&iacute;a presentar en un trabajo&raquo;.</p>
-        <span class="egr-role">Jefe de Cadena de Retail &mdash; Per&uacute; Forus</span>
-      </div>
-      <div class="egr-video" id="egrVideo" data-yt="E2R48vT67i8">
-        <button class="egr-play" type="button" aria-label="Reproducir testimonio">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.4)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
+  </aside>
+</div>
 
 <!-- ============ SEDES (mismo bloque del home) ============ -->
 <section class="sedes" id="sedes">
@@ -427,8 +479,10 @@
     <div class="chips sede-chips reveal" role="tablist" aria-label="Elige una sede" id="sedeChips"></div>
 
     <div class="sede-select reveal">
-      <label class="sr-only" for="sedeSelect">Elige una sede</label>
-      <select id="sedeSelect"></select>
+      <label class="sede-q" for="sedeSelect">&iquest;En qu&eacute; sede te gustar&iacute;a estudiar?</label>
+      <div class="sede-caja">
+        <select id="sedeSelect"></select>
+      </div>
     </div>
 
     <div class="sede-panel reveal">
@@ -522,9 +576,9 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=253"></script>
-<script src="assets/js/data.js?v=253"></script>
-<script src="assets/js/main.js?v=253"></script>
+<script src="assets/js/icons.js?v=343"></script>
+<script src="assets/js/data.js?v=343"></script>
+<script src="assets/js/main.js?v=343"></script>
 
 </body>
 </html>

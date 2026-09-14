@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=253">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=343">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -18,9 +18,8 @@
 <!-- Cada version del banner se precarga solo donde se usa: con una
      sola precarga, en movil se bajaban 82 KB de la imagen de
      escritorio que no llega a pintarse nunca. -->
-<link rel="preload" as="image" href="assets/img/hero-01.webp" media="(min-width: 821px)">
-<link rel="preload" as="image" href="assets/img/hero-01-movil.webp" media="(max-width: 820px)">
-<link rel="stylesheet" href="assets/css/style.css?v=253">
+<link rel="preload" as="image" href="assets/img/hero-01.webp">
+<link rel="stylesheet" href="assets/css/style.css?v=343">
 </head>
 <body>
 
@@ -182,7 +181,7 @@
 
     <div class="hub-grid reveal reveal-stagger">
       <a class="hub-card hub--rojo" href="carreras.html" style="animation-delay:0ms">
-        <span class="hub-photo" style="background-image:url('assets/img/hub-carreras.webp')"></span>
+        <span class="hub-photo" style="background-image:url('assets/img/hub-carreras.webp?r=2')"></span>
         <span class="hub-body">
           <span class="hub-kicker">Tu profesi&oacute;n</span>
           <span class="hub-title">Carreras</span>
@@ -194,7 +193,7 @@
       </a>
 
       <a class="hub-card hub--amarillo" href="cursos.html" style="animation-delay:80ms">
-        <span class="hub-photo" style="background-image:url('assets/img/hub-cursos.webp')"></span>
+        <span class="hub-photo" style="background-image:url('assets/img/hub-cursos.webp?r=2')"></span>
         <span class="hub-body">
           <span class="hub-kicker">Suma skills</span>
           <span class="hub-title">Cursos y<br>Especializaciones</span>
@@ -206,7 +205,7 @@
       </a>
 
       <a class="hub-card hub--azul" href="idiomas.html" style="animation-delay:160ms">
-        <span class="hub-photo" style="background-image:url('assets/img/hub-idiomas.webp')"></span>
+        <span class="hub-photo" style="background-image:url('assets/img/hub-idiomas.webp?r=2')"></span>
         <span class="hub-body">
           <span class="hub-kicker">Abre fronteras</span>
           <span class="hub-title">Idiomas</span>
@@ -343,8 +342,10 @@
     <div class="chips sede-chips reveal" role="tablist" aria-label="Elige una sede" id="sedeChips"></div>
 
     <div class="sede-select reveal">
-      <label class="sr-only" for="sedeSelect">Elige una sede</label>
-      <select id="sedeSelect"></select>
+      <label class="sede-q" for="sedeSelect">&iquest;En qu&eacute; sede te gustar&iacute;a estudiar?</label>
+      <div class="sede-caja">
+        <select id="sedeSelect"></select>
+      </div>
     </div>
 
     <div class="sede-panel reveal">
@@ -476,8 +477,8 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=253"></script>
-<script src="assets/js/data.js?v=253"></script>
-<script src="assets/js/main.js?v=253"></script>
+<script src="assets/js/icons.js?v=343"></script>
+<script src="assets/js/data.js?v=343"></script>
+<script src="assets/js/main.js?v=343"></script>
 </body>
 </html>

@@ -106,6 +106,10 @@ p{margin:0}
 .btn-pill{border-radius:999px}
 .btn-primary{background:var(--red);color:#fff;box-shadow:0 10px 26px rgba(255,14,73,.32)}
 .btn-primary:hover{background:var(--red-600);transform:translateY(-2px);box-shadow:0 14px 32px rgba(255,14,73,.42)}
+/* Fantasma: solo perfil y letra, sin relleno. Para acciones de apoyo
+   que no deben competir con el boton de accion principal. */
+.btn-ghost{border:1.5px solid var(--red);color:var(--red);background:transparent}
+.btn-ghost:hover{background:var(--red);color:#fff;transform:translateY(-2px)}
 .btn-outline-light{border:1.5px solid rgba(255,255,255,.55);color:#fff;background:rgba(255,255,255,.06);backdrop-filter:blur(6px)}
 .btn-outline-light:hover{background:var(--red);border-color:var(--red)}
 .btn-block{width:100%}
@@ -140,14 +144,34 @@ p{margin:0}
              padding .3s var(--ease),backdrop-filter .3s var(--ease);
 }
 .main-nav a,.nav-link{text-shadow:0 1px 6px rgba(0,0,0,.45)}
+/* Aire propio delante de Empleabilidad y del icono del menu: el gap de
+   la pastilla lo reparten todos los elementos por igual y la separacion
+   contra el boton se quedaba en el minimo.
+
+   Va con condicion de ancho a proposito: 1181px es justo donde deja de
+   valer la regla que esconde los enlaces. Por debajo no hay barra que
+   separar -manda el reparto de Empleabilidad y la hamburguesa a la
+   derecha- y estos margenes solo estorbarian. */
+@media (min-width:1181px){
+  .btn-empleo{margin-left:clamp(14px,1.5vw,24px)}
+  .burger{margin-left:8px}
+}
 /* Al salir del banner sí hay barra: ahí no hay foto que respetar */
 .site-header.is-stuck .nav-pill{
   background:rgba(14,15,20,.92);
   border-color:rgba(255,255,255,.16);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  /* El relleno holgado va mas abajo, con su condicion de ancho. */
   padding:8px 12px 8px 26px;
 }
 .site-header.is-stuck .nav-link{text-shadow:none}
+/* Con el panel pintado se nota mucho mas lo justo que va el contenido
+   contra el borde, asi que la barra se ensancha un poco. Tiene que ir
+   despues de la regla de arriba: misma especificidad, y alli el relleno
+   estrecho ganaba por estar mas abajo en la hoja. */
+@media (min-width:1181px){
+  .site-header.is-stuck .nav-pill{padding:10px 18px 10px 28px}
+}
 
 /* Logo real (SVG del diseño): las letras toman currentColor,
    el chevron conserva el rojo de marca #FF0C47 */
@@ -583,6 +607,19 @@ p{margin:0}
   border-radius:26px;padding:26px 24px;box-shadow:var(--shadow-lg);
   animation:riseIn .8s var(--ease) .28s backwards;
 }
+/* Destello al llegar desde el flotante de registro. Es solo un aro que
+   entra y sale; nada de mover la tarjeta, que ya esta en su sitio.
+   El ancla #form necesita margen propio: la cabecera va fija y sin el
+   se come el titulo del formulario. */
+.lead-card{scroll-margin-top:96px}
+.lead-card.is-marcada{animation:marcaForm 1.5s var(--ease)}
+@keyframes marcaForm{
+  0%{box-shadow:var(--shadow-lg)}
+  18%{box-shadow:var(--shadow-lg),0 0 0 4px rgba(255,14,73,.55)}
+  70%{box-shadow:var(--shadow-lg),0 0 0 4px rgba(255,14,73,.55)}
+  100%{box-shadow:var(--shadow-lg)}
+}
+
 /* Cerrar del emergente. Solo aparece en movil: es ahi donde el
    formulario sale del banner y se abre encima de la pagina.
 
@@ -882,8 +919,12 @@ p{margin:0}
 .section-cta{text-align:center;margin-top:48px}
 
 /* Reveal on scroll */
-.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+/* Mas corto y con un punto de escala: 700ms de subida se sentian
+   lentos y daban esa sensacion de pagina apagada. 480ms con un 2% de
+   escala entra con energia sin llegar a saltar. */
+.reveal{opacity:0;transform:translateY(22px) scale(.985);transition:opacity .48s var(--ease),transform .48s var(--ease)}
 .reveal.is-in{opacity:1;transform:none}
+.reveal.is-in .section-title::after{transform:scaleX(1)}
 /* Escalonado de los hijos de un bloque revelado */
 .reveal-stagger:not(.is-in) > *{opacity:0;transform:translateY(20px)}
 .reveal-stagger.is-in > *{animation:riseIn .65s var(--ease) backwards}
@@ -962,15 +1003,15 @@ p{margin:0}
 
 .hub-photo{
   position:absolute;inset:0;z-index:-2;
-  background-size:cover;background-position:center top;
+  /* Un solo encuadre para las tres. Antes cada tarjeta llevaba el suyo
+     porque las fotos venian apaisadas y el sujeto caia donde caia; ahora
+     los archivos se recortan ya centrados en la persona, asi que basta
+     con bajar un poco el eje vertical para que la cara no quede pegada
+     al borde de arriba. */
+  background-size:cover;background-position:50% 28%;
   transition:transform .6s var(--ease);
 }
 .hub-card:hover .hub-photo{transform:scale(1.06)}
-/* Encuadre por tarjeta: las fotos son horizontales y el sujeto no
-   siempre esta al centro. En Cursos el chico esta a la derecha. */
-.hub--amarillo .hub-photo{background-position:71% 26%}
-.hub--rojo .hub-photo{background-position:50% 18%}
-.hub--azul .hub-photo{background-position:50% 12%}
 
 /* Velo de color de marca: transparente arriba (se ve la foto) y sólido
    abajo (sostiene el titulo). Cada tema cambia el color. */
@@ -1020,7 +1061,6 @@ p{margin:0}
 @media (max-width:820px){
   .hub-grid{grid-template-columns:1fr;gap:16px;max-width:460px}
   .hub-card{aspect-ratio:16/10;padding:22px}
-  .hub-photo{background-position:center 30%}
 }
 
 /* ---------- Chips ---------- */
@@ -1199,6 +1239,8 @@ p{margin:0}
 .stat-num.is-pop{animation:statPop .4s var(--ease)}
 @keyframes statPop{0%{transform:scale(1)}40%{transform:scale(1.13)}100%{transform:scale(1)}}
 .stat-num{transform-origin:left center;display:inline-block}
+.why-cifra.is-pop{animation:statPop .4s var(--ease)}
+.why-cifra{transform-origin:left center}
 
 /* ============================================================
    ¿POR QUÉ ELEGIR SISE?
@@ -1378,7 +1420,13 @@ p{margin:0}
 
 /* El desplegable solo aparece en movil; en escritorio mandan las
    pastillas. Los dos estan siempre en el DOM y se mantienen en sincro. */
-.sede-select{display:none;position:relative;max-width:420px;margin:0 auto 30px}
+.sede-select{display:none;max-width:420px;margin:0 auto 30px}
+/* La pregunta vive dentro de .sede-select, que en escritorio esta
+   oculto: asi aparece solo en movil sin necesidad de otra regla. */
+.sede-select .sede-q{
+  display:block;text-align:center;margin-bottom:12px;
+  font-size:15px;font-weight:600;color:var(--ink-2);
+}
 .sede-select select{
   width:100%;height:52px;padding:0 46px 0 18px;
   border:1.5px solid var(--line);border-radius:999px;
@@ -1386,11 +1434,60 @@ p{margin:0}
   appearance:none;-webkit-appearance:none;cursor:pointer;
 }
 .sede-select select:focus{outline:0;border-color:var(--red);box-shadow:0 0 0 3px rgba(255,14,73,.13)}
-.sede-select::after{
-  content:'';position:absolute;right:20px;top:50%;width:10px;height:10px;
-  border-right:2px solid var(--red);border-bottom:2px solid var(--red);
-  transform:translateY(-70%) rotate(45deg);pointer-events:none;
+
+/* La flecha se ancla a esta caja y no a .sede-select: colgando de la
+   otra, el 50% se medía contando tambien el rotulo, asi que la flecha
+   se subia hasta la esquina de arriba.
+
+   Es el mismo chevron que los desplegables del formulario -mismo
+   tamaño, mismo gris, mismo trazo-, para que los dos controles se lean
+   como la misma familia. Se pone rojo al enfocar, a juego con el aro
+   que ya sale alrededor. */
+.sede-caja{position:relative}
+.sede-caja::after{
+  content:'';position:absolute;right:20px;top:50%;width:11px;height:11px;
+  border-right:2px solid #565A67;border-bottom:2px solid #565A67;
+  transform:translateY(-70%) rotate(45deg);
+  pointer-events:none;
+  transition:border-color .18s var(--ease),transform .25s var(--ease);
 }
+.sede-caja:focus-within::after{border-color:var(--red)}
+
+/* ---------- Desplegable a medida de la sede ----------
+   El mismo de los campos del formulario: el <select> nativo no deja dar
+   estilo a su lista, asi que encima se monta un listbox propio y se
+   reaprovechan .sel-list y .sel-opt para que las dos listas se lean
+   igual. Lo que cambia es el disparador, que aqui es la pastilla de la
+   seccion en vez del campo con muesca.
+
+   El nativo no se borra: sigue guardando el valor y es al que se le
+   pregunta la sede. Y solo se esconde cuando el de a medida ya esta
+   montado -de ahi la clase is-custom, que la pone el JS-, para que si
+   el script fallara quedase el desplegable del sistema funcionando. */
+.sede-caja.is-custom select{
+  position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;padding:0;
+}
+.sede-btn{
+  display:flex;align-items:center;width:100%;height:52px;padding:0 46px 0 18px;
+  border:1.5px solid var(--line);border-radius:999px;background:#fff;
+  font:inherit;font-size:15.5px;font-weight:500;color:var(--ink);
+  text-align:left;cursor:pointer;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease);
+}
+.sede-btn .sel-val{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sede-caja.is-open .sede-btn,
+.sede-btn:focus-visible{
+  outline:0;border-color:var(--red);box-shadow:0 0 0 3px rgba(255,14,73,.13);
+}
+.sede-caja.is-open::after{transform:translateY(-25%) rotate(225deg);border-color:var(--red)}
+.sede-caja .sel-list{max-height:min(58vh,380px);max-width:100%}
+.sede-caja.is-open .sel-list{opacity:1;visibility:visible;transform:none}
+/* Cabecera de zona dentro de la lista */
+.sel-group{
+  padding:10px 13px 5px;font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:#9AA0AE;
+}
+.sel-group:first-child{padding-top:4px}
 
 /* ---------- Ficha de la sede + mapa ---------- */
 .sede-panel{
@@ -1466,8 +1563,12 @@ p{margin:0}
    --red-soft es el rosa, #FBF0C4 el crema. Al ser frio, las miniaturas
    de los Shorts -llenas de rojo y tonos calidos- resaltan mas que
    sobre un fondo tambien calido. */
+/* Un fondo unico en la ficha: egresados deja de tener banda propia.
+   El indigo se queda solo en "Experiencias reales" del inicio. */
 .experiencias{position:relative;background:#EAE9F4;overflow:hidden}
-.experiencias > .shell{position:relative;z-index:1;width:100%}
+.car-egresado{position:relative;overflow:hidden}
+.experiencias > .shell,
+.car-egresado > .shell{position:relative;z-index:1;width:100%}
 /* Patron de iconos de carrera, solo en las dos esquinas superiores.
    Mismo mecanismo que la pincelada -la imagen es la mascara y el color
    lo pone background-color-, con un mosaico armado a partir de los
@@ -1478,7 +1579,9 @@ p{margin:0}
    recuadro; la de la derecha va reflejada para que no se lea como la
    misma estampa dos veces. */
 .experiencias::before,
-.experiencias::after{
+.experiencias::after,
+.car-egresado::before,
+.car-egresado::after{
   content:'';position:absolute;top:-14px;z-index:0;pointer-events:none;
   width:clamp(220px,26vw,340px);aspect-ratio:1;
   background-color:#4642A6;
@@ -1488,8 +1591,10 @@ p{margin:0}
   -webkit-mask-position:center;mask-position:center;
   opacity:.09;
 }
-.experiencias::before{left:-24px}
-.experiencias::after{right:-24px;transform:scaleX(-1)}
+.experiencias::before,
+.car-egresado::before{left:-24px}
+.experiencias::after,
+.car-egresado::after{right:-24px;transform:scaleX(-1)}
 .exp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
 .exp-card{
   /* En columna: con el rotulo debajo, una fila ponia miniatura y texto
@@ -1750,8 +1855,11 @@ p{margin:0}
   .hero-bg,.hero-veil,.hero-copy,.hero-nav{grid-area:media}
   .hero-bg{
     position:relative;inset:auto;
-    /* 3/4 = la proporción de las imágenes de móvil: así no se recortan */
-    aspect-ratio:3/4;min-height:380px;max-height:76vh;
+    /* Cuadrada. Antes era 3/4 porque habia una foto vertical propia para
+       movil; ahora se usa la misma apaisada en las dos y el cuadrado es
+       el punto en el que cabe casi entera -se pierde poco de los lados-
+       sin quedarse en una tira demasiado baja para un banner de inicio. */
+    aspect-ratio:1/1;min-height:340px;max-height:76vh;
     overflow:hidden;
   }
   .hero-veil{position:relative;inset:auto;pointer-events:none}
@@ -1840,14 +1948,20 @@ p{margin:0}
   .tel-list a{padding-block:10px}
   .drop a{padding-block:13px}
   .sel-opt{padding-block:13px}
-  .check .txt a{padding-block:6px;display:inline-block}
+  /* Sin inline-block: convertia el enlace en una caja indivisible, de
+     modo que "Finalidades Comerciales Adicionales" no podia partirse y
+     dejaba la linea anterior a medias; ademas, al ser mas alto que el
+     renglon, empujaba su linea hacia abajo y el parrafo parecia dar un
+     salto. El relleno vertical en un enlace en linea agranda igual la
+     zona que se puede tocar, y ahi no mueve nada. */
+  .check .txt a{padding-block:6px}
   .social a{width:46px;height:46px}
   .menu-close{width:46px;height:46px;display:grid;place-content:center}
 }
 
 @media (max-width:600px){
   body{font-size:16px}
-  .hero-bg{min-height:360px}
+  .hero-bg{min-height:320px}
   .hero-nav{padding-bottom:18px}
   /* En móvil la tarjeta cae sobre la parte clara de la foto:
      al 85% los campos se leían mal. */
@@ -2035,7 +2149,15 @@ p{margin:0}
 
 /* ---------- Hero ---------- */
 .car-hero{position:relative;min-height:clamp(320px,40vw,460px);display:flex;align-items:flex-end;overflow:hidden}
-.car-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center}
+/* Acercamiento lentisimo, ida y vuelta. 28 segundos y un 6% de escala:
+   no se percibe como una animacion, se percibe como que la foto esta
+   viva. Mas rapido o mas amplio marea. */
+.car-hero-bg{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  animation:heroRespira 28s ease-in-out infinite alternate;
+}
+@keyframes heroRespira{from{transform:scale(1)}to{transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.car-hero-bg{animation:none}}
 .car-hero-veil{
   position:absolute;inset:0;
   background:linear-gradient(90deg,rgba(8,9,14,.78) 0%,rgba(8,9,14,.42) 48%,rgba(8,9,14,.08) 82%),
@@ -2056,157 +2178,559 @@ p{margin:0}
 .car-hero-title em{font-style:normal;color:var(--red)}
 .car-hero-sub{margin-top:12px;color:rgba(255,255,255,.9);font-size:16.5px;font-weight:500;max-width:520px}
 
+/* ---------- Banner de las paginas de oferta ----------
+   El mismo de la ficha de carrera, mas bajo. Aqui no hay una carrera
+   concreta que presentar -solo situar al visitante-, asi que la foto no
+   necesita tanto sitio y la reja de tarjetas entra antes en pantalla. */
+.car-hero--hub{
+  min-height:600px;
+  /* Anclado abajo y separado del borde: es la altura marcada en el
+     diseno, un poco por debajo del centro. Centrado del todo el bloque
+     subia demasiado y el pie del banner se quedaba vacio. */
+  align-items:flex-end;
+}
+/* En un movil 600px se comen tres cuartos de la pantalla y hay que
+   deslizar para ver la primera carrera, asi que ahi baja. */
+@media (max-width:900px){ .car-hero--hub{min-height:clamp(360px,52vw,470px)} }
+/* El relleno de abajo es lo que fija la altura del bloque: 114px sobre
+   un banner de 600 deja el texto justo donde lo marca el diseno. En
+   movil el banner mide 360 y ese mismo valor lo pegaria al pie, asi que
+   baja. */
+.car-hero--hub .car-hero-inner{padding-top:0;padding-bottom:114px}
+@media (max-width:900px){
+  .car-hero--hub .car-hero-inner{padding-bottom:52px}
+}
+.car-hero--hub .car-hero-title{font-size:clamp(32px,4.4vw,52px)}
+.car-hero--hub .car-hero-sub{font-size:16px}
+/* Sin el hueco que dejaba la cabecera fija: ahora lo llena el banner. */
+.oferta-page--hero{padding-top:clamp(34px,4vw,56px)}
+@media (max-width:600px){ .oferta-page--hero{padding-top:30px} }
+
 /* ---------- Bloque principal: contenido + formulario que acompana ---------- */
-.car-lead{padding-top:clamp(38px,4.4vw,60px)}
+/* Recorta lo que la pincelada del bloque de cifras saca por la derecha:
+   sin esto, en movil ensanchaba el documento 56px y aparecia barra de
+   desplazamiento horizontal.
+   "clip" y no "hidden" porque hidden crea un contenedor de scroll, y
+   eso rompe cualquier elemento pegajoso que llegue a vivir aqui. */
+.car-lead{padding-top:clamp(38px,4.4vw,60px);overflow:hidden;overflow:clip}
 .car-lead-grid{
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,392px);
+  /* Una sola columna: el formulario ya no vive aqui dentro */
+  display:grid;grid-template-columns:minmax(0,1fr);
   gap:clamp(30px,3.6vw,58px);align-items:start;
 }
 /* El formulario ocupa las dos filas de la columna derecha, asi acompana
    la lectura completa (ficha + por que estudiarla). En el HTML va en
    medio de las dos: en movil, al caer todo a una columna, queda justo
    despues de la introduccion y no al final del bloque. */
-.car-lead-main{min-width:0;grid-column:1;grid-row:1}
-.car-form-wrap{grid-column:2;grid-row:1 / span 2}
-.car-why-block{grid-column:1;grid-row:2;min-width:0;margin-top:clamp(34px,4vw,56px)}
+.car-lead-main{min-width:0}
+/* Sin pincelada detras: con el panel en oscuro, el color ya lo pone el
+   propio bloque y el amarillo asomando por los bordes solo ensuciaba. */
+.car-why-block{position:relative;min-width:0;margin-top:clamp(34px,4vw,56px)}
 
-.crumb{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);margin-bottom:18px}
+.crumb{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);margin-bottom:26px}
 .crumb a{color:var(--body);font-weight:500;transition:color .2s var(--ease)}
 .crumb a:hover{color:var(--red)}
 .crumb .crumb-now{color:var(--ink);font-weight:600}
 .crumb .sep{color:#C7CBD6}
 
+/* ---------- Entradilla de las paginas de oferta ----------
+   Ruta, titulo y descripcion antes de los filtros. Alineada a la
+   izquierda y no centrada como los encabezados del home: acompana a la
+   ruta, que empieza en el margen, y centrarla dejaria las dos cosas
+   descolgadas entre si.
+
+   Va aqui abajo a proposito: las reglas de .crumb estan repartidas en
+   dos sitios de la hoja y, con la misma especificidad, gana la ultima.
+   Puesto mas arriba, el color y el centrado de la ruta no cuajaban. */
+/* Sin ancho fijo: la entradilla ocupa la columna que le da el .shell y
+   el texto se reparte solo segun el sitio que haya. */
+.oferta-intro{margin:0 0 36px;text-align:left}
+.oferta-intro .crumb{margin-bottom:20px}
+/* La ruta empieza en el margen, no centrada: es lo que hace que se lea
+   como un rastro y no como un titulillo. Va en .crumb--ruta y no en la
+   entradilla para que valga en cualquier pagina que lleve migas. */
+.crumb--ruta{justify-content:flex-start}
+.crumb--ruta a{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-weight:500}
+.crumb--ruta a:hover{color:var(--red);text-decoration:none}
+/* Con "span" delante a proposito: la regla .crumb span:last-child de
+   mas arriba tambien apunta aqui y, al llevar elemento ademas de clase,
+   pesa mas que dos clases sueltas. Sin el, la pagina actual seguia
+   saliendo gris. */
+.crumb--ruta span.crumb-now{color:var(--red);font-weight:600}
+.crumb-ico{width:16px;height:16px;flex:none;display:block}
+.crumb-ico svg{width:100%;height:100%;display:block}
+/* Titulo con raya roja debajo. Lo comparten la entradilla de las
+   paginas de oferta y la cabecera de la ficha de carrera, asi que las
+   dos formas de llamarlo apuntan a la misma regla y no hay dos
+   versiones del mismo titulo conviviendo. */
+.section-head--raya{margin-bottom:40px}
+.oferta-intro .section-title,
+.section-head--raya .section-title{font-size:clamp(28px,3.4vw,40px)}
+/* La raya se dibuja sola al aparecer la seccion. Es la firma visual de
+   la pagina: que se trace en lugar de estar puesta cambia por completo
+   la sensacion al bajar. */
+.oferta-intro .section-title::after,
+.section-head--raya .section-title::after{
+  content:'';display:block;width:74px;height:4px;border-radius:999px;
+  background:var(--red);margin-top:16px;
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .6s var(--ease) .15s;
+}
+.reveal.is-in .section-title::after,
+.oferta-intro.is-in .section-title::after{transform:scaleX(1)}
+@media (prefers-reduced-motion:reduce){
+  .oferta-intro .section-title::after,
+  .section-head--raya .section-title::after{transform:none;transition:none}
+}
+.oferta-texto{
+  /* 1.55 y no 1.62: con solo dos renglones, un interlineado holgado se
+     lee como un hueco entre lineas en vez de como un parrafo. */
+  margin-top:18px;
+  font-size:16.5px;line-height:1.55;color:var(--body);
+  /* pretty y no balance: balance reparte los renglones a partes iguales
+     y por eso encogia el parrafo a media columna, dejandolo mucho mas
+     corto que las tarjetas de abajo. pretty deja el texto llegar hasta
+     el final del contenedor y solo cuida el ultimo renglon, que era el
+     que se quedaba con una palabra suelta. Donde no este soportado
+     parte como siempre. */
+  text-wrap:pretty;
+}
+@media (max-width:600px){
+  .oferta-intro{margin-bottom:28px}
+  .oferta-intro .section-title::after{width:60px;margin-top:13px}
+  .oferta-texto{margin-top:18px;font-size:16px}
+}
+
 /* Los conmutadores de modalidad reutilizan .mod-opt del formulario */
-.car-modos{display:inline-flex;gap:10px;margin-bottom:20px}
+.car-modos{display:inline-flex;gap:10px;margin-bottom:32px}
 .car-modos .mod-opt{padding:10px 18px}
 
-.car-p{font-size:16.5px;line-height:1.72;color:var(--body)}
+/* 62ch se quedan en unos 70 caracteres por linea. A ancho completo el parrafo
+   llegaba a 92 y el ojo pierde el renglon pasados los 85.
+   Y 1.6 en vez de 1.72: con lineas ya de 70, tanto interlineado
+   desligaba las frases. */
+/* Sin tope de ancho: se reparte con el sitio que haya.
+
+   Justificado con particion de palabras: sin guiones, justificar abre
+   huecos entre palabras y se forman los rios blancos que cruzan el
+   parrafo de arriba abajo. Con hyphens:auto el navegador parte donde
+   toca -la pagina declara lang="es", asi que usa el diccionario
+   correcto- y los espacios se quedan parejos. */
+.car-p{
+  font-size:16.5px;line-height:1.6;color:var(--body);
+  text-align:justify;hyphens:auto;
+}
+/* Tambien justificado en movil, por peticion. La particion de palabras
+   se queda activa justamente aqui: a 347px de columna es lo unico que
+   impide que los espacios se abran de par en par. */
 .car-p + .car-p{margin-top:12px}
 
-/* Subtitulo interno: misma familia condensada que los titulos del home */
+/* ---------- Jerarquia de titulos de la ficha ----------
+   Tres niveles, y cada uno se distingue por algo mas que el tamano,
+   que es lo que fallaba: 40, 22 y 17 eran solo tres numeros y el ojo
+   los leia casi igual.
+
+   1. Seccion   40px condensada, versalitas, tinta + raya roja debajo.
+   2. Subtitulo 24px condensada, versalitas, tinta, con aire arriba.
+   3. Rotulo    13px Barlow normal, versalitas muy espaciadas, rojo.
+
+   El salto de textura entre el 2 y el 3 -condensada ancha frente a
+   normal espaciada- es lo que hace que no se confundan aunque esten
+   uno debajo del otro. */
 .car-h{
-  display:flex;align-items:center;gap:11px;
-  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
-  font-size:23px;letter-spacing:.01em;color:var(--ink);
-  margin:32px 0 12px;
+  /* Peso 600 y no 800: con los dos en negra, el nivel 1 y el 2 solo se
+     diferenciaban por el tamano y se leian como lo mismo. Bajar el
+     trazo los separa mucho mas que cualquier cambio de cuerpo.
+     El color se queda en tinta plena: rebajarlo tambien restaba dos
+     veces y el subtitulo se caia al nivel del parrafo. */
+  /* En minuscula: en versalitas competia con el titulo de seccion, que
+     tambien va en versalitas, y el ojo los leia como el mismo nivel. */
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:26px;letter-spacing:.01em;color:var(--ink);
+  /* Mas aire arriba que abajo: asi se lee como el comienzo de un bloque
+     nuevo y no como una linea suelta entre dos parrafos. */
+  margin:52px 0 16px;
 }
-.car-h::before{content:'';flex:none;width:26px;height:4px;border-radius:999px;background:var(--red)}
+.car-h:first-child{margin-top:0}
 
 /* Datos rapidos */
-.car-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:26px 0 0}
+.car-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:40px 0 0}
 .fact{
-  display:flex;align-items:center;gap:12px;
-  background:#fff;border:2px solid transparent;border-radius:18px;padding:15px 16px;
-  box-shadow:0 8px 24px rgba(18,19,26,.06);
-  transition:transform .3s var(--ease),border-color .25s var(--ease),box-shadow .3s var(--ease);
+  /* En columna y perfiladas en rojo, como en el diseno. La esquina de
+     abajo a la derecha lleva 100px de radio y las otras tres 18: es lo
+     que le da la forma de hoja, y por eso el radio no puede ir en una
+     sola cifra. */
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;text-align:center;
+  /* El perfil rojo de 2px era lo mas severo de la pagina: en el inicio
+     no hay un solo borde de color, las tarjetas se separan del fondo con
+     sombra. Se queda un filo rosa muy claro para no perder del todo la
+     idea del diseno, y la forma de hoja intacta. */
+  background:#fff;border:1px solid #FFD9E3;
+  border-radius:26px 26px 100px 26px;
+  /* Alto comun otra vez, pero ajustado: 252px sobraban y sin nada se
+     quedaban aplastadas. 190 deja respirar al icono sin abrir un hueco. */
+  padding:30px 16px;min-height:227px;
+  box-shadow:var(--shadow-sm);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),
+             border-color .3s var(--ease);
 }
-.fact:hover{transform:translateY(-4px);border-color:var(--red);box-shadow:0 14px 32px rgba(18,19,26,.1)}
-.fact-ico{display:block;width:28px;height:28px;flex:none;color:var(--red)}
+/* Al pasar por encima la tarjeta se tine del rojo de marca -borde y
+   sombra-, y el icono se adelanta un poco al levantarse: eso es lo que
+   hace que el gesto se sienta vivo y no un simple desplazamiento. */
+.fact:hover{
+  transform:translateY(-4px);
+  border-color:var(--red);
+  box-shadow:0 14px 34px rgba(255,14,73,.28);
+}
+.fact-ico{transition:transform .3s var(--ease)}
+.fact:hover .fact-ico{transform:translateY(-3px) scale(1.1)}
+.fact-ico{display:block;width:40px;height:40px;flex:none;color:var(--tono,var(--red));margin-bottom:6px}
+/* Misma vuelta de color que las tarjetas del inicio: rojo, amarillo,
+   azul y rojo. */
+.fact:nth-child(1){--tono:var(--red)}
+.fact:nth-child(2){--tono:var(--terciario)}
+.fact:nth-child(3){--tono:#4642A6}
+.fact:nth-child(4){--tono:var(--red)}
 .fact-ico svg{width:100%;height:100%;display:block}
-.fact-t{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:13px;letter-spacing:.06em;color:var(--muted);line-height:1.2}
-.fact-v{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.3;margin-top:2px}
+/* Trazo en pixeles de pantalla y no en unidades del dibujo.
+
+   Los iconos vienen en lienzos distintos -tres en uno de 60 y el de
+   modalidad en uno de 24-, asi que el mismo numero daba grosores muy
+   distintos: 1,5px frente a 2,9. Con non-scaling-stroke el navegador
+   deja de escalar el trazo y 2,5 son 2,5px en los cuatro, pase lo que
+   pase con el tamano del icono. Es 1px mas que antes. */
+.fact-ico svg *{vector-effect:non-scaling-stroke;stroke-width:2.5}
+/* El rotulo es lo secundario y el dato lo importante: antes iba al
+   reves, con "INICIO" en negrita oscura y "5 de enero" en gris claro. */
+.fact-t{font-weight:600;text-transform:uppercase;font-size:11.5px;letter-spacing:.11em;color:var(--body);line-height:1.2}
+.fact-v{font-size:16px;font-weight:600;color:var(--ink);line-height:1.3;margin-top:2px}
 
 /* Grado y titulo */
 .car-grado{
-  display:flex;gap:16px;align-items:flex-start;margin-top:26px;
-  background:#fff;border-radius:22px;padding:22px 24px;
-  box-shadow:0 8px 24px rgba(18,19,26,.06);
-  border-left:5px solid var(--red);
+  display:flex;gap:34px;align-items:center;margin-top:40px;
+  background:#fff;border-radius:var(--r-lg);padding:30px 34px;
+  box-shadow:var(--shadow-sm);
 }
-.car-grado-ico{display:block;width:34px;height:34px;flex:none;color:var(--red);margin-top:2px}
-.car-grado-ico svg{width:100%;height:100%;display:block}
+/* Ilustracion en vez del icono en disco. No es un pictograma de 28px:
+   es un dibujo vertical de 466x757, asi que se muestra al tamano que
+   pide -130px de ancho- y manda el alto de la tarjeta. Es el unico
+   dibujo de la ficha y por eso carga sola el bloque. */
+.car-grado-ilu{
+  width:65px;height:auto;flex:none;align-self:center;
+  margin:-4px 0;
+}
+@media (max-width:820px){
+  /* Al lado del texto dejaba la columna en 170px y la lista de titulos
+     salia partida palabra a palabra: el dibujo pasa arriba. */
+  .car-grado{flex-direction:column;align-items:flex-start;gap:18px;padding:26px 24px}
+  /* Centrado solo el dibujo: el texto se queda alineado a la izquierda,
+     que es como se lee. */
+  .car-grado-ilu{width:56px;align-self:center;margin:0}
+}
 .car-grado p{font-size:15.5px;color:var(--body);line-height:1.6}
 .car-grado strong{color:var(--ink);font-weight:700}
 .car-grado ul{margin:10px 0 0;display:grid;gap:7px}
 .car-grado li{position:relative;padding-left:16px;font-size:15px;color:var(--ink)}
 .car-grado li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--red)}
 
-/* Formulario: el mismo componente del home, en columna pegajosa */
+/* ---------- Carril del formulario ----------
+   El formulario acompanaba solo a la primera seccion: estaba dentro de
+   ella, asi que se despedia a los 2058px de una pagina de 8600 y
+   desaparecia justo cuando el visitante ya venia convencido.
+
+   Ahora vive fuera de las secciones, en un carril que ocupa el alto de
+   todo el cuerpo -de la ficha a egresados- y dentro del carril se pega.
+   Asi acompana el recorrido entero sin tener que partir las secciones en
+   dos columnas, que habria roto las bandas de color a ancho completo.
+
+   El hueco se reserva con relleno en el .shell de cada seccion, no
+   estrechando la seccion: la banda sigue llegando a los dos bordes. */
+/* 150px entre secciones: 75 de relleno a cada lado. Las cajas se tocan,
+   asi que el hueco visible es la suma de los dos.
+
+   Va en el cuerpo de la ficha y no en .section, que lo comparten todas
+   las paginas: cambiarlo alli movería tambien el ritmo del inicio. */
+.car-cuerpo > section{padding-top:75px;padding-bottom:75px}
+.car-cuerpo{position:relative}
+.car-cuerpo{--form-w:392px;--form-aire:44px}
+.car-form-rail{
+  /* Arranca 75px por debajo, igual que el relleno de las secciones: a
+     ras del banner el formulario parecia pegado a la foto. */
+  position:absolute;top:75px;bottom:0;width:var(--form-w);
+  /* Alineado con el borde derecho del .shell */
+  right:max(var(--gut), calc(50% - (var(--shell) / 2) + var(--gut)));
+}
+.car-cuerpo > section > .shell{
+  padding-right:calc(var(--gut) + var(--form-w) + var(--form-aire));
+}
 .car-form-wrap{position:sticky;top:calc(var(--header-h) + 20px)}
-.lead-card--carrera{background:#fff;box-shadow:var(--shadow-md);animation:none;padding:24px 22px}
+.lead-card--carrera{background:#fff;box-shadow:var(--shadow-md);animation:none;padding:26px 24px}
 .lead-card--carrera .lead-title{font-size:23px}
 .lead-card--carrera .lead-note{
-  text-align:center;font-size:13px;color:var(--muted);margin:-4px 0 13px;
+  text-align:center;font-size:13px;color:var(--muted);margin:-4px 0 15px;
 }
+
 .field-full{grid-column:1/-1}
 
 /* ---------- Por que estudiar (mismos colores suaves que los hub cards) ---------- */
-.why-rail{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+/* ---------- Por que estudiarla ----------
+   Panel en indigo. Ese bloque es el que convence, y en blanco sobre
+   gris iba del mismo material que el resto de la pagina: no destacaba.
+   La profundidad la da el contraste.
+
+   Indigo y no negro: es el tercer tono de la casa -el inicio lo usa en
+   "Experiencias reales" y en la tarjeta azul del hub-, asi que no es un
+   color suelto sino un recurso que se repite. El negro daba mas
+   contraste pero su caracter es serio, y aqui se busca lo contrario.
+   Ademas evita el rojo sobre negro, la combinacion mas agresiva del
+   catalogo.
+
+   Los filetes van con borde en cada celda -y no con gap y fondo- para
+   que las lineas lleguen justas a los bordes del panel y no queden
+   cabos sueltos en las esquinas. */
+.why-rail{
+  position:relative;
+  display:grid;grid-template-columns:repeat(2,1fr);
+  background:#4642A6;border-radius:var(--r-lg);
+  overflow:hidden;
+  /* La sombra toma el tono del propio panel: una sombra gris debajo de
+     un bloque de color se ve sucia. */
+  box-shadow:0 22px 50px rgba(70,66,166,.28),0 2px 0 rgba(250,212,79,.55);
+}
+/* Rastro rojo en la esquina: el panel deja de ser un rectangulo plano
+   sin tener que meter una imagen. */
+.why-rail::before{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  right:-120px;top:-140px;width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(250,212,79,.3),transparent 64%);
+}
+
 .why-card{
-  border-radius:22px;padding:24px 22px;color:#fff;
-  display:flex;flex-direction:column;gap:9px;
-  box-shadow:0 10px 26px rgba(18,19,26,.08);
-  transition:transform .32s var(--ease),box-shadow .32s var(--ease);
+  position:relative;z-index:1;
+  display:grid;gap:4px;
+  padding:32px 30px 34px;
+  border-top:1px solid rgba(255,255,255,.14);
+  border-left:1px solid rgba(255,255,255,.14);
+  transition:background .3s var(--ease);
 }
-.why-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(18,19,26,.14)}
-.why--rojo{background:#FF3D6A}
-.why--azul{background:#4642A6}
-.why--amarillo{background:#FBDD6E;color:#272423}
-.why--amarillo h3{font-weight:900}
-.why-ico{display:block;width:32px;height:32px}
-.why-ico svg{width:100%;height:100%;display:block}
+.why-card:hover{background:rgba(255,255,255,.04)}
+/* La primera fila no lleva filete arriba ni la primera columna a la
+   izquierda: si no, el panel sale con un marco por dentro. */
+.why-card:nth-child(-n+2){border-top:0}
+.why-card:nth-child(odd){border-left:0}
+
+.why-cifra{
+  display:block;margin-bottom:8px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:58px;line-height:.9;letter-spacing:-.02em;
+  /* Amarillo y no rojo: el rojo de marca sobre este indigo se queda en
+     2,1:1 de contraste -los dos son colores de luminosidad media y se
+     anulan-, asi que la cifra, que es lo que hay que leer primero, era
+     lo que peor se veia. El amarillo sube a 5,7:1 y es el tercer tono
+     de la casa, el mismo de la tarjeta amarilla del inicio. */
+  color:var(--terciario);
+  transform-origin:left center;
+  transition:transform .3s var(--ease);
+  /* Sobre indigo el rojo ya destaca por si solo: el halo que hacia
+     falta sobre negro aqui solo emborronaba el contorno de la cifra. */
+}
+.why-card:hover .why-cifra{transform:translateY(-2px) scale(1.04)}
+.why-cifra.is-pop{animation:statPop .4s var(--ease)}
+/* El simbolo acompana, no manda: a la mitad de cuerpo y sin tanto peso,
+   para que lo que se lea de golpe sea la cifra. */
+.why-cifra i{font-style:normal;font-size:.52em;font-weight:800;letter-spacing:0}
+
 .why-card h3{
-  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
-  font-size:22px;line-height:1;letter-spacing:.01em;color:inherit;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:22px;line-height:1.15;letter-spacing:.01em;color:#fff;
 }
-.why-card p{font-size:14.5px;line-height:1.55;opacity:.95}
+.why-card p{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.76)}
+
+@media (max-width:700px){
+  .why-rail{grid-template-columns:1fr}
+  .why-card{padding:26px 22px 28px;border-left:0}
+  .why-card:nth-child(2){border-top:1px solid rgba(255,255,255,.14)}
+  .why-cifra{font-size:48px}
+}
+
+/* Pinceladas del inicio, las mismas: la imagen hace de mascara y el
+   color lo pone background-color. Van en "Campo laboral" y no en el
+   bloque de arriba porque alli el formulario es pegajoso, y recortar el
+   desbordamiento de un ancestro deja de pegarlo. */
+.car-campo{position:relative;overflow:hidden}
+.car-campo > .shell{position:relative;z-index:1}
+.car-campo::before,
+.car-campo::after{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  -webkit-mask-image:url("../img/brush.webp");mask-image:url("../img/brush.webp");
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+}
+.car-campo::before{
+  right:-50px;top:-40px;width:300px;height:300px;
+  background-color:var(--terciario);transform:scaleX(-1);opacity:.42;
+}
+.car-campo::after{
+  left:-60px;bottom:-30px;width:320px;height:320px;
+  background-color:var(--red);opacity:.12;
+}
 
 /* ---------- Laboratorios ---------- */
+/* Rejilla y no carril: en escritorio las fotos median 720px y la
+   segunda se cortaba a media imagen contra el borde, que es lo que se
+   veia roto. El carril con arrastre se queda para movil, que es donde
+   el inicio tambien lo usa. */
+/* Carril y no rejilla de tres: a 240px por foto no se distinguia que
+   era cada espacio. Una foto grande que se arrastra dice mas que tres
+   sellos. */
+/* El enganche va en "proximity" y no en "mandatory". Con mandatory el
+   navegador reengancha durante la propia animacion de ir a la foto
+   siguiente, y ese tira y afloja es lo que se siente como un tiron;
+   con proximity solo ajusta cuando ya te has parado.
+   Y scroll-behavior en el propio carril, para que el desplazamiento
+   suave lo lleve el navegador y no dependa de cada llamada. */
 .labs-rail{
-  display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
-  scrollbar-width:none;padding-bottom:6px;scroll-padding-inline:24px;
+  display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;
+  scroll-behavior:smooth;
+  scrollbar-width:none;padding-bottom:6px;
 }
+@media (prefers-reduced-motion:reduce){.labs-rail{scroll-behavior:auto}}
 .labs-rail::-webkit-scrollbar{display:none}
 .lab-slide{
-  flex:0 0 min(720px,84%);aspect-ratio:16/8.4;border-radius:24px;
-  background-size:cover;background-position:center;scroll-snap-align:center;
-  box-shadow:0 10px 26px rgba(18,19,26,.1);
+  flex:0 0 min(520px,78%);aspect-ratio:16/10;border-radius:var(--r-lg);
+  background-size:cover;background-position:center;scroll-snap-align:start;
+  box-shadow:var(--shadow-md);
+}
+/* Con raton no habia forma de moverlo: la rueda solo desplaza en
+   vertical y el carril no tenia ni puntos ni arrastre. */
+.labs-rail{cursor:grab}
+/* Durante el arrastre, desplazamiento instantaneo: con scroll-behavior
+   en smooth, cada ajuste del raton lanzaria su propia animacion y la
+   foto iria por detras del dedo. */
+.labs-rail.is-dragging{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto;user-select:none}
+.labs-rail.is-dragging .lab-slide{pointer-events:none}
+.labs-nav{display:flex;gap:10px;justify-content:center;margin-top:20px}
+.labs-nav:empty{display:none}
+.labs-dot{
+  width:34px;height:6px;border-radius:99px;padding:0;cursor:pointer;
+  background:#D6D9E0;
+  transition:background .25s var(--ease),width .25s var(--ease);
+}
+.labs-dot:hover{background:#B9BDC8}
+.labs-dot.is-on{background:var(--red);width:56px}
+/* Zona de pulsacion comoda sin agrandar el punto */
+.labs-dot{position:relative}
+.labs-dot::after{content:'';position:absolute;inset:-14px -6px}
+@media (max-width:820px){
+  .labs-rail{
+    display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
+    scrollbar-width:none;padding-bottom:6px;scroll-padding-inline:24px;
+  }
+  .labs-rail::-webkit-scrollbar{display:none}
+  .lab-slide{flex:0 0 84%;aspect-ratio:16/10;scroll-snap-align:center}
 }
 
 /* ---------- Campo laboral ---------- */
-.campo-grid{display:grid;grid-template-columns:0.85fr 1fr;gap:44px;align-items:center}
-.campo-img{aspect-ratio:4/4.3;border-radius:24px;background-size:cover;background-position:center;box-shadow:0 10px 26px rgba(18,19,26,.1)}
+/* Una columna: a 327 y 385px las dos eran demasiado estrechas, y el
+   centrado vertical dejaba 113px de hueco encima de la foto porque el
+   texto medía 225px mas que ella. */
+.campo-grid{display:grid;grid-template-columns:1fr;gap:26px}
+.campo-img{aspect-ratio:16/7.5;border-radius:var(--r-lg);background-size:cover;background-position:center 38%;box-shadow:var(--shadow-md)}
 .campo-txt .car-h:first-child{margin-top:0}
-.campo-roles{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px}
+/* Pastillas, como los filtros del inicio: en rejilla y con la barra
+   roja al costado parecian celdas de tabla. */
+.campo-roles{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px}
 .campo-roles li{
-  background:#fff;border-radius:12px;padding:11px 14px;
-  border-left:3px solid var(--red);
+  display:inline-flex;align-items:center;gap:9px;
+  background:#fff;border-radius:999px;padding:11px 18px;
   font-size:14.5px;color:var(--ink);font-weight:500;
-  box-shadow:0 4px 16px rgba(18,19,26,.05);
+  box-shadow:var(--shadow-sm);
 }
+.campo-roles li{transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
+.campo-roles li:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.campo-roles li::before{
+  content:'';width:7px;height:7px;flex:none;border-radius:50%;background:var(--red);
+  transition:transform .22s var(--ease);
+}
+.campo-roles li:hover::before{transform:scale(1.5)}
 
-/* ---------- Convenios ---------- */
+/* ---------- Convenios ----------
+   Cinta que corre sola. La lista va DOS veces y la animacion desplaza
+   justo la mitad: al terminar, la segunda copia esta donde arranco la
+   primera y el bucle no tiene costura. La separacion va con margin y no
+   con gap porque el gap no se reparte igual entre las dos copias y el
+   salto se notaria. */
+.conv-cinta{
+  position:relative;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+}
+/* Nombre propio y no .conv-track: esa clase ya la usan las dos columnas
+   verticales del inicio, y estas reglas van despues en la hoja, asi que
+   les cambiaban el sentido de la marcha y las dejaban en horizontal. */
+.conv-cinta-track{display:flex;width:max-content;animation:convCorre 34s linear infinite}
+.conv-cinta:hover .conv-cinta-track{animation-play-state:paused}
+@keyframes convCorre{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.conv-cinta-track .conv-logo{width:214px;margin-right:18px}
+@media (prefers-reduced-motion:reduce){.conv-cinta-track{animation:none}}
+
 .conv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1000px;margin-inline:auto}
 .conv-logo{
-  display:grid;place-content:center;height:112px;background:#fff;border-radius:20px;
-  box-shadow:0 8px 24px rgba(18,19,26,.06);
+  display:grid;place-content:center;height:112px;background:#fff;border-radius:var(--r-lg);
+  box-shadow:var(--shadow-sm);
   font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:23px;
   color:#9AA0AE;letter-spacing:.03em;text-transform:uppercase;
 }
-.conv-logo img{width:88%;height:auto}
+.conv-logo img{width:88%;height:auto;transition:transform .3s var(--ease)}
+.conv-logo:hover img{transform:scale(1.07)}
 .conv-note{margin-top:14px;font-size:12.5px;color:var(--muted);text-align:center}
 
-/* ---------- Malla ---------- */
+/* ---------- Malla ----------
+   Los tres tipos de curso se distinguen por color, y ese mismo color se
+   repite en la barrita de cada asignatura: es lo que convierte el
+   recuadro de arriba en una leyenda y no en un dato suelto. */
+.malla-linea--exp{--tono:var(--red)}
+.malla-linea--emp{--tono:var(--terciario)}
+.malla-linea--esp{--tono:#4642A6}
+
+/* El boton comparte fila con el titulo */
+.malla-cabecera{display:grid;grid-template-columns:1fr auto;column-gap:26px;align-items:start}
+.malla-cabecera .section-title,
+.malla-cabecera .section-sub{grid-column:1}
+.malla-btn{grid-column:2;grid-row:1 / span 2;align-self:center;justify-self:end}
+/* En movil no caben los dos al lado: el titulo se quedaba en 130px y
+   partia en cuatro renglones. */
+@media (max-width:700px){
+  .malla-cabecera{grid-template-columns:1fr}
+  .malla-btn{grid-column:1;grid-row:auto;justify-self:start;margin-top:18px}
+}
+
 .malla-resumen{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;
-  max-width:980px;margin:0 auto 20px;
+  background:#fff;border:1.5px solid var(--terciario);border-radius:var(--r-lg);
+  padding:18px 24px;display:grid;gap:11px;max-width:820px;margin:0 0 24px;
 }
-.malla-dato{
-  background:#fff;border-radius:18px;padding:16px 20px;text-align:center;
-  box-shadow:0 8px 24px rgba(18,19,26,.06);
+.malla-linea{display:flex;align-items:center;gap:13px;font-size:14.5px;color:var(--body)}
+.malla-linea::before{
+  content:'';flex:none;width:4px;height:20px;border-radius:99px;background:var(--tono);
 }
-.malla-dato b{
-  display:block;color:var(--red);font-family:'Barlow Condensed',sans-serif;
-  font-weight:800;font-size:34px;line-height:1;
+.malla-linea b{color:var(--ink);font-weight:700}
+.malla-linea strong{
+  color:var(--ink);font-weight:700;text-transform:uppercase;
+  font-size:13px;letter-spacing:.04em;
 }
-.malla-dato span{display:block;margin-top:5px;font-size:14px;color:var(--body)}
 
 .malla-acc{max-width:980px;margin-inline:auto}
-.malla-year{background:#fff;border-radius:18px;margin-bottom:14px;overflow:hidden;box-shadow:0 8px 24px rgba(18,19,26,.06)}
+/* El recuadro lo lleva la propia pestana y no el bloque: al abrirse, el
+   contenido queda sobre el fondo de la seccion y solo la cabecera se
+   pinta de rojo, como en el diseno. */
+.malla-year{margin-bottom:14px}
 .malla-toggle{
-  width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 24px;
-  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
-  font-size:21px;letter-spacing:.01em;color:var(--ink);
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:24px 28px;background:#fff;border:1.5px solid var(--line);border-radius:var(--r-lg);
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:24px;line-height:1.15;letter-spacing:.01em;color:var(--ink);
   transition:background .25s var(--ease),color .25s var(--ease);
 }
 .malla-caret{
@@ -2214,7 +2738,7 @@ p{margin:0}
   border-right:2.4px solid currentColor;border-bottom:2.4px solid currentColor;
   transform:rotate(45deg);transition:transform .25s var(--ease);
 }
-.malla-year.is-open .malla-toggle{background:var(--red);color:#fff}
+.malla-year.is-open .malla-toggle{background:var(--red);border-color:var(--red);color:#fff}
 .malla-year.is-open .malla-caret{transform:rotate(-135deg);margin-top:4px}
 .malla-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s var(--ease)}
 .malla-year.is-open .malla-body{grid-template-rows:1fr}
@@ -2224,56 +2748,192 @@ p{margin:0}
 .malla-ciclos{display:grid;gap:26px}
 @media(min-width:700px){.malla-ciclos{grid-template-columns:1fr 1fr;gap:30px}}
 .malla-ciclo h4{
-  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
-  font-size:20px;color:var(--red);margin-bottom:10px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  /* Nivel 2 dentro del panel de la malla, en rojo para separarlo del
+     nivel 2 de la pagina, que va en tinta. */
+  font-size:21px;letter-spacing:.01em;color:var(--red);margin-bottom:10px;
 }
 .malla-ciclo ul{display:grid;gap:7px}
-.malla-ciclo li{position:relative;padding-left:15px;font-size:14.5px;color:var(--ink);line-height:1.45}
-.malla-ciclo li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+.malla-ciclo li{position:relative;padding-left:16px;font-size:14.5px;color:var(--ink);line-height:1.45}
+/* Barrita del color de su tipo, no un punto: asi se ve de un vistazo
+   cuantos cursos de cada clase trae el ciclo. */
+.malla-ciclo li::before{
+  content:'';position:absolute;left:0;top:3px;width:3px;height:15px;
+  border-radius:99px;background:var(--tono,#4642A6);
+}
+.malla-ciclo li[data-t="exp"]{--tono:var(--red)}
+.malla-ciclo li[data-t="emp"]{--tono:var(--terciario)}
+.malla-ciclo li[data-t="esp"]{--tono:#4642A6}
 .malla-soon{color:var(--muted);font-size:14.5px}
 
 /* ---------- Certificaciones ---------- */
-.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:1100px;margin-inline:auto}
+/* Las dos listas comparten sitio en pestanas: nueve tarjetas seguidas
+   ocupaban media pantalla para decir dos cosas. */
+.cert-tabs{justify-content:flex-start;margin-bottom:26px}
+.cert-grid[hidden]{display:none}
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;max-width:1100px;margin-inline:auto}
 .cert-grid--3{max-width:760px}
+/* La cifra manda, como en el panel de "por que estudiarla": son una
+   secuencia -modulo 1, 2, 3- y el numero es lo que lo cuenta. Centradas
+   y con el rotulo pequeño arriba, las nueve tarjetas se leian iguales.
+
+   El color sube a lo largo de la serie: del rosa claro del primer paso
+   al rojo de marca del ultimo. Es la misma progresion que ya usa la
+   pagina, y aqui ademas significa algo: cuanto mas avanzas, mas fuerte
+   el certificado. */
+/* Forma de carpeta: el cuerpo redondeado y una pestaña arriba a la
+   izquierda, como los iconos de carpeta de escritorio.
+
+   La sombra va con filter:drop-shadow y no con box-shadow porque
+   box-shadow dibuja la del rectangulo del cuerpo y dejaria una linea
+   cruzando por debajo de la pestaña; drop-shadow traza la silueta
+   entera, pestaña incluida. */
 .cert-card{
-  background:#fff;border:2px solid transparent;border-radius:18px;padding:20px 18px;text-align:center;
-  display:flex;flex-direction:column;gap:9px;justify-content:center;min-height:132px;
-  box-shadow:0 8px 24px rgba(18,19,26,.06);
-  transition:transform .3s var(--ease),border-color .25s var(--ease),box-shadow .3s var(--ease);
+  --pesta:17px;
+  position:relative;
+  margin-top:var(--pesta);
+  background:#fff;
+  /* Esquina superior izquierda a escuadra: ahi se monta la pestaña */
+  border-radius:4px var(--r-lg) var(--r-lg) var(--r-lg);
+  filter:drop-shadow(0 4px 14px rgba(18,19,26,.09));
+  padding:22px 22px 24px;text-align:center;
+  display:flex;flex-direction:column;gap:9px;justify-content:center;
+  min-height:132px;
+  transition:transform .3s var(--ease),filter .3s var(--ease);
 }
-.cert-card:hover{transform:translateY(-5px);border-color:var(--red);box-shadow:0 14px 32px rgba(18,19,26,.1)}
+.cert-card::before{
+  content:'';position:absolute;left:0;top:calc(var(--pesta) * -1 + 1px);
+  width:44%;height:var(--pesta);
+  background:inherit;
+  border-radius:8px 12px 0 0;
+}
+.cert-card:hover{
+  transform:translateY(-5px);
+  filter:drop-shadow(0 10px 22px rgba(255,14,73,.26));
+}
+
+/* El rotulo vuelve a ser una etiqueta pequeña, como estaba */
 .cert-n{
-  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
-  font-size:16px;letter-spacing:.04em;color:var(--red);
+  font-weight:700;text-transform:uppercase;
+  font-size:13px;letter-spacing:.1em;color:var(--paso,var(--red));
 }
 .cert-card p{font-size:14px;color:var(--ink);line-height:1.4;font-weight:500}
 
+.cert-grid > .cert-card:nth-child(1){--paso:#FFA8BE}
+.cert-grid > .cert-card:nth-child(2){--paso:#FF8FAC}
+.cert-grid > .cert-card:nth-child(3){--paso:#FF6B8F}
+.cert-grid > .cert-card:nth-child(4){--paso:#FF4E79}
+.cert-grid > .cert-card:nth-child(5){--paso:#FF2E60}
+.cert-grid > .cert-card:nth-child(6){--paso:var(--red)}
+/* En modulares solo hay tres: que lleguen igualmente hasta el rojo */
+.cert-grid--3 > .cert-card:nth-child(1){--paso:#FF8FAC}
+.cert-grid--3 > .cert-card:nth-child(2){--paso:#FF4E79}
+.cert-grid--3 > .cert-card:nth-child(3){--paso:var(--red)}
+
 /* ---------- Egresado ---------- */
-.egr-grid{display:grid;grid-template-columns:0.62fr 1fr;align-items:stretch;max-width:1100px;margin-inline:auto;border-radius:24px;overflow:hidden;box-shadow:0 10px 26px rgba(18,19,26,.1)}
-.egr-label{background:var(--red);color:#fff;padding:34px 30px;display:flex;flex-direction:column;justify-content:center;gap:12px}
-.egr-eyebrow{font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:24px;line-height:1}
-.egr-quote{font-style:italic;font-size:15.5px;line-height:1.6;opacity:.95}
-.egr-role{font-size:14px;font-weight:600;opacity:.92}
-.egr-video{position:relative;aspect-ratio:16/9;background:#0b0b0f center/cover no-repeat;overflow:hidden}
+/* Apilado: la cita a 289px de ancho salia en renglones de seis
+   palabras y el video al lado se quedaba en 467. */
+/* ---------- Egresado de exito ----------
+   Dos piezas separadas, no una pegada a la otra: el video arriba y la
+   cita debajo, con aire entre las dos. Montada sobre el video tapaba
+   los controles de YouTube, y encajada a ras parecia el pie de una
+   captura de pantalla.
+
+   La cita se presenta como cita: comillas de marca al fondo, el texto
+   en primer plano y la identidad separada por un filete. */
+.egr-grid{
+  display:flex;flex-direction:column;gap:18px;
+  max-width:1100px;margin-inline:auto;
+}
+.egr-video{
+  position:relative;aspect-ratio:16/9;overflow:hidden;
+  border-radius:var(--r-lg);
+  background:#0b0b0f center/cover no-repeat;
+  box-shadow:var(--shadow-md);
+}
 .egr-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.egr-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;width:70px;height:70px;transition:transform .25s var(--ease)}
-.egr-play:hover{transform:translate(-50%,-50%) scale(1.08)}
+
+/* En el marcado la cita va antes que el video, que es donde tiene
+   sentido leerla; en pantalla va despues. */
+.egr-label{
+  order:2;position:relative;overflow:hidden;
+  /* La crema de las pastillas de carrera, con el rojo de marca encima.
+     El texto largo va en tinta y no en rojo: rojo sobre crema se queda
+     en 3,4:1 de contraste y una cita de dos lineas hay que leerla, no
+     mirarla. El rojo se reserva para las comillas y el cargo. */
+  background:#FBF0C4;color:var(--ink);
+  border-radius:var(--r-lg);
+  padding:30px 34px 32px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:14px;
+}
+/* Comillas al fondo, grandes y tenues: marcan que es una cita sin
+   tener que entrecomillar el texto. */
+.egr-comillas{
+  position:absolute;right:26px;top:22px;z-index:0;
+  width:88px;height:88px;color:var(--red);opacity:.22;pointer-events:none;
+}
+.egr-comillas svg{width:100%;height:100%;display:block}
+.egr-label > :not(.egr-comillas){position:relative;z-index:1}
+
+.egr-quote{
+  font-style:italic;font-size:19px;line-height:1.5;
+  max-width:62ch;
+}
+/* Filete corto encima del cargo: separa la voz de quien la dice */
+.egr-role{
+  position:relative;padding-top:16px;
+  font-size:13.5px;font-weight:700;color:var(--red);
+}
+.egr-role::before{
+  content:'';position:absolute;left:0;top:0;
+  width:44px;height:2px;border-radius:99px;background:var(--red);opacity:.5;
+}
+
+.egr-play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  z-index:3;width:76px;height:76px;
+  transition:transform .25s var(--ease);
+}
+.egr-play:hover{transform:translate(-50%,-50%) scale(1.09)}
 .egr-play svg{width:100%;height:100%;display:block}
+
+@media (max-width:820px){
+  .egr-label{padding:26px 22px 28px;gap:12px}
+  .egr-quote{font-size:16.5px}
+  .egr-comillas{width:64px;height:64px;right:18px;top:16px}
+}
+
+
+
 
 /* ---------- Responsive ---------- */
 @media(max-width:1060px){
-  .car-lead-grid{grid-template-columns:1fr}
-  .car-lead-main,.car-form-wrap,.car-why-block{grid-column:auto;grid-row:auto}
-  .car-form-wrap{position:static;max-width:520px;margin-inline:auto;width:100%}
+  /* Sin sitio para el carril: el formulario vuelve al flujo y se coloca
+     justo detras de la ficha, que es donde estaba antes. El orden lo da
+     flex porque en el marcado va el ultimo, para que en escritorio
+     pueda abarcar todas las secciones. */
+  .car-cuerpo{display:flex;flex-direction:column}
+  .car-cuerpo > section{order:2}
+  .car-cuerpo > .car-lead{order:0}
+  .car-form-rail{
+    order:1;position:static;width:100%;max-width:520px;
+    margin:0 auto 8px;padding-inline:var(--gut);
+  }
+  .car-cuerpo > section > .shell{padding-right:var(--gut)}
+  .car-form-wrap{position:static;width:100%}
   .campo-grid{grid-template-columns:1fr;gap:24px}
   .campo-img{aspect-ratio:16/9}
   .conv-grid{grid-template-columns:repeat(2,1fr)}
   .egr-grid{grid-template-columns:1fr}
 }
 @media(max-width:640px){
-  .why-rail{grid-template-columns:1fr}
   .car-modos{width:100%}
   .car-modos .mod-opt{flex:1;justify-content:center}
-  .cert-grid{grid-template-columns:repeat(2,1fr)}
+  /* Cuatro tarjetas no caben en una fila de movil */
+  .car-facts{grid-template-columns:repeat(2,1fr);gap:12px}
+  .fact{padding:26px 12px;min-height:205px;border-radius:22px 22px 74px 22px}
+  /* Una sola columna: a dos, las tarjetas se quedaban en 166px y el
+     nombre de la certificacion salia en cuatro renglones. */
+  .cert-grid{grid-template-columns:1fr}
   .lab-slide{flex-basis:88%}
 }

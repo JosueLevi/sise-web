@@ -158,7 +158,6 @@ const MENU_PANEL = {
 const HERO_SLIDES = [
   {
     img: 'assets/img/hero-01.webp',
-    imgMovil: 'assets/img/hero-01-movil.webp',
     l1: 'Se estudia',
     l2: 'Como se vive',
     sub: 'Aquí no se ensaya, no se practica. Se vive.'
@@ -166,7 +165,8 @@ const HERO_SLIDES = [
   {
     // Sin texto: la imagen ya trae el suyo. Deja l1/l2/sub vacíos para eso.
     img: 'assets/img/hero-02.webp',
-    imgMovil: 'assets/img/hero-02-movil.webp',
+    // El rotulo va a la izquierda: en movil hay que anclarlo a ese lado
+    posMovil: 'left 28%',
     l1: '',
     l2: '',
     sub: ''

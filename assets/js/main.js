@@ -147,13 +147,18 @@
   const header = $('#siteHeader');
 
   /* --- Paginas internas (carreras.html, cursos.html, idiomas.html) ---
-     No tienen hero: el header debe ir solido desde el inicio (si no, el
-     texto blanco queda invisible sobre el fondo claro), y los enlaces a
-     secciones del home deben apuntar al index. */
+     Los enlaces a secciones del home tienen que apuntar al index, y el
+     fondo de pagina es el claro.
+
+     El panel solido de la cabecera solo se fuerza donde la pagina abre
+     con una seccion clara: ahi el texto blanco seria invisible. Si abre
+     con banner -.hero o .car-hero- la cabecera va transparente sobre la
+     foto, como en el inicio, y el panel aparece al bajar. */
   const esInterna = !$('#inicio');
+  const conBanner = !!$('.hero, .car-hero');
   if (esInterna) {
     document.body.classList.add('pagina-interna');
-    header.classList.add('is-stuck');
+    if (!conBanner) header.classList.add('is-stuck');
     // Reescribe los anclas cuyo destino no existe en esta pagina
     $$('a[href^="#"]').forEach((a) => {
       const id = a.getAttribute('href').slice(1);
@@ -190,7 +195,7 @@
 
   function onScrollHeader() {
     const y = Math.max(0, window.scrollY);
-    if (!esInterna) header.classList.toggle('is-stuck', y > 40);
+    if (!esInterna || conBanner) header.classList.toggle('is-stuck', y > 40);
 
     const salto = y - ultimoY;
     if (Math.abs(salto) < GESTO_MINIMO) return;
@@ -238,6 +243,19 @@
       const c = document.createElement('div');
       c.className = 'hero-slide' + (i === 0 ? ' is-on' : '');
       fondoDato(c, d, 'img', i === 0);
+      /* Encuadre propio de la diapositiva. La misma foto apaisada tiene
+         que aguantar el banner ancho del escritorio y la caja casi
+         cuadrada del movil, y el sujeto no siempre esta al centro: en
+         la segunda el rotulo va pegado a la izquierda y con el encuadre
+         normal se quedaba cortado a la mitad. */
+      if (d.pos || d.posMovil) {
+        const encuadra = () => {
+          c.style.backgroundPosition =
+            (MQ_MOVIL.matches && d.posMovil) ? d.posMovil : (d.pos || '');
+        };
+        encuadra();
+        MQ_MOVIL.addEventListener('change', encuadra);
+      }
       heroStage.appendChild(c);
       return c;
     });
@@ -638,6 +656,37 @@
   const formVelo   = $('#formVelo');
   const tarjetaForm = $('.lead-card');
 
+  /* El emergente es cosa de movil. En escritorio el formulario ya esta
+     a la vista dentro del banner, asi que el flotante solo tiene que
+     llevar hasta el. Antes se disparaba el emergente en las dos: en
+     escritorio no se movia nada -las reglas que lo convierten en
+     emergente viven en la media query- pero si dejaba el body con
+     overflow:hidden, o sea la pagina bloqueada y sin forma de
+     desbloquearla salvo con Escape, porque el aspa esta oculta y el
+     velo no tiene alto. */
+  const esEmergente = () => window.matchMedia('(max-width: 820px)').matches;
+
+  /* En las paginas que no llevan formulario propio -carreras, cursos e
+     idiomas- se va al del inicio. */
+  const destinoForm = (typeof FLOTANTES !== 'undefined' && FLOTANTES.registro &&
+                       FLOTANTES.registro.url) || 'index.html#form';
+
+  function vaAlForm() {
+    if (!tarjetaForm) { window.location.href = destinoForm; return; }
+    /* El margen deja el formulario por debajo de la cabecera, que va
+       fija y si no le tapa el titulo. */
+    const y = tarjetaForm.getBoundingClientRect().top + window.scrollY - 96;
+    window.scrollTo({ top: Math.max(y, 0), behavior: 'smooth' });
+    /* Un destello para que el ojo sepa donde ha aterrizado: sin el, en
+       el inicio el formulario ya estaba en pantalla y el boton parecia
+       no hacer nada. Se reinicia a mano por si se pulsa dos veces. */
+    tarjetaForm.classList.remove('is-marcada');
+    void tarjetaForm.offsetWidth;
+    tarjetaForm.classList.add('is-marcada');
+  }
+
+  if (abrirForm && !tarjetaForm) abrirForm.addEventListener('click', vaAlForm);
+
   if (abrirForm && formVelo && tarjetaForm) {
     let formDesde = null;
 
@@ -662,7 +711,9 @@
       formDesde = null;
     }
 
-    abrirForm.addEventListener('click', abreForm);
+    abrirForm.addEventListener('click', () => {
+      if (esEmergente()) abreForm(); else vaAlForm();
+    });
     if (cerrarForm) cerrarForm.addEventListener('click', cierraForm);
     formVelo.addEventListener('click', cierraForm);
     document.addEventListener('keydown', (e) => {
@@ -675,6 +726,72 @@
     window.matchMedia('(min-width: 821px)').addEventListener('change', (e) => {
       if (e.matches) cierraForm();
     });
+  }
+
+  /* ============================================================
+     2d. CARRIL DE LABORATORIOS
+     ============================================================
+     El carril se desplazaba solo con gesto tactil: con raton la rueda
+     mueve la pagina en vertical y no habia ni puntos ni arrastre, asi
+     que en escritorio parecia roto. Se le anaden las dos cosas. */
+  const labsRail = $('#labsRail');
+  const labsNav  = $('#labsNav');
+
+  if (labsRail && labsNav) {
+    const slides = $$('.lab-slide', labsRail);
+
+    if (slides.length > 1) {
+      labsNav.innerHTML = slides.map((_, i) =>
+        `<button class="labs-dot${i === 0 ? ' is-on' : ''}" type="button" role="tab"
+                 aria-selected="${i === 0}" aria-label="Laboratorio ${i + 1} de ${slides.length}"></button>`
+      ).join('');
+      const puntos = $$('.labs-dot', labsNav);
+
+      const marca = (i) => puntos.forEach((p, k) => {
+        p.classList.toggle('is-on', k === i);
+        p.setAttribute('aria-selected', String(k === i));
+      });
+
+      puntos.forEach((p, i) => p.addEventListener('click', () => {
+        labsRail.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: 'smooth' });
+      }));
+
+      /* El punto activo se deduce de la posicion real y no de la ultima
+         pulsacion: asi tambien acierta cuando se arrastra o se desliza
+         con el dedo. */
+      labsRail.addEventListener('scroll', () => {
+        const x = labsRail.scrollLeft;
+        let cerca = 0, dist = Infinity;
+        slides.forEach((sl, i) => {
+          const d = Math.abs((sl.offsetLeft - slides[0].offsetLeft) - x);
+          if (d < dist) { dist = d; cerca = i; }
+        });
+        marca(cerca);
+      }, { passive: true });
+
+      /* Arrastre con el raton. El umbral de 4px evita que un clic
+         normal se interprete como arrastre. */
+      let baja = false, x0 = 0, s0 = 0, movido = false;
+      labsRail.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'touch') return;   // el tactil ya lo hace el navegador
+        baja = true; movido = false;
+        x0 = e.clientX; s0 = labsRail.scrollLeft;
+        labsRail.setPointerCapture(e.pointerId);
+      });
+      labsRail.addEventListener('pointermove', (e) => {
+        if (!baja) return;
+        const d = e.clientX - x0;
+        if (!movido && Math.abs(d) > 4) { movido = true; labsRail.classList.add('is-dragging'); }
+        if (movido) labsRail.scrollLeft = s0 - d;
+      });
+      const suelta = () => {
+        if (!baja) return;
+        baja = false;
+        labsRail.classList.remove('is-dragging');
+      };
+      labsRail.addEventListener('pointerup', suelta);
+      labsRail.addEventListener('pointercancel', suelta);
+    }
   }
 
   /* ============================================================
@@ -846,6 +963,10 @@
 
   const statsCard = $('#statsCard');
   if (statsCard) statsIO.observe(statsCard);
+  /* Las cifras de la ficha de carrera usan el mismo contador: no hay
+     razon para tener dos. */
+  const whyRail = $('.why-rail');
+  if (whyRail) statsIO.observe(whyRail);
 
     /* ============================================================
      6. ¿POR QUÉ ELEGIR SISE? — visor con marco compartido (video + espacios)
@@ -1005,6 +1126,12 @@
        usa un desplegable nativo: abre el selector del propio sistema,
        que es lo comodo con el pulgar. Los dos conviven en el DOM y el
        CSS ensena uno u otro; pintaSede mantiene sincronizados ambos. */
+    /* Se declara aqui arriba a proposito: montaSedeSelect() se llama
+       unas lineas mas abajo pero antes de su propio bloque, y con la
+       declaracion alli dentro la asignacion caia en la zona muerta del
+       let ("Cannot access before initialization"). */
+    let sincroSedeBtn = null;
+
     const sedeSelect = $('#sedeSelect');
     if (sedeSelect) {
       const zonas = (typeof ZONAS_SEDE !== 'undefined') ? ZONAS_SEDE : [];
@@ -1020,6 +1147,140 @@
         sueltas.map((s) => `<option value="${SEDES.indexOf(s)}">Sede ${esc(s.nombre)}</option>`).join('');
 
       sedeSelect.addEventListener('change', () => pintaSede(parseInt(sedeSelect.value, 10)));
+      montaSedeSelect();
+    }
+
+    /* ---- Desplegable de sede a medida ----
+       Mismo componente que los campos del formulario. El <select> se
+       queda debajo guardando el valor; el CSS lo esconde solo cuando
+       este ya esta montado. */
+    function montaSedeSelect() {
+      const caja = sedeSelect.closest('.sede-caja');
+      if (!caja || caja.querySelector('.sede-btn')) return;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sede-btn';
+      btn.setAttribute('role', 'combobox');
+      btn.setAttribute('aria-haspopup', 'listbox');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '<span class="sel-val"></span>';
+
+      const rotulo = $('.sede-q');
+      if (rotulo) {
+        rotulo.id = rotulo.id || 'sedeQ';
+        btn.setAttribute('aria-labelledby', rotulo.id);
+      }
+
+      const lista = document.createElement('div');
+      lista.className = 'sel-list sede-list';
+      lista.id = 'sedeLista';
+      lista.setAttribute('role', 'listbox');
+      btn.setAttribute('aria-controls', lista.id);
+
+      /* La lista conserva los grupos por zona del <select>: con doce
+         sedes seguidas cuesta encontrar la propia. */
+      const pinto = (o, i) =>
+        `<div class="sel-opt" role="option" id="sede-o${i}" data-val="${esc(o.value)}"
+              aria-selected="false">${esc(o.textContent)}</div>`;
+      let n = 0, html = '';
+      Array.from(sedeSelect.children).forEach((hijo) => {
+        if (hijo.tagName === 'OPTGROUP') {
+          html += `<p class="sel-group">${esc(hijo.label)}</p>`;
+          Array.from(hijo.children).forEach((o) => { html += pinto(o, n++); });
+        } else {
+          html += pinto(hijo, n++);
+        }
+      });
+      lista.innerHTML = html;
+
+      caja.append(btn, lista);
+      caja.classList.add('is-custom');
+      sedeSelect.setAttribute('tabindex', '-1');
+      sedeSelect.setAttribute('aria-hidden', 'true');
+
+      const items = $$('.sel-opt', lista);
+      let abierto = false, marcado = -1;
+
+      function pinta() {
+        const v = sedeSelect.value;
+        const elegido = items.find((it) => it.dataset.val === v);
+        btn.querySelector('.sel-val').textContent = elegido ? elegido.textContent : '';
+        items.forEach((it) => it.setAttribute('aria-selected', String(it === elegido)));
+      }
+      sincroSedeBtn = pinta;
+
+      function marca(i) {
+        if (!items.length) return;
+        marcado = Math.max(0, Math.min(i, items.length - 1));
+        items.forEach((it, k) => it.classList.toggle('is-on', k === marcado));
+        btn.setAttribute('aria-activedescendant', items[marcado].id);
+        items[marcado].scrollIntoView({ block: 'nearest' });
+      }
+
+      function abre() {
+        if (abierto) return;
+        abierto = true;
+        caja.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+        marca(Math.max(0, items.findIndex((it) => it.dataset.val === sedeSelect.value)));
+      }
+
+      function cierra(devolverFoco) {
+        if (!abierto) return;
+        abierto = false;
+        caja.classList.remove('is-open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.removeAttribute('aria-activedescendant');
+        if (devolverFoco) btn.focus();
+      }
+
+      function elige(i) {
+        if (!items[i]) return;
+        sedeSelect.value = items[i].dataset.val;
+        pintaSede(parseInt(items[i].dataset.val, 10));
+        cierra(true);
+      }
+
+      btn.addEventListener('click', () => (abierto ? cierra(false) : abre()));
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (!abierto) return abre();
+          marca(marcado + (e.key === 'ArrowDown' ? 1 : -1));
+        } else if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          abierto ? elige(marcado) : abre();
+        } else if (e.key === 'Escape') {
+          cierra(true);
+        } else if (e.key === 'Home' || e.key === 'End') {
+          if (abierto) { e.preventDefault(); marca(e.key === 'Home' ? 0 : items.length - 1); }
+        } else if (e.key.length === 1) {
+          // Busqueda por la primera letra, como en el <select> nativo
+          const t = e.key.toLowerCase();
+          const desde = marcado + 1;
+          const orden = items.slice(desde).concat(items.slice(0, desde));
+          const hit = orden.find((it) =>
+            it.textContent.trim().toLowerCase().replace(/^sede /, '').startsWith(t));
+          if (hit) { if (!abierto) abre(); marca(items.indexOf(hit)); }
+        }
+      });
+
+      /* mousedown y no click: el click llega despues del blur del boton
+         y para entonces la lista ya se habria cerrado. */
+      lista.addEventListener('mousedown', (e) => {
+        const it = e.target.closest('.sel-opt');
+        if (it) { e.preventDefault(); elige(items.indexOf(it)); }
+      });
+      lista.addEventListener('mousemove', (e) => {
+        const it = e.target.closest('.sel-opt');
+        if (it) marca(items.indexOf(it));
+      });
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.sede-caja')) cierra(false);
+      });
+
+      pinta();
     }
 
     let mapaListo = false;   // el iframe solo se crea cuando hace falta
@@ -1034,6 +1295,7 @@
         c.setAttribute('aria-selected', String(on));
       });
       if (sedeSelect) sedeSelect.value = String(i);
+      if (sincroSedeBtn) sincroSedeBtn();
 
       const hor = s.horario || contacto.horario || [];
 
@@ -1115,12 +1377,52 @@
   /* ============================================================
      7b. PAGINA DE CARRERA — acordeon de malla + video egresado
      ============================================================ */
-  $$('.malla-toggle').forEach((btn) => {
+  /* Un ano abierto cada vez: con varios desplegados a la vez la seccion
+     crecia hasta tres pantallas y se perdia la comparacion entre anos,
+     que es para lo que uno mira una malla. */
+  $$('.malla-toggle').forEach((btn, _, todos) => {
     btn.addEventListener('click', () => {
       const y = btn.closest('.malla-year');
       const open = !y.classList.contains('is-open');
+      todos.forEach((otro) => {
+        const suyo = otro.closest('.malla-year');
+        suyo.classList.remove('is-open');
+        otro.setAttribute('aria-expanded', 'false');
+      });
       y.classList.toggle('is-open', open);
       btn.setAttribute('aria-expanded', String(open));
+    });
+  });
+
+  /* ---- Pestanas genericas ----
+     Cualquier grupo marcado con data-tabs: cada boton enseña el panel
+     que dice su aria-controls y esconde los demas. Se lleva tambien el
+     foco por teclado -flechas- porque un tablist sin eso obliga a
+     tabular por todas las pestanas una a una. */
+  $$('[data-tabs]').forEach((grupo) => {
+    const botones = $$('[role="tab"]', grupo);
+    if (botones.length < 2) return;
+
+    function activa(btn, mueveFoco) {
+      botones.forEach((o) => {
+        const on = o === btn;
+        o.classList.toggle('is-active', on);
+        o.setAttribute('aria-selected', String(on));
+        o.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(o.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !on;
+      });
+      if (mueveFoco) btn.focus();
+    }
+
+    botones.forEach((b, i) => {
+      b.addEventListener('click', () => activa(b, false));
+      b.addEventListener('keydown', (e) => {
+        const salto = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!salto) return;
+        e.preventDefault();
+        activa(botones[(i + salto + botones.length) % botones.length], true);
+      });
     });
   });
 
@@ -1224,7 +1526,8 @@
   const convGrid = $('#convGrid');
   if (convGrid && typeof CONVENIOS !== 'undefined') {
     convGrid.innerHTML = '';
-    CONVENIOS.forEach((c) => {
+
+    function cajaConvenio(c) {
       const caja = document.createElement('div');
       caja.className = 'conv-logo';
       caja.textContent = c.nombre;
@@ -1232,8 +1535,19 @@
       img.alt = c.nombre;
       img.addEventListener('load', () => { caja.textContent = ''; caja.appendChild(img); });
       img.src = c.img;
-      convGrid.appendChild(caja);
-    });
+      return caja;
+    }
+
+    CONVENIOS.forEach((c) => convGrid.appendChild(cajaConvenio(c)));
+    /* Segunda pasada solo para que el bucle no tenga costura: se oculta
+       a los lectores de pantalla para que no lea la lista dos veces. */
+    const copia = document.createElement('div');
+    copia.style.display = 'contents';
+    copia.setAttribute('aria-hidden', 'true');
+    CONVENIOS.forEach((c) => copia.appendChild(cajaConvenio(c)));
+    convGrid.appendChild(copia);
+    // Mismo ritmo por logo, tenga los que tenga la lista
+    convGrid.style.animationDuration = (CONVENIOS.length * 2.9) + 's';
   }
 
   /* ============================================================
