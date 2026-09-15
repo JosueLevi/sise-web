@@ -608,10 +608,24 @@ p{margin:0}
 .hero-sub{margin-top:18px;color:rgba(255,255,255,.9);font-size:17.5px;font-weight:500;max-width:430px}
 
 /* Formulario */
+/* Vidrio esmerilado. La tarjeta ya era translucida, pero sin desenfoque:
+   la textura de la foto -la grua, los contenedores- se colaba nitida por
+   detras de los campos y ensuciaba la lectura. Con el desenfoque la foto
+   se vuelve color y la tarjeta gana cuerpo sin taparla del todo.
+
+   Bajar de .85 a .8 no toca el contraste del texto: el fondo solo puede
+   salir mas claro que el blanco puro, nunca mas oscuro, asi que la tinta
+   sobre la tarjeta se lee igual o mejor. */
 .lead-card{
-  background:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.8);
+  -webkit-backdrop-filter:blur(20px) saturate(1.12);
+  backdrop-filter:blur(20px) saturate(1.12);
   border-radius:26px;padding:26px 24px;box-shadow:var(--shadow-lg);
   animation:riseIn .8s var(--ease) .28s backwards;
+}
+/* Sin soporte no hay desenfoque que valga: se cierra el blanco. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .lead-card{background:rgba(255,255,255,.93)}
 }
 /* Destello al llegar desde el flotante de registro. Es solo un aro que
    entra y sale; nada de mover la tarjeta, que ya esta en su sitio.
@@ -1544,7 +1558,25 @@ body:not(.form-abierto) .form-velo{opacity:0}
     rgba(8,9,14,.82) 2%,rgba(8,9,14,.56) 22%,rgba(8,9,14,.2) 46%,transparent 70%);
 }
 
-.sede-datos{position:relative;display:flex;flex-direction:column;gap:11px;padding:24px 22px 28px}
+/* Panel esmerilado en lugar de texto suelto sobre el degradado: la foto
+   se adivina detras pero movida, y el filete de arriba marca donde
+   empieza el vidrio.
+
+   El tinte se queda en .38 y no menos porque el degradado de la caja
+   sigue debajo: entre los dos dan .89 de opacidad en la zona del texto,
+   que es lo que hace falta para que el blanco aguante 4,5:1 aunque la
+   foto traiga un cielo blanco justo ahi. */
+.sede-datos{
+  position:relative;display:flex;flex-direction:column;gap:11px;
+  padding:24px 22px 28px;
+  background:rgba(8,9,14,.38);
+  -webkit-backdrop-filter:blur(16px) saturate(1.15);
+  backdrop-filter:blur(16px) saturate(1.15);
+  border-top:1px solid rgba(255,255,255,.16);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .sede-datos{background:rgba(8,9,14,.5)}
+}
 .sede-nombre{
   font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
   font-size:clamp(22px,2.2vw,27px);line-height:1.05;color:#fff;
@@ -1925,6 +1957,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
     left:50%;top:50%;transform:translate(-50%,-50%) scale(.97);
     width:min(94vw,440px);max-height:88vh;overflow-y:auto;
     margin:0;background:#fff;
+    -webkit-backdrop-filter:none;backdrop-filter:none;
     opacity:0;visibility:hidden;
     transition:opacity .22s var(--ease),transform .26s var(--ease),visibility 0s linear .26s;
   }
