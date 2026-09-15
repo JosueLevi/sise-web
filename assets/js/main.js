@@ -741,24 +741,34 @@
     const slides = $$('.lab-slide', labsRail);
 
     if (slides.length > 1) {
-      labsNav.innerHTML = slides.map((_, i) =>
-        `<button class="labs-dot${i === 0 ? ' is-on' : ''}" type="button" role="tab"
-                 aria-selected="${i === 0}" aria-label="Laboratorio ${i + 1} de ${slides.length}"></button>`
-      ).join('');
-      const puntos = $$('.labs-dot', labsNav);
+      const flecha = (dir, etiqueta, d) =>
+        `<button class="labs-flecha" type="button" data-dir="${dir}" aria-label="${etiqueta}">
+           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round"/></svg>
+         </button>`;
+      labsNav.innerHTML =
+        flecha(-1, 'Foto anterior', 'M15 5l-7 7 7 7') +
+        flecha(1,  'Foto siguiente', 'M9 5l7 7-7 7');
+      const botones = $$('.labs-flecha', labsNav);
 
-      const marca = (i) => puntos.forEach((p, k) => {
-        p.classList.toggle('is-on', k === i);
-        p.setAttribute('aria-selected', String(k === i));
-      });
+      const paso = () => slides[1].offsetLeft - slides[0].offsetLeft;
 
-      puntos.forEach((p, i) => p.addEventListener('click', () => {
-        labsRail.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: 'smooth' });
+      function marca(i) {
+        // La primera flecha se apaga en la primera foto y la otra en la ultima
+        botones[0].disabled = i <= 0;
+        botones[1].disabled = i >= slides.length - 1;
+      }
+
+      botones.forEach((b) => b.addEventListener('click', () => {
+        labsRail.scrollBy({ left: paso() * Number(b.dataset.dir), behavior: 'smooth' });
       }));
 
-      /* El punto activo se deduce de la posicion real y no de la ultima
-         pulsacion: asi tambien acierta cuando se arrastra o se desliza
-         con el dedo. */
+      marca(0);   // de salida no hay foto anterior
+
+      /* En que foto estamos se deduce de la posicion real y no de la
+         ultima pulsacion: asi tambien acierta cuando se arrastra o se
+         desliza con el dedo. */
       labsRail.addEventListener('scroll', () => {
         const x = labsRail.scrollLeft;
         let cerca = 0, dist = Infinity;

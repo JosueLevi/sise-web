@@ -2622,7 +2622,9 @@ p{margin:0}
 @media (prefers-reduced-motion:reduce){.labs-rail{scroll-behavior:auto}}
 .labs-rail::-webkit-scrollbar{display:none}
 .lab-slide{
-  flex:0 0 min(520px,78%);aspect-ratio:16/10;border-radius:var(--r-lg);
+  /* Una foto entera por vista: a 520px con la siguiente asomando no se
+     distinguia el espacio, que es justo lo que hay que ver. */
+  flex:0 0 100%;aspect-ratio:16/9;border-radius:var(--r-lg);
   background-size:cover;background-position:center;scroll-snap-align:start;
   box-shadow:var(--shadow-md);
 }
@@ -2634,26 +2636,26 @@ p{margin:0}
    foto iria por detras del dedo. */
 .labs-rail.is-dragging{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto;user-select:none}
 .labs-rail.is-dragging .lab-slide{pointer-events:none}
-.labs-nav{display:flex;gap:10px;justify-content:center;margin-top:20px}
+/* Flechas abajo a la derecha en vez de puntos: con tres fotos grandes,
+   lo que hace falta es avanzar y retroceder, no saltar a una concreta. */
+.labs-nav{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
 .labs-nav:empty{display:none}
-.labs-dot{
-  width:34px;height:6px;border-radius:99px;padding:0;cursor:pointer;
-  background:#D6D9E0;
-  transition:background .25s var(--ease),width .25s var(--ease);
+.labs-flecha{
+  width:46px;height:46px;border-radius:50%;padding:0;cursor:pointer;
+  display:grid;place-content:center;
+  background:#fff;color:var(--red);
+  box-shadow:var(--shadow-sm);
+  transition:background .22s var(--ease),color .22s var(--ease),
+             transform .22s var(--ease),opacity .22s var(--ease);
 }
-.labs-dot:hover{background:#B9BDC8}
-.labs-dot.is-on{background:var(--red);width:56px}
-/* Zona de pulsacion comoda sin agrandar el punto */
-.labs-dot{position:relative}
-.labs-dot::after{content:'';position:absolute;inset:-14px -6px}
-@media (max-width:820px){
-  .labs-rail{
-    display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
-    scrollbar-width:none;padding-bottom:6px;scroll-padding-inline:24px;
-  }
-  .labs-rail::-webkit-scrollbar{display:none}
-  .lab-slide{flex:0 0 84%;aspect-ratio:16/10;scroll-snap-align:center}
-}
+.labs-flecha svg{width:20px;height:20px;display:block}
+.labs-flecha:hover{background:var(--red);color:#fff;transform:translateY(-2px)}
+/* Al llegar al extremo se apaga, pero sigue ahi: si desapareciera, las
+   dos flechas bailarian de sitio en cada paso. */
+.labs-flecha[disabled]{opacity:.35;cursor:default;pointer-events:none}
+/* El bloque de movil que habia aqui sobraba desde que el carril es
+   igual en los dos tamanos: lo unico que hacia era volver a dejar la
+   foto al 84% con la siguiente asomando. */
 
 /* ---------- Campo laboral ---------- */
 /* Una columna: a 327 y 385px las dos eran demasiado estrechas, y el
@@ -2951,5 +2953,5 @@ p{margin:0}
   /* Una sola columna: a dos, las tarjetas se quedaban en 166px y el
      nombre de la certificacion salia en cuatro renglones. */
   .cert-grid{grid-template-columns:1fr}
-  .lab-slide{flex-basis:88%}
+  /* .lab-slide ya no se estrecha en movil: una foto por vista */
 }
