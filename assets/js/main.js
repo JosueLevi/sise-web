@@ -704,7 +704,12 @@
     function cierraForm() {
       if (!document.body.classList.contains('form-abierto')) return;
       document.body.classList.remove('form-abierto');
-      formVelo.hidden = true;
+      /* El velo se apaga con transicion, asi que se oculta al final y no
+         de golpe: si se quita el hidden ahora desaparece de una y la
+         tarjeta se queda sola desvaneciendose sobre la pagina. */
+      setTimeout(() => {
+        if (!document.body.classList.contains('form-abierto')) formVelo.hidden = true;
+      }, 240);
       document.body.style.overflow = '';
       abrirForm.setAttribute('aria-expanded', 'false');
       if (formDesde && document.contains(formDesde)) formDesde.focus();
@@ -720,6 +725,15 @@
       // Escape cierra, salvo que lo este usando un desplegable abierto
       if (e.key === 'Escape' && !$('.lead-card .field.is-open')) cierraForm();
     });
+
+    /* Se llega con #form desde el flotante de carreras, cursos e
+       idiomas, que no llevan formulario propio. En escritorio el ancla
+       ya basta, pero en movil la tarjeta es un emergente oculto: sin
+       esto el usuario aterrizaba en el inicio sin ver ningun
+       formulario, que es justo lo que habia pedido. */
+    if (location.hash === '#form') {
+      if (esEmergente()) abreForm(); else vaAlForm();
+    }
 
     /* Si se pasa a escritorio con el emergente abierto, la tarjeta
        vuelve al banner y el estado sobra. */

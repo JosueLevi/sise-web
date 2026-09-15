@@ -620,6 +620,28 @@ p{margin:0}
   100%{box-shadow:var(--shadow-lg)}
 }
 
+/* Fondo del emergente. El div existia en las cinco paginas pero no
+   tenia ni una regla: al abrir el formulario en movil la pagina seguia
+   viendose entera detras y la tarjeta blanca se confundia con ella.
+
+   La entrada va con animacion y no con una clase que se anade al
+   fotograma siguiente, por lo mismo que el reproductor: si el navegador
+   no emite ese fotograma el velo se quedaba invisible. La salida si es
+   transicion -ahi el elemento ya esta pintado- y el JS lo oculta
+   cuando termina, para que velo y tarjeta se vayan a la vez. */
+.form-velo{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(12,13,20,.62);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  animation:veloEntra .22s var(--ease);
+  transition:opacity .22s var(--ease);
+}
+@keyframes veloEntra{from{opacity:0}to{opacity:1}}
+body:not(.form-abierto) .form-velo{opacity:0}
+@media (prefers-reduced-motion:reduce){
+  .form-velo{animation:none}
+}
+
 /* Cerrar del emergente. Solo aparece en movil: es ahi donde el
    formulario sale del banner y se abre encima de la pagina.
 
