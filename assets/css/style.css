@@ -1953,11 +1953,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
   }
 
   .site-header{inset:12px 0 auto 0}
-  /* 70px arriba y 70 abajo son 140px de vacio entre bloque y bloque:
-     en una pantalla de 375 eso es mas de un tercio del alto, y obliga
-     a un pulgar de mas por cada seccion. */
-  .section{padding:52px 0}
-  .cifras{padding:50px 0 54px}
+  /* 40 y 40: 80px justos entre bloque y bloque. Van iguales arriba y
+     abajo -y las dos secciones con numero propio tambien- para que la
+     separacion sea la misma en toda la pagina; en escritorio si son
+     distintas, porque alli el aire lo pide cada fondo. */
+  .section{padding:40px 0}
+  .cifras{padding:40px 0}
   .nav-pill{padding:9px 9px 9px 20px}
   .brand-logo{height:23px}
   .career-grid{grid-template-columns:repeat(2,1fr);gap:16px}
@@ -2003,7 +2004,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 @media (max-width:600px){
   body{font-size:16px}
-  .sedes{padding:48px 0 54px}
+  .sedes{padding:40px 0}
   .hero-bg{min-height:500px}
   .hero-nav{padding-bottom:18px}
   /* En móvil la tarjeta cae sobre la parte clara de la foto:
@@ -2983,7 +2984,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .car-cuerpo > section > .shell{padding-right:var(--gut)}
   /* Sin el carril al lado, las secciones van una detras de otra: los
      75px de arriba y abajo se notan el doble. */
-  .car-cuerpo > section{padding-block:48px}
+  .car-cuerpo > section{padding-block:40px}
   .car-form-wrap{position:static;width:100%}
   .campo-grid{grid-template-columns:1fr;gap:24px}
   .campo-img{aspect-ratio:16/9}
