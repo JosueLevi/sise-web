@@ -1268,7 +1268,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 @keyframes statPop{0%{transform:scale(1)}40%{transform:scale(1.13)}100%{transform:scale(1)}}
 .stat-num{transform-origin:left center;display:inline-block}
 .why-cifra.is-pop{animation:statPop .4s var(--ease)}
-.why-cifra{transform-origin:left center}
+.why-cifra{transform-origin:center}
 
 /* ============================================================
    ¿POR QUÉ ELEGIR SISE?
@@ -2524,85 +2524,92 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 .field-full{grid-column:1/-1}
 
-/* ---------- Por que estudiar (mismos colores suaves que los hub cards) ---------- */
-/* ---------- Por que estudiarla ----------
-   Panel en indigo. Ese bloque es el que convence, y en blanco sobre
-   gris iba del mismo material que el resto de la pagina: no destacaba.
-   La profundidad la da el contraste.
+/* ---------- Por que estudiarla: la ilustracion y su vineta ----------
+   Antes eran cuatro tarjetas a la vez dentro de un panel indigo. Cuatro
+   bloques de cifra + titulo + parrafo compitiendo entre si se leen mal:
+   se mira el numero mas grande y se ignora el resto. Ahora es un motivo
+   cada vez, dicho por el personaje, y las flechas llevan al siguiente.
 
-   Indigo y no negro: es el tercer tono de la casa -el inicio lo usa en
-   "Experiencias reales" y en la tarjeta azul del hub-, asi que no es un
-   color suelto sino un recurso que se repite. El negro daba mas
-   contraste pero su caracter es serio, y aqui se busca lo contrario.
-   Ademas evita el rojo sobre negro, la combinacion mas agresiva del
-   catalogo.
+   La ilustracion es de unDraw y ya viene tenida con el indigo de la
+   casa, asi que la vineta y los textos van del mismo color: la escena
+   entera se lee como una sola pieza. */
+.why-escena{
+  display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.5fr);
+  align-items:center;gap:clamp(10px,2vw,26px);
+}
+.why-ilu{width:100%;height:auto;display:block}
+.why-lado{min-width:0}
 
-   Los filetes van con borde en cada celda -y no con gap y fondo- para
-   que las lineas lleguen justas a los bordes del panel y no queden
-   cabos sueltos en las esquinas. */
-.why-rail{
+.why-globo{
   position:relative;
-  display:grid;grid-template-columns:repeat(2,1fr);
-  background:var(--indigo);border-radius:var(--r-lg);
-  overflow:hidden;
-  /* La sombra toma el tono del propio panel: una sombra gris debajo de
-     un bloque de color se ve sucia. */
-  box-shadow:0 22px 50px rgba(var(--indigo-rgb),.28),0 2px 0 rgba(250,212,79,.55);
+  /* Las cuatro fichas ocupan la misma celda: la vineta mide por la mas
+     alta y no da un salto de alto al cambiar de motivo. */
+  display:grid;
+  background:#fff;
+  border:1.5px solid rgba(var(--indigo-rgb),.45);
+  border-radius:var(--r-lg);
+  padding:clamp(26px,3vw,36px) clamp(20px,3vw,32px);
+  box-shadow:0 12px 34px rgba(var(--indigo-rgb),.10);
 }
-/* Rastro rojo en la esquina: el panel deja de ser un rectangulo plano
-   sin tener que meter una imagen. */
-.why-rail::before{
-  content:'';position:absolute;z-index:0;pointer-events:none;
-  right:-120px;top:-140px;width:420px;height:420px;border-radius:50%;
-  background:radial-gradient(circle,rgba(250,212,79,.3),transparent 64%);
+/* El pico. Es un cuadrado girado 45 grados al que solo se le pintan los
+   dos lados que quedan a la izquierda; el fondo blanco tapa el borde de
+   la vineta por detras y los dos quedan cosidos. */
+.why-globo::after{
+  content:'';position:absolute;z-index:1;
+  left:-9px;top:64px;width:16px;height:16px;
+  background:#fff;
+  border-left:1.5px solid rgba(var(--indigo-rgb),.45);
+  border-bottom:1.5px solid rgba(var(--indigo-rgb),.45);
+  transform:rotate(45deg);
 }
 
-.why-card{
-  position:relative;z-index:1;
-  display:grid;gap:4px;
-  padding:32px 30px 34px;
-  border-top:1px solid rgba(255,255,255,.14);
-  border-left:1px solid rgba(255,255,255,.14);
-  transition:background .3s var(--ease);
+.why-slide{
+  grid-area:1/1;
+  text-align:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .28s var(--ease),visibility 0s linear .28s;
 }
-.why-card:hover{background:rgba(255,255,255,.04)}
-/* La primera fila no lleva filete arriba ni la primera columna a la
-   izquierda: si no, el panel sale con un marco por dentro. */
-.why-card:nth-child(-n+2){border-top:0}
-.why-card:nth-child(odd){border-left:0}
+.why-slide.is-activa{
+  opacity:1;visibility:visible;
+  transition:opacity .28s var(--ease),visibility 0s;
+}
 
 .why-cifra{
-  display:block;margin-bottom:8px;
+  display:block;margin-bottom:4px;
   font-family:'Barlow Condensed',sans-serif;font-weight:900;
-  font-size:58px;line-height:.9;letter-spacing:-.02em;
-  /* Amarillo y no rojo: el rojo de marca sobre este indigo se queda en
-     2,1:1 de contraste -los dos son colores de luminosidad media y se
-     anulan-, asi que la cifra, que es lo que hay que leer primero, era
-     lo que peor se veia. El amarillo sube a 5,7:1 y es el tercer tono
-     de la casa, el mismo de la tarjeta amarilla del inicio. */
-  color:var(--terciario);
-  transform-origin:left center;
-  transition:transform .3s var(--ease);
-  /* Sobre indigo el rojo ya destaca por si solo: el halo que hacia
-     falta sobre negro aqui solo emborronaba el contorno de la cifra. */
+  font-size:clamp(46px,5.4vw,60px);line-height:.95;letter-spacing:-.02em;
+  /* Rojo y no amarillo: el panel ya no es indigo sino blanco, y sobre
+     blanco el amarillo se queda en 1,5:1. El rojo da 3,9:1, de sobra
+     para un cuerpo de este tamano. */
+  color:var(--red);
 }
-.why-card:hover .why-cifra{transform:translateY(-2px) scale(1.04)}
-.why-cifra.is-pop{animation:statPop .4s var(--ease)}
-/* El simbolo acompana, no manda: a la mitad de cuerpo y sin tanto peso,
-   para que lo que se lea de golpe sea la cifra. */
+/* El simbolo acompana, no manda. */
 .why-cifra i{font-style:normal;font-size:.52em;font-weight:800;letter-spacing:0}
 
-.why-card h3{
+.why-slide h3{
   font-family:'Barlow Condensed',sans-serif;font-weight:700;
-  font-size:22px;line-height:1.15;letter-spacing:.01em;color:#fff;
+  font-size:clamp(21px,2.4vw,25px);line-height:1.15;letter-spacing:.01em;
+  color:var(--indigo);margin-bottom:6px;
 }
-.why-card p{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.76)}
+.why-slide p{font-size:15px;line-height:1.6;color:var(--body);text-wrap:pretty}
 
-@media (max-width:700px){
-  .why-rail{grid-template-columns:1fr}
-  .why-card{padding:26px 22px 28px;border-left:0}
-  .why-card:nth-child(2){border-top:1px solid rgba(255,255,255,.14)}
-  .why-cifra{font-size:48px}
+/* Las flechas son las mismas del carril de laboratorios, clase incluida:
+   dos controles iguales en la misma pagina que se vieran distintos solo
+   confundirian. */
+.why-nav{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+
+@media (max-width:820px){
+  /* La ilustracion se pone encima y el pico sube al centro. */
+  .why-escena{grid-template-columns:1fr;gap:6px;justify-items:center}
+  .why-ilu{width:min(230px,62%)}
+  .why-lado{width:100%}
+  .why-globo::after{
+    left:50%;top:-9px;margin-left:-8px;
+    border:0;
+    border-left:1.5px solid rgba(var(--indigo-rgb),.45);
+    border-top:1.5px solid rgba(var(--indigo-rgb),.45);
+  }
+  .why-nav{justify-content:center}
 }
 
 /* Pinceladas del inicio, las mismas: la imagen hace de mascara y el

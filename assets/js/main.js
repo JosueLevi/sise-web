@@ -1006,10 +1006,71 @@
 
   const statsCard = $('#statsCard');
   if (statsCard) statsIO.observe(statsCard);
-  /* Las cifras de la ficha de carrera usan el mismo contador: no hay
-     razon para tener dos. */
-  const whyRail = $('.why-rail');
-  if (whyRail) statsIO.observe(whyRail);
+  /* ============================================================
+     5b. "POR QUE ESTUDIARLA": UN MOTIVO CADA VEZ
+     ============================================================
+     Cuatro tarjetas a la vez se leian como un muro. Ahora el personaje
+     dice uno y las flechas pasan al siguiente. */
+  const whyEscena = $('#whyEscena');
+  const whyNav    = $('#whyNav');
+
+  if (whyEscena && whyNav) {
+    const motivos = $$('.why-slide', whyEscena);
+
+    if (motivos.length > 1) {
+      // Las mismas flechas del carril de laboratorios, clase incluida
+      const flecha = (dir, etiqueta, d) =>
+        `<button class="labs-flecha" type="button" data-dir="${dir}" aria-label="${etiqueta}">
+           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none"
+                stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round"/></svg>
+         </button>`;
+      whyNav.innerHTML =
+        flecha(-1, 'Motivo anterior', 'M15 5l-7 7 7 7') +
+        flecha(1,  'Motivo siguiente', 'M9 5l7 7-7 7');
+      const botones = $$('.labs-flecha', whyNav);
+
+      let actual = 0, aLaVista = false;
+
+      /* El contador de un motivo arranca cuando ese motivo se ve, no al
+         cargar: si no, los tres escondidos se contaban solos y al llegar
+         a ellos ya estaban en su cifra final. */
+      function cuenta(i) {
+        if (!aLaVista) return;
+        $$('.counter', motivos[i]).forEach((c) => {
+          if (c.dataset.contado) return;
+          c.dataset.contado = '1';
+          runCounter(c);
+        });
+      }
+
+      function muestra(i) {
+        actual = Math.max(0, Math.min(i, motivos.length - 1));
+        motivos.forEach((m, k) => m.classList.toggle('is-activa', k === actual));
+        // Como en laboratorios: en los extremos la flecha se apaga pero
+        // se queda en su sitio, para que la pareja no baile.
+        botones[0].disabled = actual <= 0;
+        botones[1].disabled = actual >= motivos.length - 1;
+        cuenta(actual);
+      }
+
+      botones.forEach((b) => b.addEventListener('click', () => {
+        muestra(actual + Number(b.dataset.dir));
+      }));
+
+      muestra(0);
+
+      const whyIO = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          aLaVista = true;
+          cuenta(actual);
+          whyIO.unobserve(en.target);
+        });
+      }, { threshold: 0.35 });
+      whyIO.observe(whyEscena);
+    }
+  }
 
     /* ============================================================
      6. ¿POR QUÉ ELEGIR SISE? — visor con marco compartido (video + espacios)
