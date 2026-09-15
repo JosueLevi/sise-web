@@ -2615,7 +2615,7 @@ p{margin:0}
    Y scroll-behavior en el propio carril, para que el desplazamiento
    suave lo lleve el navegador y no dependa de cada llamada. */
 .labs-rail{
-  display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;
+  display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x proximity;
   scroll-behavior:smooth;
   scrollbar-width:none;padding-bottom:6px;
 }
@@ -2626,7 +2626,11 @@ p{margin:0}
      distinguia el espacio, que es justo lo que hay que ver. */
   flex:0 0 100%;aspect-ratio:16/9;border-radius:var(--r-lg);
   background-size:cover;background-position:center;scroll-snap-align:start;
-  box-shadow:var(--shadow-md);
+  /* Borde a la derecha y abajo, no sombra desplazada: la sombra caia
+     fuera de la caja y el carril -que recorta lo que se sale- se la
+     comia. El borde va por dentro y no hay nada que lo pueda cortar. */
+  border-right:6px solid var(--red);
+  border-bottom:6px solid var(--red);
 }
 /* Con raton no habia forma de moverlo: la rueda solo desplaza en
    vertical y el carril no tenia ni puntos ni arrastre. */

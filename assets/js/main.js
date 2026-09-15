@@ -786,7 +786,9 @@
         if (e.pointerType === 'touch') return;   // el tactil ya lo hace el navegador
         baja = true; movido = false;
         x0 = e.clientX; s0 = labsRail.scrollLeft;
-        labsRail.setPointerCapture(e.pointerId);
+        /* Capturar el puntero puede fallar si para cuando llega aqui ya
+           se solto: no es motivo para tirar el resto del gesto. */
+        try { labsRail.setPointerCapture(e.pointerId); } catch (_) {}
       });
       labsRail.addEventListener('pointermove', (e) => {
         if (!baja) return;
@@ -794,10 +796,27 @@
         if (!movido && Math.abs(d) > 4) { movido = true; labsRail.classList.add('is-dragging'); }
         if (movido) labsRail.scrollLeft = s0 - d;
       });
+      /* Al soltar, el carril se coloca en la foto mas cercana.
+
+         Sin esto se quedaba a medio camino: el enganche esta en
+         "proximity" -que solo ajusta si ya estas cerca- y ademas se
+         desactiva durante el arrastre para que la foto siga al raton.
+         Asi que al soltar no habia nada que terminara el gesto. */
+      const encaja = () => {
+        const x = labsRail.scrollLeft;
+        let cerca = slides[0], dist = Infinity;
+        slides.forEach((sl) => {
+          const d = Math.abs((sl.offsetLeft - slides[0].offsetLeft) - x);
+          if (d < dist) { dist = d; cerca = sl; }
+        });
+        labsRail.scrollTo({ left: cerca.offsetLeft - slides[0].offsetLeft, behavior: 'smooth' });
+      };
+
       const suelta = () => {
         if (!baja) return;
         baja = false;
         labsRail.classList.remove('is-dragging');
+        if (movido) encaja();
       };
       labsRail.addEventListener('pointerup', suelta);
       labsRail.addEventListener('pointercancel', suelta);
