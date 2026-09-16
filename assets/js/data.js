@@ -44,9 +44,9 @@ const FLOTANTES = {
   },
   whatsapp: {
     opciones: [
-      { label: 'Carreras',   url: 'https://wa.link/g16qrt' },
-      { label: 'Cursos',     url: 'https://wa.link/zgq8zu' },
-      { label: 'Soy Alumno', url: 'https://wa.link/8kjxf0' }
+      { label: 'Matricularme a Carreras', url: 'https://wa.link/g16qrt' },
+      { label: 'Adquirir un Curso',       url: 'https://wa.link/zgq8zu' },
+      { label: 'Soy Alumno SISE',         url: 'https://wa.link/8kjxf0' }
     ]
   }
 };

@@ -1360,67 +1360,25 @@ body:not(.form-abierto) .form-velo{opacity:0}
   background:#07080c;
   padding-block:clamp(30px,4vw,48px);
 }
-/* Grano de pelicula: ruido fino dibujado en SVG. La opacidad sale del
-   propio ruido y solo los puntos mas claros llegan a verse (entre 0 y
-   23%, casi siempre por debajo del 8%): el negro sigue siendo negro,
-   con motas. Pesa menos de 1 KB. */
-.pq-panel,
-.pq-pin{--pq-grano:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .42 0 0 0 -.19'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23g%29'/%3E%3C/svg%3E")}
-/* Zona del titulo: el chevron de la marca en grande a la derecha, un
-   indigo suave arriba a la izquierda y el grano. El rojo lo pone la
-   parte fija, que sube por detras del titulo (mas abajo). Se limita a
-   los primeros 560px del panel. */
-.pq-panel::before{
-  content:'';position:absolute;left:0;right:0;top:0;height:560px;z-index:-1;pointer-events:none;
-  background:
-    var(--pq-grano) repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 67 71'%3E%3Cpath d='M39.97.5 66.07 35.39 39.97 70.28H15.58L41.45 35.69 41.67 35.39 41.45 35.09 15.58.5H39.97ZM13.78 19.16 24.87 33.98 13.78 48.8H1L11.86 34.28 12.08 33.98 11.86 33.68 1 19.16H13.78Z' fill='none' stroke='white' stroke-opacity='.09' stroke-width='.28'/%3E%3C/svg%3E") no-repeat right -90px top -30px / auto 520px,
-    radial-gradient(420px 300px at 8% 10%,rgba(70,66,166,.30),rgba(70,66,166,0) 70%);
-  /* Se apaga donde empieza la parte fija, que trae su propio grano */
-  -webkit-mask-image:linear-gradient(to bottom,#000 32%,transparent 58%);
-  mask-image:linear-gradient(to bottom,#000 32%,transparent 58%);
-}
 
-/* Fondo de la parte fija. Todo esto se queda quieto mientras las
-   tarjetas pasan de lado: esa diferencia de velocidad es el parallax.
-   Las tarjetas cubren casi toda la pantalla, asi que el fondo se ve en
-   la franja de arriba, la de abajo y los huecos: los resplandores van
-   grandes para que asomen por ahi.
-   - .pq-fondo       la foto de las aulas, desenfocada en el archivo
-                     (5 KB) y oscurecida; se funde arriba con la zona
-                     del titulo
-   - ::before        resplandor rojo arriba al centro y abajo a la
-                     izquierda, e indigo arriba a la derecha
-   - ::after         grano */
+/* Fondo: la foto de las aulas, ya desenfocada en el archivo (5 KB).
+   Vive dentro de la parte fija y no se mueve: mientras las tarjetas
+   pasan de lado, el resplandor se queda en su sitio, y esa diferencia
+   de velocidad es el parallax. */
 .pq-pin{position:relative;isolation:isolate}
 .pq-fondo{
-  position:absolute;inset:0;z-index:-3;pointer-events:none;
-  background:
-    linear-gradient(rgba(7,8,12,.58),rgba(7,8,12,.58)),
-    url("../img/porque-fondo.webp") center/cover no-repeat;
-  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 120px);
-  mask-image:linear-gradient(to bottom,transparent,#000 120px);
+  position:absolute;inset:0;z-index:-2;
+  background:url("../img/porque-fondo.webp") center/cover no-repeat;
+  opacity:.55;
+  pointer-events:none;
 }
-/* El titulo por encima de los resplandores, que suben por detras */
-.porque .section-head{position:relative;z-index:1}
-.pq-pin::before,
-.pq-pin::after{content:'';position:absolute;inset:0;pointer-events:none}
-/* Sube 220px por encima de la parte fija: el rojo de arriba arranca
-   detras del subtitulo y baja sin corte. Con la fila fija, ese trozo
-   queda fuera de pantalla y en la franja de arriba se ve lo mismo. */
+/* Velo: oscurece los lados y funde arriba y abajo con el color del
+   panel, para que la foto no marque un borde al llegar el titulo. */
 .pq-pin::before{
-  z-index:-2;top:-220px;
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(56% 340px at 50% 270px,rgba(224,0,64,.46),rgba(224,0,64,0) 72%),
-    radial-gradient(46% 62% at 12% 96%,rgba(224,0,64,.6),rgba(224,0,64,0) 72%),
-    radial-gradient(34% 48% at 92% 6%,rgba(70,66,166,.44),rgba(70,66,166,0) 72%);
-}
-.pq-pin::after{
-  z-index:-1;background:var(--pq-grano) repeat;
-  /* Entra poco a poco: arriba se cruza con el grano de la zona del
-     titulo y, sumados, marcaban una linea. */
-  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 200px);
-  mask-image:linear-gradient(to bottom,transparent,#000 200px);
+    linear-gradient(to bottom,#07080c 0,rgba(7,8,12,0) 24%,rgba(7,8,12,0) 76%,#07080c 100%),
+    radial-gradient(ellipse 75% 60% at 50% 50%,rgba(7,8,12,.15),rgba(7,8,12,.8) 76%);
 }
 
 /* Guia de deslizamiento: solo cuando la fila se mueve con el dedo o la

@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=394">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=395">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -19,7 +19,7 @@
      sola precarga, en movil se bajaban 82 KB de la imagen de
      escritorio que no llega a pintarse nunca. -->
 <link rel="preload" as="image" href="assets/img/hero-01.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=394">
+<link rel="stylesheet" href="assets/css/style.css?v=395">
 </head>
 <body class="inicio">
 
@@ -184,37 +184,77 @@
         <span class="hub-photo" style="background-image:url('assets/img/hub-carreras.webp?r=2')"></span>
         <span class="hub-body">
           <span class="hub-kicker">Tu profesi&oacute;n</span>
-          <span class="hub-title">Carreras</span>
-          <span class="hub-meta">24 carreras &middot; 8 &aacute;reas</span>
+          <span class="hub-title">Carreras<br>Semipresenciales</span>
+          <span class="hub-meta">24 carreras &middot; 3 a&ntilde;os</span>
         </span>
         <span class="hub-go" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </a>
 
-      <a class="hub-card hub--amarillo" href="cursos.html" style="animation-delay:80ms">
+      <a class="hub-card hub--amarillo" href="carreras.html" style="animation-delay:80ms">
         <span class="hub-photo" style="background-image:url('assets/img/hub-cursos.webp?r=2')"></span>
         <span class="hub-body">
-          <span class="hub-kicker">Suma skills</span>
-          <span class="hub-title">Cursos y<br>Especializaciones</span>
-          <span class="hub-meta">33 cursos &middot; 8 &aacute;reas</span>
+          <span class="hub-kicker">100% en l&iacute;nea</span>
+          <span class="hub-title">Carreras<br>Virtuales</span>
+          <span class="hub-meta">24 carreras &middot; 2 a&ntilde;os</span>
         </span>
         <span class="hub-go" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </a>
 
-      <a class="hub-card hub--azul" href="idiomas.html" style="animation-delay:160ms">
+      <!-- TODO: enlazar a la pagina de Escuela cuando exista -->
+      <a class="hub-card hub--azul" href="#" style="animation-delay:160ms">
         <span class="hub-photo" style="background-image:url('assets/img/hub-idiomas.webp?r=2')"></span>
         <span class="hub-body">
-          <span class="hub-kicker">Abre fronteras</span>
-          <span class="hub-title">Idiomas</span>
-          <span class="hub-meta">Ingl&eacute;s &middot; Lengua de se&ntilde;as</span>
+          <span class="hub-kicker">Ahora somos</span>
+          <span class="hub-title">Escuela</span>
+          <span class="hub-meta">Grado de bachiller</span>
         </span>
         <span class="hub-go" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ¿POR QUÉ ELEGIR SISE? ============ -->
+<!-- Panel con carril: el titulo pasa con el scroll normal y despues la
+     fila (video + laboratorios) se queda fija a pantalla completa
+     mientras el scroll la desplaza de lado. Las tarjetas las pinta
+     main.js desde PORQUE_SLIDES. -->
+<section class="section porque" id="porque">
+  <div class="pq-panel">
+    <header class="section-head reveal">
+      <h2 class="section-title">&iquest;Por qu&eacute; elegir <em>SISE?</em></h2>
+      <p class="section-sub">M&iacute;ralo en un minuto y explora nuestros laboratorios.</p>
+    </header>
+
+    <!-- El recorrido: mide una pantalla mas lo que viaja la fila -->
+    <div class="pq-recorrido">
+      <div class="pq-pin">
+        <!-- Foto de fondo: se queda quieta mientras la fila se desliza -->
+        <div class="pq-fondo" aria-hidden="true"></div>
+        <div class="pq-caja" id="pqCaja">
+          <div class="pq-carril" id="pqCarril">
+            <div class="pq-video" id="pqVideoView" data-yt="E2R48vT67i8">
+              <div class="pq-poster" id="pqPoster" aria-hidden="true"></div>
+              <button class="pq-play" id="pqPlay" type="button" aria-label="Reproducir el video de SISE">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.42)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Guia de deslizamiento: solo cuando la fila se mueve con el dedo -->
+        <div class="pq-guia" aria-hidden="true">
+          <span class="pq-guia-txt">Desliza
+            <svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-5-5m5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="pq-guia-barra"><span></span></span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -257,45 +297,6 @@
         <div class="stat-txt">
           <p class="stat-num">+<span class="counter" data-to="150000" data-dur="2000" data-sep="1">0</span></p>
           <p class="stat-label">Egresados exitosos</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ¿POR QUÉ ELEGIR SISE? ============ -->
-<!-- Panel con carril: el titulo pasa con el scroll normal y despues la
-     fila (video + laboratorios) se queda fija a pantalla completa
-     mientras el scroll la desplaza de lado. Las tarjetas las pinta
-     main.js desde PORQUE_SLIDES. -->
-<section class="section porque" id="porque">
-  <div class="pq-panel">
-    <header class="section-head reveal">
-      <h2 class="section-title">&iquest;Por qu&eacute; elegir <em>SISE?</em></h2>
-      <p class="section-sub">M&iacute;ralo en un minuto y explora nuestros laboratorios.</p>
-    </header>
-
-    <!-- El recorrido: mide una pantalla mas lo que viaja la fila -->
-    <div class="pq-recorrido">
-      <div class="pq-pin">
-        <!-- Foto de fondo: se queda quieta mientras la fila se desliza -->
-        <div class="pq-fondo" aria-hidden="true"></div>
-        <div class="pq-caja" id="pqCaja">
-          <div class="pq-carril" id="pqCarril">
-            <div class="pq-video" id="pqVideoView" data-yt="E2R48vT67i8">
-              <div class="pq-poster" id="pqPoster" aria-hidden="true"></div>
-              <button class="pq-play" id="pqPlay" type="button" aria-label="Reproducir el video de SISE">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.42)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-        <!-- Guia de deslizamiento: solo cuando la fila se mueve con el dedo -->
-        <div class="pq-guia" aria-hidden="true">
-          <span class="pq-guia-txt">Desliza
-            <svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-5-5m5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="pq-guia-barra"><span></span></span>
         </div>
       </div>
     </div>
@@ -474,8 +475,8 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=394"></script>
-<script src="assets/js/data.js?v=394"></script>
-<script src="assets/js/main.js?v=394"></script>
+<script src="assets/js/icons.js?v=395"></script>
+<script src="assets/js/data.js?v=395"></script>
+<script src="assets/js/main.js?v=395"></script>
 </body>
 </html>
