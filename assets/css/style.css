@@ -1661,15 +1661,22 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* Sin alto forzado: se ajusta a lo que hay dentro. Los 100vh venian de
    cuando la tarjeta llevaba foto, cita y autor; con solo tres Shorts
    sobraba casi media pantalla de aire. */
-/* Tinte claro del tercer color de marca (var(--indigo), el de las tarjetas
-   de Idiomas y las pinceladas de Sedes). Los tres colores de la marca
-   tienen su version clara y esta es la unica que no estaba en uso:
-   --red-soft es el rosa, #FBF0C4 el crema. Al ser frio, las miniaturas
-   de los Shorts -llenas de rojo y tonos calidos- resaltan mas que
-   sobre un fondo tambien calido. */
-/* Un fondo unico en la ficha: egresados deja de tener banda propia.
-   El indigo se queda solo en "Experiencias reales" del inicio. */
-.experiencias{position:relative;background:#EAE9F4;overflow:hidden}
+/* Banda en el rojo de marca. Antes iba en lavanda.
+   --red-600 y no el rojo puro: con el vivo, el subtitulo blanco se
+   quedaba en 3,88:1; con este llega a 4,95. Queda lejos de la banda
+   negra del video -hay dos secciones claras en medio-, asi que las
+   dos masas fuertes de la pagina no se juntan. */
+.experiencias{position:relative;background:var(--red-600);overflow:hidden}
+.experiencias .section-title{color:#fff}
+/* "Reales" en amarillo: en rojo desaparecia sobre la banda. 3,44:1,
+   suficiente para un titular de este cuerpo. */
+.experiencias .section-title em{color:var(--terciario)}
+.experiencias .section-sub{color:#fff}
+/* Sombra teñida de rojo: una gris debajo de las miniaturas ensuciaba
+   la banda, igual que pasaba con el panel indigo. */
+.experiencias .exp-media{box-shadow:0 12px 30px rgba(90,0,24,.30)}
+.experiencias .exp-card:hover .exp-media{box-shadow:0 22px 48px rgba(90,0,24,.40)}
+/* Un fondo unico en la ficha: egresados deja de tener banda propia. */
 .car-egresado{position:relative;overflow:hidden}
 .experiencias > .shell,
 .car-egresado > .shell{position:relative;z-index:1;width:100%}
@@ -1695,6 +1702,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
   -webkit-mask-position:center;mask-position:center;
   opacity:.09;
 }
+/* Sobre el rojo el patron va en blanco; en la ficha sigue en indigo */
+.experiencias::before,
+.experiencias::after{background-color:#fff;opacity:.10}
 .experiencias::before,
 .car-egresado::before{left:-24px}
 .experiencias::after,
