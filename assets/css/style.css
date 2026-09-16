@@ -1344,37 +1344,41 @@ body:not(.form-abierto) .form-velo{opacity:0}
    los laboratorios de dos en dos, todo a la vista.
 
    Estructura:
-     .porque        el recorrido (en escritorio mide 100svh + lo que
-                    tiene que viajar la fila)
-     .pq-pin        lo que se queda fijo
-     .pq-panel      el panel oscuro
-     .pq-fondo      la foto de fondo
+     .pq-panel      el panel oscuro: titulo + recorrido
+     .pq-recorrido  en escritorio mide 100svh + lo que viaja la fila
+     .pq-pin        lo que se queda fijo: solo las imagenes
+     .pq-fondo      la foto de fondo, quieta dentro de .pq-pin
      .pq-caja       ventana de la fila, recorta
      .pq-carril     la fila que se mueve */
 .porque{position:relative;background:transparent}
 .pq-pin{padding-inline:0}
 .pq-panel{
-  position:relative;isolation:isolate;overflow:hidden;
+  /* clip y no hidden: hidden lo volveria contenedor de scroll, y la
+     parte fija y su animacion se medirian contra el panel en vez de
+     contra la pagina. */
+  position:relative;isolation:isolate;overflow:hidden;overflow:clip;
   background:#07080c;
   padding-block:clamp(30px,4vw,48px);
 }
 
-/* Fondo: la foto de las aulas, ya desenfocada en el archivo (5 KB; asi
-   el navegador no tiene que desenfocar nada al moverla). Mas ancha que
-   el panel para poder desplazarse, como la foto del banner. */
+/* Fondo: la foto de las aulas, ya desenfocada en el archivo (5 KB).
+   Vive dentro de la parte fija y no se mueve: mientras las tarjetas
+   pasan de lado, el resplandor se queda en su sitio, y esa diferencia
+   de velocidad es el parallax. */
+.pq-pin{position:relative;isolation:isolate}
 .pq-fondo{
-  position:absolute;top:0;bottom:0;left:0;width:135%;z-index:-2;
+  position:absolute;inset:0;z-index:-2;
   background:url("../img/porque-fondo.webp") center/cover no-repeat;
   opacity:.55;
   pointer-events:none;
-  translate:calc(var(--pq-prog, 0) * -25%) 0;
 }
-/* Velo: oscurece los bordes y deja una luz suave detras del titulo */
-.pq-panel::before{
+/* Velo: oscurece los lados y funde arriba y abajo con el color del
+   panel, para que la foto no marque un borde al llegar el titulo. */
+.pq-pin::before{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(ellipse 70% 55% at 50% 22%,rgba(7,8,12,.25),rgba(7,8,12,.82) 72%),
-    linear-gradient(to bottom,rgba(7,8,12,.35),rgba(7,8,12,0) 30%,rgba(7,8,12,0) 70%,rgba(7,8,12,.6));
+    linear-gradient(to bottom,#07080c 0,rgba(7,8,12,0) 24%,rgba(7,8,12,0) 76%,#07080c 100%),
+    radial-gradient(ellipse 75% 60% at 50% 50%,rgba(7,8,12,.15),rgba(7,8,12,.8) 76%);
 }
 
 /* Guia de deslizamiento: solo cuando la fila se mueve con el dedo o la
@@ -1504,7 +1508,6 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .pq-lab .pq-texto{padding:14px}
   .pq-nombre{font-size:clamp(17px,4.6vw,24px)}
   .pq-guia{display:none}
-  .pq-fondo{translate:none}
 }
 @media (max-width:600px){
   .pq-carril{gap:10px}
@@ -1522,21 +1525,21 @@ body:not(.form-abierto) .form-velo{opacity:0}
    quedaria demasiado baja para leerse. */
 @supports (animation-timeline: view()) {
   @media (min-width:901px) and (min-height:620px) and (prefers-reduced-motion:no-preference) {
-    .porque.is-carril{
-      padding:0;
+    /* El titulo pasa con el scroll normal; lo que se fija es solo el
+       recorrido, y dentro de el las imagenes a toda la altura. */
+    .porque.is-carril{padding:0}
+    .porque.is-carril .pq-panel{padding-top:clamp(64px,8vw,104px);padding-bottom:0}
+    .porque.is-carril .section-head{margin-bottom:0}
+    .porque.is-carril .pq-recorrido{
       height:calc(100svh + var(--pq-dist, 0px));
       view-timeline:--pq block;
     }
     .porque.is-carril .pq-pin{
       position:sticky;top:0;height:100svh;
-      display:flex;padding:0;
-    }
-    .porque.is-carril .pq-panel{
-      flex:1;min-height:0;display:flex;flex-direction:column;
-      /* La cabecera fija ocupa de 10 a 84px cuando aparece y va encima
-         del panel: el titulo arranca 20px por debajo. */
-      padding-top:calc(var(--header-h) + 26px);
-      padding-bottom:clamp(30px,4vh,44px);
+      display:flex;flex-direction:column;
+      /* Arriba deja sitio a la cabecera fija: cuando aparece ocupa de
+         10 a 84px. */
+      padding:calc(var(--header-h) + 18px) 0 24px;
     }
     .porque.is-carril .pq-caja{
       flex:1;min-height:0;
@@ -1552,10 +1555,6 @@ body:not(.form-abierto) .form-velo{opacity:0}
     .porque.is-carril .pq-lab{height:100%;width:auto}
     .porque.is-carril .pq-guia{display:none}
 
-    .porque.is-carril .pq-fondo{
-      animation:pqFondo linear both;
-      animation-timeline:--pq;animation-range:contain;
-    }
     .porque.is-carril .pq-lab-foto{
       animation:pqFoto linear both;
       animation-timeline:--pq;animation-range:contain;
@@ -1564,11 +1563,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 @keyframes pqViaje{from{translate:0 0}to{translate:calc(var(--pq-dist, 0px) * -1) 0}}
 /* Tres velocidades: la fila, la foto dentro de cada tarjeta (algo mas
-   lenta) y el fondo (mucho mas lento). */
+   lenta) y el fondo, que no se mueve. */
 @keyframes pqFoto{from{translate:9% 0}to{translate:-9% 0}}
-/* La foto de fondo mide 135% del panel: un 25% de su ancho es algo
-   menos del margen que le sobra, asi nunca se le ve el borde. */
-@keyframes pqFondo{from{translate:0 0}to{translate:-25% 0}}
 
 
 /* ============================================================

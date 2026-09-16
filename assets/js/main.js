@@ -1198,7 +1198,8 @@
       const visible = pqCaja.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
       const viaje = mideViaje();
       const hace = Math.min(viaje, Math.max(0, tarjeta.offsetLeft + tarjeta.offsetWidth - visible));
-      const inicio = pqSeccion.getBoundingClientRect().top + window.scrollY;
+      // el tramo fijo empieza donde empieza el recorrido, no la seccion
+      const inicio = $('.pq-recorrido', pqSeccion).getBoundingClientRect().top + window.scrollY;
       window.scrollTo({ top: inicio + hace, behavior: 'instant' });
     });
 
