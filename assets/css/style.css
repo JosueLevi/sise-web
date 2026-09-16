@@ -17,6 +17,7 @@
   --red-700:#C00036;
   --red-soft:#FFE4EC;
   --terciario:#FAD44F;  /* tercer color de marca */
+  --crema:#FBF0C4;      /* tinte claro del amarillo */
   /* Azul indigo: tarjetas de Idiomas, pinceladas de Sedes, panel de
      cifras y puntos de la malla. La version en componentes es el mismo
      color, para los rgba() con transparencia: si se cambia uno hay que
@@ -1268,7 +1269,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .cc-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .cc-tag{
   font-size:12px;font-weight:500;
-  color:var(--red-700);background:#FBF0C4;padding:6px 13px;border-radius:999px;
+  color:var(--red-700);background:var(--crema);padding:6px 13px;border-radius:999px;
   white-space:nowrap;
 }
 
@@ -1278,7 +1279,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* ============================================================
    SISE EN CIFRAS
    ============================================================ */
-.cifras{background:transparent;padding:88px 0 92px}
+/* Fondo crema, el tinte del amarillo. Iba en el gris de pagina, igual
+   que la oferta de arriba, y las dos secciones se leian como una sola.
+   Asi ningun fondo se repite con su vecino y el amarillo tiene su
+   momento, como el indigo lo tiene en Experiencias. La tarjeta blanca
+   de las cifras se despega mas del crema que del gris. */
+.cifras{background:var(--crema);padding:88px 0 92px}
 /* La bajada de esta sección va en una sola línea en el diseño */
 .cifras .section-head{max-width:1000px}
 .stats-card{
@@ -1787,7 +1793,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .news-excerpt{margin-top:9px;font-size:12px;color:var(--body);line-height:1.5;flex:1}
 .news-tag{
   margin-top:22px;align-self:flex-start;font-size:12px;font-weight:500;
-  color:var(--red-700);background:#FBF0C4;padding:6px 13px;border-radius:999px;
+  color:var(--red-700);background:var(--crema);padding:6px 13px;border-radius:999px;
 }
 
 /* ============================================================
@@ -3005,7 +3011,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
      El texto largo va en tinta y no en rojo: rojo sobre crema se queda
      en 3,4:1 de contraste y una cita de dos lineas hay que leerla, no
      mirarla. El rojo se reserva para las comillas y el cargo. */
-  background:#FBF0C4;color:var(--ink);
+  background:var(--crema);color:var(--ink);
   border-radius:var(--r-lg);
   padding:30px 34px 32px;
   display:flex;flex-direction:column;align-items:flex-start;gap:14px;
