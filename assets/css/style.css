@@ -208,7 +208,11 @@ p{margin:0}
 /* Logo real (SVG del diseño): las letras toman currentColor,
    el chevron conserva el rojo de marca #FF0C47 */
 .brand{display:flex;align-items:center;flex:none;color:#fff}
-.brand-logo{display:block;width:auto;height:27px;aspect-ratio:96/24}
+/* Ancho explicito (alto x 4, la proporcion del logo). Con width:auto y
+   aspect-ratio, Safari medía el enlace con el tamano por defecto de un
+   SVG sin dimensiones -300px- y en movil empujaba Empleabilidad y la
+   hamburguesa fuera de la pantalla. Chrome no tiene ese fallo. */
+.brand-logo{display:block;width:108px;height:27px}
 .brand-logo > svg{width:100%;height:100%;display:block}
 
 .main-nav{display:flex;align-items:center;gap:clamp(12px,1.8vw,30px);margin-inline:auto}
@@ -2159,7 +2163,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .section{padding:40px 0}
   .cifras{padding:40px 0}
   .nav-pill{padding:9px 9px 9px 20px}
-  .brand-logo{height:23px}
+  .brand-logo{width:92px;height:23px}
   .career-grid{grid-template-columns:repeat(2,1fr);gap:16px}
   .career-card{min-height:330px}
   .exp-grid{
