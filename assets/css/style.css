@@ -1479,9 +1479,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
     .porque.is-carril .pq-pin{
       position:sticky;top:0;height:100svh;
       display:flex;
-      /* El panel ocupa la pantalla entera de alto; solo quedan los
-         margenes de los lados. */
-      padding:0 var(--gut);
+      /* El panel ocupa la pantalla entera, de alto y de ancho. Las
+         esquinas redondeadas se ven al entrar y al salir. */
+      padding:0;
     }
     .porque.is-carril .pq-panel{
       flex:1;min-height:0;display:flex;flex-direction:column;
