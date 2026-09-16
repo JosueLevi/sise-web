@@ -2243,6 +2243,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
   .footer-grid{grid-template-columns:1fr}
   .footer-bar-inner{flex-direction:column;text-align:center}
+  /* Los botones flotantes ocupan los ultimos 120px de la pantalla: sin
+     este aire, al llegar al final tapaban los enlaces legales y ya no
+     habia scroll para subirlos. */
+  .footer-bar{padding-bottom:128px}
   .footer-bar nav{gap:18px;justify-content:center}
   .footer-mark{font-size:74px}
   .floaters{right:14px;bottom:16px}
