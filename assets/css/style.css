@@ -1331,9 +1331,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* ============================================================
    ¿POR QUÉ ELEGIR SISE?
    ============================================================ */
-/* ¿Por qué elegir SISE? — visor con marco compartido: el mismo recuadro
-   muestra el video o la foto del espacio elegido, y las minivistas
-   (Video + 5 espacios) lo controlan. */
+/* ¿Por qué elegir SISE? — mosaico.
+   El video ocupa dos columnas por dos filas y los cinco espacios llenan
+   el resto: a la vista a la vez y con el mismo peso. Antes el video
+   tenia la pantalla entera y los espacios iban en miniaturas de 183px
+   debajo, escondidos tras un clic.
+   Las celdas pequenas van a 16:9, asi que el video, que suma dos de
+   ancho y dos de alto mas el hueco, queda en ~1,76: casi exacto 16:9,
+   sin franjas negras. */
 /* Banda negra a sangre, sin redondeos.
    Nota para el futuro: no intentar fundirla contra el gris de la
    pagina con un degradado ni con un blur. Cualquier transicion entre
@@ -1346,56 +1351,89 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .porque .section-title{color:#fff}
 .porque .section-sub{color:var(--blanco-3)}
 
-/* El visor va fuera del .shell, a ancho completo: con 100vh de alto,
-   un recuadro de 1040px dejaria franjas negras enormes arriba y abajo.
-   Se saca en el HTML y no con 100vw a proposito, porque 100vw incluye
-   la barra de desplazamiento y el .shell no: se desalineaban 8px. */
-.pq-viewer{width:100%}
-/* Escritorio: el marco ocupa la pantalla completa y el video se
-   agranda hasta cubrirlo, recortando por el lado que sobre. */
-.pq-screen{
-  position:relative;height:100vh;overflow:hidden;background:#000;
-}
-.pq-view{position:absolute;inset:0}
-.pq-view[hidden]{display:none}
-.pq-view-video iframe{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:max(100%,calc(100vh * 16 / 9));
-  height:max(100vh,calc(100vw * 9 / 16));
-  border:0;
+.pq-mosaico{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
 }
 
+/* ---- Video ---- */
+.pq-video{
+  grid-column:1 / 3;grid-row:1 / 3;
+  position:relative;overflow:hidden;border-radius:var(--r-md);background:#000;
+}
+.pq-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 /* Portada del video: sin autoplay, se carga al pulsar el play */
 .pq-poster{position:absolute;inset:0;background:#000 center/cover no-repeat}
+/* El video es de formato cine (2,34:1) y su miniatura trae las franjas
+   negras dentro: 87px arriba y abajo de 720. A 132% de alto la imagen
+   las deja fuera y la portada llena la celda. Al reproducir no se
+   recorta: el reproductor tiene los controles abajo y se perderian. */
+.pq-poster{background-size:auto 132%}
 .pq-poster::after{content:'';position:absolute;inset:0;background:rgba(8,9,14,.24)}
 .pq-play{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;
-  width:clamp(74px,7vw,104px);height:clamp(74px,7vw,104px);
+  width:clamp(64px,6vw,96px);height:clamp(64px,6vw,96px);
   filter:drop-shadow(0 10px 26px rgba(0,0,0,.45));
   transition:transform .28s var(--ease);
 }
 .pq-play:hover{transform:translate(-50%,-50%) scale(1.08)}
 .pq-play svg{width:100%;height:100%;display:block}
 
-/* Foto del espacio + velo + textos */
-.pq-stage{position:absolute;inset:0;background:var(--ink) center/cover no-repeat;overflow:hidden}
-.pq-stage.is-zoom{animation:pqZoom 16s linear both}
-@keyframes pqZoom{from{transform:scale(1.02)}to{transform:scale(1.09)}}
-.pq-view-photo .pq-veil{
-  position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(to top,rgba(8,9,14,.9) 2%,rgba(8,9,14,.5) 30%,rgba(8,9,14,.12) 55%,transparent 78%),
-             linear-gradient(100deg,rgba(8,9,14,.6) 0%,rgba(8,9,14,.15) 45%,transparent 72%);
+/* ---- Espacios ---- */
+.pq-espacio{
+  position:relative;isolation:isolate;overflow:hidden;
+  aspect-ratio:16/9;padding:0;border:0;border-radius:var(--r-md);
+  background:var(--ink);color:#fff;text-align:left;cursor:pointer;
 }
-.pq-screen-copy{
-  position:absolute;left:50%;transform:translateX(-50%);bottom:0;z-index:2;
-  width:min(100%,var(--shell));padding:clamp(24px,3.4vw,44px) var(--gut);
-  color:#fff;
+.pq-foto{
+  position:absolute;inset:0;z-index:-2;
+  background:var(--ink) center/cover no-repeat;
+  transition:transform .6s var(--ease);
 }
-.pq-screen-copy > *{max-width:560px}
+/* Velo de abajo: el nombre va en blanco sobre fotos que traen de todo */
+.pq-espacio::after{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(to top,rgba(8,9,14,.88) 0,rgba(8,9,14,.42) 42%,transparent 72%);
+  transition:background .35s var(--ease);
+}
+.pq-texto{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 16px}
+.pq-nombre{
+  display:block;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:22px;line-height:1.05;text-transform:uppercase;letter-spacing:.01em;
+}
+/* La descripcion asoma al pasar el raton. En tactil no hay hover: se
+   lee en la ventana, que es donde cabe. */
+.pq-desc{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease)}
+.pq-desc > span{
+  overflow:hidden;min-height:0;
+  font-size:14px;line-height:1.45;color:var(--blanco-2);
+}
+.pq-abrir{
+  position:absolute;top:12px;right:12px;
+  width:38px;height:38px;border-radius:50%;
+  display:grid;place-content:center;
+  background:#fff;color:var(--red);
+  box-shadow:0 6px 16px rgba(0,0,0,.25);
+  transition:background .25s var(--ease),color .25s var(--ease),transform .25s var(--ease);
+}
+.pq-abrir svg{width:20px;height:20px;display:block}
+
+@media (hover:hover){
+  .pq-espacio:hover .pq-foto{transform:scale(1.06)}
+  .pq-espacio:hover::after{background:linear-gradient(to top,rgba(8,9,14,.92) 0,rgba(8,9,14,.6) 55%,rgba(8,9,14,.15) 100%)}
+  .pq-espacio:hover .pq-desc{grid-template-rows:1fr}
+  .pq-espacio:hover .pq-desc > span{padding-top:6px}
+  .pq-espacio:hover .pq-abrir{background:var(--red-600);color:#fff;transform:translate(2px,-2px)}
+}
+.pq-espacio:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.pq-espacio:focus-visible .pq-desc{grid-template-rows:1fr}
+
+/* Textos de la ventana (nombre, contador, descripcion) y su boton */
 .pq-now{display:flex;align-items:center;gap:12px}
 .pq-now-name{
   font-family:'Barlow Condensed',sans-serif;font-weight:800;
-  font-size:clamp(24px,2.6vw,34px);line-height:1.05;text-transform:uppercase;color:#fff;
+  font-size:clamp(22px,2.6vw,28px);line-height:1.05;text-transform:uppercase;color:#fff;
 }
 .pq-now-count{
   position:relative;flex:none;padding-left:12px;font-size:12px;font-weight:600;
@@ -1408,51 +1446,21 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .pq-cta .ico-arrow{transition:transform .25s var(--ease)}
 .pq-cta:hover .ico-arrow{transform:translate(3px,-3px)}
 
-/* En movil y tableta el marco se ajusta al contenido en vez de ocupar
-   la pantalla: 100vh en vertical son 800-1200 px para un video 16:9,
-   asi que habria que recortarle casi todo el encuadre. Con
-   aspect-ratio el video entra exacto, sin recortes ni franjas. */
+/* Tableta y movil: dos columnas. El video a todo el ancho y los cinco
+   espacios de dos en dos; el quinto, que quedaria solo, ocupa la fila
+   entera en una proporcion mas apaisada para no crecer de mas. */
 @media (max-width:900px){
-  .pq-screen{height:auto;aspect-ratio:16/9}
-  .pq-view-video iframe{top:0;left:0;transform:none;width:100%;height:100%}
+  .pq-mosaico{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .pq-video{grid-column:1 / -1;grid-row:auto;aspect-ratio:16/9}
+  .pq-espacio:last-child{grid-column:1 / -1;aspect-ratio:21/9}
 }
-
-/* Tira de minivistas: Video + espacios */
-.pq-thumbs{
-  display:flex;gap:12px;margin-top:18px;
-  max-width:var(--shell);margin-inline:auto;padding-inline:var(--gut);
-  overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;
-  scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-block:4px 8px;cursor:grab;
-}
-.pq-thumbs::-webkit-scrollbar{display:none}
-.pq-thumbs.is-dragging{cursor:grabbing;scroll-snap-type:none}
-
-.pq-thumb{
-  position:relative;flex:0 0 clamp(150px,17vw,186px);aspect-ratio:16/10;
-  border-radius:13px;overflow:hidden;scroll-snap-align:start;
-  background:var(--ink) center/cover no-repeat;border:2px solid transparent;opacity:.72;
-  transition:opacity .25s var(--ease),border-color .25s var(--ease),transform .3s var(--ease);
-}
-.pq-thumb:hover{opacity:1;transform:translateY(-3px)}
-.pq-thumb.is-on{opacity:1;border-color:var(--red)}
-.pq-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,9,14,.7),transparent 60%)}
-.pq-thumb-name{
-  position:absolute;left:8px;bottom:8px;right:8px;z-index:2;
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;
-  text-transform:uppercase;letter-spacing:.02em;color:#fff;line-height:1.1;
-}
-/* Minivista del video: fondo rojo + icono play */
-.pq-thumb-video{background:var(--red-600);opacity:.9}
-.pq-thumb-video.is-on{opacity:1;border-color:#fff}
-.pq-thumb-video::after{background:none}
-.pq-thumb-play{
-  position:absolute;inset:0;z-index:2;display:grid;place-content:center;color:#fff;
-}
-.pq-thumb-play svg{width:34px;height:34px}
-
 @media (max-width:600px){
-  .pq-thumb{flex:0 0 46%}
-  .pq-screen-copy{max-width:none}
+  .pq-mosaico{gap:10px}
+  .pq-espacio{aspect-ratio:4/3}
+  .pq-texto{padding:10px 12px 12px}
+  .pq-nombre{font-size:16px}
+  .pq-abrir{top:8px;right:8px;width:30px;height:30px}
+  .pq-abrir svg{width:16px;height:16px}
 }
 
 /* ============================================================
@@ -2261,6 +2269,27 @@ body:not(.form-abierto) .form-velo{opacity:0}
    ancho, no el alto. */
 .vm-caja--ancha{aspect-ratio:16/9;height:auto;width:min(1100px,100%)}
 .vm-caja iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* Modo foto: los espacios de "Por que elegir SISE". La caja se mide por
+   el alto disponible -foto 3:2 mas el pie- para que la foto entre
+   entera sin recortes en pantallas bajas. */
+.vm-caja--foto{
+  aspect-ratio:auto;height:auto;
+  width:min(1100px,100%,calc((86vh - 150px) * 1.5));
+  display:flex;flex-direction:column;background:var(--ink);
+}
+.vm-foto{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;background:#000}
+.vm-pie{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:18px 28px;
+  flex-wrap:wrap;padding:20px 24px 24px;color:#fff;
+}
+.vm-pie-txt{flex:1 1 300px;min-width:0}
+.vm-pie-acc{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.vm-pie .pq-cta{margin-top:0}
+.vm-nav{display:flex;gap:10px}
+@media (max-width:600px){
+  .vm-pie{padding:16px 16px 18px}
+  .vm-pie-acc{width:100%;justify-content:space-between}
+}
 .vm-cerrar{
   position:absolute;top:clamp(12px,2.5vw,26px);right:clamp(12px,2.5vw,26px);z-index:2;
   width:46px;height:46px;display:grid;place-content:center;border-radius:50%;

@@ -1088,47 +1088,26 @@
   }
 
     /* ============================================================
-     6. ¿POR QUÉ ELEGIR SISE? — visor con marco compartido (video + espacios)
-     ============================================================ */
-  const pqScreen = $('#pqScreen');
-  const pqThumbs = $('#pqThumbs');
+     6. ¿POR QUÉ ELEGIR SISE? — mosaico: video + espacios
+     ============================================================
+     Antes el video ocupaba la pantalla y los espacios iban en
+     miniaturas debajo: habia que pulsar para verlos y solo uno a la
+     vez. Ahora todo esta a la vista con el mismo peso; cada espacio se
+     abre en grande en la ventana compartida (7d). */
+  const pqMosaico = $('#pqMosaico');
   const PQ = (typeof PORQUE_SLIDES !== 'undefined') ? PORQUE_SLIDES
            : (typeof PORQUE_IMGS !== 'undefined') ? PORQUE_IMGS : [];
 
-  if (pqScreen && pqThumbs && PQ.length) {
+  if (pqMosaico) {
     const slides = PQ.map((s) => (typeof s === 'string' ? { img: s } : s));
     const videoView = $('#pqVideoView');
-    const photoView = $('#pqPhotoView');
-    const stage     = $('#pqStage');
-    const elNombre  = $('#pqNowName');
-    const elCount   = $('#pqNowCount');
-    const elDesc    = $('#pqNowDesc');
     const dos = (n) => String(n).padStart(2, '0');
-
-    /* --- Minivistas: primero "Video", luego los espacios --- */
-    const playSvg = '<span class="pq-thumb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>';
-    let html = `
-      <button class="pq-thumb pq-thumb-video is-on" type="button" role="tab"
-              aria-selected="true" data-view="video" aria-label="Ver video">
-        ${playSvg}<span class="pq-thumb-name">Video</span>
-      </button>`;
-    html += slides.map((s, i) => `
-      <button class="pq-thumb" type="button" role="tab" aria-selected="false"
-              data-view="${i}" ${attrFondo(imgDe(s), i < 4)}>
-        ${s.titulo ? `<span class="pq-thumb-name">${esc(s.titulo)}</span>` : ''}
-      </button>`).join('');
-    pqThumbs.innerHTML = html;
-    observarNuevos(pqThumbs);
-    const thumbs = $$('.pq-thumb', pqThumbs);
 
     /* --- Video: portada propia, sin autoplay ---
        El iframe de YouTube solo se inserta cuando el usuario pulsa el
-       play. Hasta entonces se ve la miniatura del propio video, asi la
-       pagina no arrastra el reproductor de YouTube sin que nadie lo
-       haya pedido. Como el arranque lo ordena una persona, el video
-       puede sonar: no hace falta el truco de silenciarlo. */
-    const idYT   = videoView.dataset.yt;
-    const poster = $('#pqPoster', videoView);
+       play. Hasta entonces se ve la miniatura del propio video. */
+    const idYT    = videoView.dataset.yt;
+    const poster  = $('#pqPoster', videoView);
     const btnPlay = $('#pqPlay', videoView);
     if (poster) {
       poster.style.backgroundImage =
@@ -1149,75 +1128,96 @@
       if (poster) poster.remove();
       if (btnPlay) btnPlay.remove();
     }
-    function ytCmd(func) {
-      const f = videoView.querySelector('iframe');
+    // Abrir un espacio pausa el video si estaba sonando
+    function pausaYT() {
+      const f = ytCargado && videoView.querySelector('iframe');
       if (f && f.contentWindow) f.contentWindow.postMessage(
-        JSON.stringify({ event: 'command', func: func, args: '' }), '*');
+        JSON.stringify({ event: 'command', func: 'pauseVideo', args: '' }), '*');
     }
     if (btnPlay) btnPlay.addEventListener('click', cargaYT);
 
-    /* --- Cambiar de vista --- */
-    let vista = 'video';
-    function activaThumb(sel) {
-      thumbs.forEach((t) => {
-        const on = t.dataset.view === sel;
-        t.classList.toggle('is-on', on);
-        t.setAttribute('aria-selected', String(on));
-      });
-    }
-    function verVideo() {
-      if (vista === 'video') return;
-      vista = 'video';
-      photoView.hidden = true;
-      videoView.hidden = false;
-      if (ytCargado) ytCmd('playVideo');
-      activaThumb('video');
-    }
-    function verEspacio(i) {
-      const s = slides[i]; if (!s) return;
-      if (vista === 'video' && ytCargado) ytCmd('pauseVideo');
-      vista = i;
-      videoView.hidden = true;
-      photoView.hidden = false;
-      // foto + Ken Burns reiniciado
-      stage.style.backgroundImage = `url('${imgDe(s)}')`;
-      stage.classList.remove('is-zoom'); void stage.offsetWidth; stage.classList.add('is-zoom');
-      if (elNombre) elNombre.textContent = s.titulo || '';
-      if (elCount)  elCount.textContent  = dos(i + 1) + ' / ' + dos(slides.length);
-      if (elDesc)   elDesc.textContent   = s.texto || '';
-      activaThumb(String(i));
+    /* --- Espacios --- */
+    const flechaAbrir = '<svg viewBox="0 0 24 24"><path d="M8 16 16 8m0 0H9.5M16 8v6.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    pqMosaico.insertAdjacentHTML('beforeend', slides.map((s, i) => `
+      <button class="pq-espacio" type="button" data-i="${i}"
+              aria-label="Ver ${esc(s.titulo || 'espacio')} en grande">
+        <span class="pq-foto" ${attrFondo(imgDe(s, 'mosaico') || imgDe(s), false)}></span>
+        <span class="pq-texto">
+          <span class="pq-nombre">${esc(s.titulo || '')}</span>
+          ${s.texto ? `<span class="pq-desc"><span>${esc(s.texto)}</span></span>` : ''}
+        </span>
+        <span class="pq-abrir" aria-hidden="true">${flechaAbrir}</span>
+      </button>`).join(''));
+    observarNuevos(pqMosaico);
+
+    /* --- Espacio en grande, en la ventana compartida ---
+       vModal, vCaja, vCerrar y vDesde se declaran en 7d: aqui solo se
+       usan al pulsar, cuando ya existen. */
+    const flechaNav = (dir, etiqueta, d) =>
+      `<button class="labs-flecha" type="button" data-dir="${dir}" aria-label="${etiqueta}">
+         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none"
+              stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round"/></svg>
+       </button>`;
+    let actual = 0;
+
+    function pintaEspacio(i) {
+      actual = (i + slides.length) % slides.length;
+      const s = slides[actual];
+      const foto = $('.vm-foto', vCaja);
+      foto.src = s.img;
+      foto.alt = s.titulo || '';
+      $('.pq-now-name', vCaja).textContent = s.titulo || '';
+      $('.pq-now-count', vCaja).textContent = dos(actual + 1) + ' / ' + dos(slides.length);
+      $('.pq-now-desc', vCaja).textContent = s.texto || '';
+      vModal.setAttribute('aria-label', s.titulo || 'Espacio SISE');
     }
 
-    /* --- Clicks (con guarda de arrastre) --- */
-    let movido = false;
-    thumbs.forEach((t) => {
-      t.addEventListener('click', () => {
-        if (movido) return;
-        if (t.dataset.view === 'video') verVideo(); else verEspacio(parseInt(t.dataset.view, 10));
-      });
+    function abreEspacio(i, desde) {
+      if (!vModal || !vCaja) return;
+      pausaYT();
+      vDesde = desde;
+      vCaja.classList.remove('vm-caja--ancha');
+      vCaja.classList.add('vm-caja--foto');
+      vCaja.innerHTML = `
+        <img class="vm-foto" alt="" decoding="async">
+        <div class="vm-pie">
+          <div class="vm-pie-txt">
+            <p class="pq-now"><span class="pq-now-name"></span><span class="pq-now-count"></span></p>
+            <p class="pq-now-desc"></p>
+          </div>
+          <div class="vm-pie-acc">
+            <a class="btn btn-pill pq-cta" href="#contacto">Agenda tu visita
+              <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7m0 0H9m8 0v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <div class="vm-nav">
+              ${flechaNav(-1, 'Espacio anterior', 'M15 5l-7 7 7 7')}
+              ${flechaNav(1, 'Espacio siguiente', 'M9 5l7 7-7 7')}
+            </div>
+          </div>
+        </div>`;
+      $$('.vm-nav .labs-flecha', vCaja).forEach((b) => b.addEventListener('click', () => {
+        pintaEspacio(actual + Number(b.dataset.dir));
+      }));
+      // El boton lleva al pie de pagina: la ventana tiene que irse
+      $('.pq-cta', vCaja).addEventListener('click', cierraVideo);
+      pintaEspacio(i);
+      vModal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      vCerrar.focus();
+    }
+
+    pqMosaico.addEventListener('click', (e) => {
+      const b = e.target.closest('.pq-espacio');
+      if (b) abreEspacio(parseInt(b.dataset.i, 10), b);
     });
 
-    /* Arrastre horizontal de la tira (raton); en tactil lo hace el navegador */
-    let x0 = 0, sl0 = 0, tirando = false, pid = null;
-    pqThumbs.addEventListener('pointerdown', (e) => {
-      if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      tirando = true; movido = false; x0 = e.clientX; sl0 = pqThumbs.scrollLeft; pid = e.pointerId;
-      pqThumbs.classList.add('is-dragging');
+    // Con un espacio abierto, las flechas del teclado pasan de foto
+    document.addEventListener('keydown', (e) => {
+      if (!vModal || vModal.hidden || !vCaja.classList.contains('vm-caja--foto')) return;
+      if (e.key === 'ArrowRight') pintaEspacio(actual + 1);
+      if (e.key === 'ArrowLeft')  pintaEspacio(actual - 1);
     });
-    pqThumbs.addEventListener('pointermove', (e) => {
-      if (!tirando || e.pointerId !== pid) return;
-      const dx = e.clientX - x0;
-      if (Math.abs(dx) > 4) { movido = true; if (!pqThumbs.hasPointerCapture(pid)) pqThumbs.setPointerCapture(pid); }
-      pqThumbs.scrollLeft = sl0 - dx;
-    });
-    function suelta(e) {
-      if (!tirando || (e && e.pointerId !== pid)) return;
-      tirando = false; pqThumbs.classList.remove('is-dragging');
-      setTimeout(() => { movido = false; }, 0);
-    }
-    pqThumbs.addEventListener('pointerup', suelta);
-    pqThumbs.addEventListener('pointercancel', suelta);
-    pqThumbs.addEventListener('dragstart', (e) => e.preventDefault());
   }
 
   /* ============================================================
@@ -1685,6 +1685,8 @@
     const id = box.dataset.yt;
     // 9:16 para los Shorts, 16:9 para lo demas
     vCaja.classList.toggle('vm-caja--ancha', box.dataset.forma === 'ancha');
+    vCaja.classList.remove('vm-caja--foto');
+    vModal.setAttribute('aria-label', 'Video');
     const f = document.createElement('iframe');
     f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) +
             '?autoplay=1&rel=0&playsinline=1';
@@ -1702,6 +1704,7 @@
     if (!vModal || vModal.hidden) return;
     vModal.hidden = true;
     vCaja.innerHTML = '';          // quitar el iframe corta el sonido
+    vCaja.classList.remove('vm-caja--foto');
     document.body.style.overflow = '';
     if (vDesde) { vDesde.focus(); vDesde = null; }
   }

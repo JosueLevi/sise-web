@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=372">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=374">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -19,7 +19,7 @@
      sola precarga, en movil se bajaban 82 KB de la imagen de
      escritorio que no llega a pintarse nunca. -->
 <link rel="preload" as="image" href="assets/img/hero-01.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=372">
+<link rel="stylesheet" href="assets/css/style.css?v=374">
 </head>
 <body>
 
@@ -264,8 +264,9 @@
 </section>
 
 <!-- ============ ¿POR QUÉ ELEGIR SISE? ============ -->
-<!-- La sección mide N x 100vh; dentro, un bloque sticky ocupa la
-     pantalla completa mientras el scroll pasa las imágenes. -->
+<!-- Mosaico: el video ocupa dos por dos y los cinco espacios llenan el
+     resto, todos a la vista. Los espacios los pinta main.js desde
+     PORQUE_SLIDES y se abren en la ventana compartida. -->
 <section class="section porque" id="porque">
   <div class="shell">
     <header class="section-head reveal">
@@ -273,35 +274,14 @@
       <p class="section-sub">M&iacute;ralo en un minuto y explora nuestros espacios.</p>
     </header>
 
-  </div>
-
-  <div class="pq-viewer reveal">
-      <div class="pq-screen" id="pqScreen">
-        <!-- Vista VIDEO -->
-        <div class="pq-view pq-view-video is-on" id="pqVideoView" data-yt="E2R48vT67i8">
-          <div class="pq-poster" id="pqPoster" aria-hidden="true"></div>
-          <button class="pq-play" id="pqPlay" type="button" aria-label="Reproducir el video de SISE">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.42)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
-          </button>
-        </div>
-        <!-- Vista ESPACIO (foto) -->
-        <div class="pq-view pq-view-photo" id="pqPhotoView" hidden>
-          <div class="pq-stage" id="pqStage" aria-hidden="true"></div>
-          <div class="pq-veil" aria-hidden="true"></div>
-          <div class="pq-screen-copy">
-            <p class="pq-now">
-              <span class="pq-now-name" id="pqNowName"></span>
-              <span class="pq-now-count" id="pqNowCount"></span>
-            </p>
-            <p class="pq-now-desc" id="pqNowDesc"></p>
-            <a class="btn btn-pill pq-cta" href="#contacto">Agenda tu visita
-              <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7m0 0H9m8 0v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
-          </div>
-        </div>
+    <div class="pq-mosaico reveal" id="pqMosaico">
+      <div class="pq-video" id="pqVideoView" data-yt="E2R48vT67i8">
+        <div class="pq-poster" id="pqPoster" aria-hidden="true"></div>
+        <button class="pq-play" id="pqPlay" type="button" aria-label="Reproducir el video de SISE">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.42)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
+        </button>
       </div>
-
-      <div class="pq-thumbs" id="pqThumbs" role="tablist" aria-label="Video y espacios"></div>
+    </div>
   </div>
 </section>
 
@@ -477,8 +457,8 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=372"></script>
-<script src="assets/js/data.js?v=372"></script>
-<script src="assets/js/main.js?v=372"></script>
+<script src="assets/js/icons.js?v=374"></script>
+<script src="assets/js/data.js?v=374"></script>
+<script src="assets/js/main.js?v=374"></script>
 </body>
 </html>
