@@ -901,15 +901,28 @@
     return `<div class="cc-tags">${tags.join('')}</div>`;
   }
 
+  /* Icono del area de una tarjeta, buscado en las tres listas. */
+  function iconoArea(c) {
+    const listas = [
+      (typeof AREAS !== 'undefined') ? AREAS : [],
+      (typeof AREAS_CURSOS !== 'undefined') ? AREAS_CURSOS : [],
+      (typeof AREAS_IDIOMAS !== 'undefined') ? AREAS_IDIOMAS : []
+    ];
+    for (const l of listas) {
+      const a = l.find((x) => x.slug === c.cat);
+      if (a && ico(a.icon)) return ico(a.icon);
+    }
+    return '';
+  }
+
   function cardHTML(c, i) {
     const icon = ico(c.icon) || ico('carrera');
     return `
       <a class="career-card" href="${esc(c.url || '#')}" data-cat="${esc(c.cat)}" style="animation-delay:${i * 60}ms">
         <div class="cc-top">
           <div class="cc-media">
-            ${imgDe(c)
-              ? `<div class="cc-img" ${attrFondo(imgDe(c), i < 4)}></div>`
-              : '<div class="cc-img cc-img-vacia"></div>'}
+            <div class="cc-vacia" aria-hidden="true">${iconoArea(c) || icon}</div>
+            ${imgDe(c) ? `<div class="cc-img" ${attrFondo(imgDe(c), i < 4)}></div>` : ''}
           </div>
           <span class="cc-go" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M8 16 16 8m0 0H9.5M16 8v6.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -939,6 +952,8 @@
       grid.innerHTML = list.length
         ? list.map(cardHTML).join('')
         : '<p class="grid-empty">Pronto publicaremos esta area.</p>';
+      // Con una o dos tarjetas la fila se centra en vez de dejar un hueco
+      grid.classList.toggle('is-corta', list.length > 0 && list.length < 3);
       observarNuevos(grid);
     }
     // Se expone para el repintado al cruzar el punto de corte movil

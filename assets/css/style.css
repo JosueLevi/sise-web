@@ -6,6 +6,12 @@
 
 /* ---------- Tokens ---------- */
 :root{
+  /* El rojo de marca es muy luminoso: con letra pequena no llega al
+     4,5:1 en ningun fondo (3,88 con texto blanco encima, 3,53 como
+     texto sobre el gris de pagina). Por eso tiene tres papeles:
+       --red      superficies grandes, titulares, iconos y adornos
+       --red-600  fondo de botones y chips con letra blanca (4,95:1)
+       --red-700  letra roja pequena sobre fondo claro (5,3-6,4:1) */
   --red:#FF0E49;
   --red-600:#E00040;
   --red-700:#C00036;
@@ -18,10 +24,27 @@
   --indigo:#4642A6;
   --indigo-rgb:70,66,166;
 
-  --ink:#12131A;
-  --ink-2:#2A2C36;
-  --body:#5C6270;
-  --muted:#8A90A0;
+  /* Grises. Habia 17 sueltos, varios a uno o dos pasos entre si; ahora
+     son estos y nada mas. Los tres primeros son de texto y todos pasan
+     4,5:1 sobre blanco y sobre el gris de pagina. --muted era #8A90A0 y
+     se quedaba en 3,19:1: bajo a #676D7B (4,7:1 en el gris de pagina).
+     Del 400 para abajo son de interfaz: bordes, rellenos, adornos. Nunca
+     para un texto que haya que leer. */
+  --ink:#12131A;       /* titulos */
+  --ink-2:#2A2C36;     /* texto fuerte */
+  --body:#5C6270;      /* parrafos y controles */
+  --muted:#676D7B;     /* texto secundario */
+  --gris-400:#9AA0AE;  /* placeholder atenuado, adornos */
+  --gris-300:#CBD0DA;  /* bordes de controles, separadores */
+  --gris-100:#EDEFF4;  /* rellenos: cajas de imagen, boton cerrar */
+
+  /* Blanco sobre fondo oscuro. Habia ocho opacidades (.62 a .92) que no
+     se distinguen entre si; quedan tres niveles. */
+  --blanco-2:rgba(255,255,255,.88);   /* secundario */
+  --blanco-3:rgba(255,255,255,.7);    /* terciario */
+
+  /* Escala tipografica: 12 14 16 18 22 28 40 52. Los titulos grandes
+     van con clamp() entre dos de estos pasos. */
 
   --white:#fff;
   --bg:#F4F4F4;        /* fondo general de la página */
@@ -57,7 +80,9 @@ body{
   animation:pageIn .5s var(--ease);
   margin:0;
   font-family:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
-  font-size:17px;
+  /* 16 en todos los anchos. Cada texto visible declara su tamano de la
+     escala; esto solo cubre lo que no lo hace. */
+  font-size:16px;
   line-height:1.65;
   color:var(--body);
   background:var(--bg);
@@ -85,7 +110,7 @@ p{margin:0}
 
 .skip-link{
   position:absolute;left:-9999px;top:0;z-index:999;
-  background:var(--red);color:#fff;padding:12px 20px;border-radius:0 0 10px 0;font-weight:700;
+  background:var(--red-600);color:#fff;padding:12px 20px;border-radius:0 0 10px 0;font-weight:700;
 }
 .skip-link:focus{left:0}
 
@@ -104,20 +129,20 @@ p{margin:0}
 /* ---------- Botones ---------- */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
-  font-family:'Barlow',sans-serif;font-weight:700;font-size:15px;
+  font-family:'Barlow',sans-serif;font-weight:700;font-size:16px;
   padding:13px 28px;border-radius:10px;cursor:pointer;
   transition:transform .2s var(--ease),background .2s var(--ease),box-shadow .2s var(--ease),color .2s var(--ease);
   white-space:nowrap;
 }
 .btn-pill{border-radius:999px}
-.btn-primary{background:var(--red);color:#fff;box-shadow:0 10px 26px rgba(255,14,73,.32)}
-.btn-primary:hover{background:var(--red-600);transform:translateY(-2px);box-shadow:0 14px 32px rgba(255,14,73,.42)}
+.btn-primary{background:var(--red-600);color:#fff;box-shadow:0 10px 26px rgba(255,14,73,.32)}
+.btn-primary:hover{background:var(--red-700);transform:translateY(-2px);box-shadow:0 14px 32px rgba(255,14,73,.42)}
 /* Fantasma: solo perfil y letra, sin relleno. Para acciones de apoyo
    que no deben competir con el boton de accion principal. */
-.btn-ghost{border:1.5px solid var(--red);color:var(--red);background:transparent}
-.btn-ghost:hover{background:var(--red);color:#fff;transform:translateY(-2px)}
+.btn-ghost{border:1.5px solid var(--red-700);color:var(--red-700);background:transparent}
+.btn-ghost:hover{background:var(--red-600);color:#fff;transform:translateY(-2px)}
 .btn-outline-light{border:1.5px solid rgba(255,255,255,.55);color:#fff;background:rgba(255,255,255,.06);backdrop-filter:blur(6px)}
-.btn-outline-light:hover{background:var(--red);border-color:var(--red)}
+.btn-outline-light:hover{background:var(--red-600);border-color:var(--red-600)}
 .btn-block{width:100%}
 .ico-arrow{width:18px;height:18px;flex:none;transition:transform .25s var(--ease)}
 .btn:hover .ico-arrow{transform:translate(3px,-3px)}
@@ -188,7 +213,7 @@ p{margin:0}
 .main-nav{display:flex;align-items:center;gap:clamp(12px,1.8vw,30px);margin-inline:auto}
 .nav-link{
   display:inline-flex;align-items:center;gap:6px;
-  font-family:inherit;font-size:15.5px;font-weight:500;color:#fff;
+  font-family:inherit;font-size:16px;font-weight:500;color:#fff;
   position:relative;padding:5px 0;white-space:nowrap;cursor:pointer;
   transition:color .2s var(--ease);
 }
@@ -227,12 +252,12 @@ p{margin:0}
 }
 .drop a{
   display:block;padding:10px 14px;border-radius:11px;
-  font-size:14.5px;font-weight:500;color:rgba(255,255,255,.86);white-space:nowrap;
+  font-size:14px;font-weight:500;color:var(--blanco-2);white-space:nowrap;
   transition:background .18s var(--ease),color .18s var(--ease),padding-left .18s var(--ease);
 }
 .drop a:hover{background:rgba(255,255,255,.1);color:#fff;padding-left:19px}
 .drop a.is-cta{
-  margin-top:6px;background:var(--red);color:#fff;font-weight:600;text-align:center;
+  margin-top:6px;background:var(--red-600);color:#fff;font-weight:600;text-align:center;
 }
 .drop a.is-cta:hover{background:var(--red-600);padding-left:14px}
 
@@ -255,7 +280,7 @@ p{margin:0}
 .mega-area{
   display:flex;align-items:center;gap:9px;margin:0 0 4px;
   font-family:'Barlow Condensed',sans-serif;
-  font-size:19px;font-weight:700;line-height:1.2;color:var(--red);
+  font-size:18px;font-weight:700;line-height:1.2;color:var(--red);
 }
 .drop-mega .mega-area,
 .drop-mega .mega-col a{text-shadow:none}
@@ -264,7 +289,7 @@ p{margin:0}
 
 .drop-mega .mega-col a{
   padding:7px 0;border-radius:0;
-  font-size:13.5px;font-weight:400;line-height:1.35;
+  font-size:14px;font-weight:400;line-height:1.35;
   color:var(--body);white-space:normal;
 }
 /* Idiomas: un solo grupo -> panel estrecho, una columna, bajo su botón.
@@ -282,7 +307,7 @@ p{margin:0}
 
 .btn-empleo{
   display:inline-flex;align-items:center;gap:11px;flex:none;
-  background:#fff;color:var(--ink);font-weight:600;font-size:15.5px;
+  background:#fff;color:var(--ink);font-weight:600;font-size:16px;
   padding:13px 26px;border-radius:999px;white-space:nowrap;
   transition:background .22s var(--ease),transform .22s var(--ease),box-shadow .22s var(--ease);
 }
@@ -365,7 +390,7 @@ p{margin:0}
 .sm-brand-logo{display:block;width:clamp(112px,12vw,142px);color:var(--red)}
 .sm-brand-logo svg{width:100%;height:auto;display:block}
 .sm-brand-sub{
-  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;
   letter-spacing:.3em;text-transform:uppercase;color:var(--ink);
 }
 .menu-close{
@@ -384,28 +409,28 @@ p{margin:0}
 /* display:contents deja que las tres columnas del <nav> sean celdas de
    la rejilla junto a la tarjeta, sin perder la semántica del nav. */
 .sm-cols{display:contents}
-.sm-col-t{font-weight:700;font-size:17px;color:var(--red);margin-bottom:14px}
+.sm-col-t{font-weight:700;font-size:18px;color:var(--red-700);margin-bottom:14px}
 .sm-col a{
-  display:block;padding:7px 0;font-size:15.5px;color:#4B4F5A;
+  display:block;padding:7px 0;font-size:16px;color:var(--body);
   transition:color .2s var(--ease),transform .2s var(--ease);
 }
-.sm-col a:hover,.sm-col a:focus-visible{color:var(--red);transform:translateX(3px)}
+.sm-col a:hover,.sm-col a:focus-visible{color:var(--red-700);transform:translateX(3px)}
 /* Separa la oferta académica del resto de páginas del sitio */
 .sm-col a.has-sep{margin-top:12px;padding-top:15px;border-top:1px solid var(--line)}
 /* Dónde estás ahora */
-.sm-col a[aria-current="page"]{color:var(--red);font-weight:600}
+.sm-col a[aria-current="page"]{color:var(--red-700);font-weight:600}
 
 /* ---- Columna derecha: admisión primero, soporte después ---- */
 .sm-side{align-self:start;display:grid;gap:14px}
-.sm-cta{background:var(--red);color:#fff;border-radius:18px;padding:22px 20px}
+.sm-cta{background:var(--red-600);color:#fff;border-radius:18px;padding:22px 20px}
 .sm-cta-t{
   font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
-  font-size:23px;line-height:1.05;color:#fff;
+  font-size:22px;line-height:1.05;color:#fff;
 }
-.sm-cta-p{margin:8px 0 16px;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.92)}
+.sm-cta-p{margin:8px 0 16px;font-size:14px;line-height:1.5;color:var(--blanco-2)}
 .sm-cta-btn{
   width:100%;justify-content:center;gap:9px;padding:11px 16px;font-size:14px;
-  background:#fff;color:var(--red);
+  background:#fff;color:var(--red-700);
 }
 .sm-cta-btn:hover{background:#272423;color:#fff;transform:translateY(-2px)}
 .sm-fl{display:block;width:20px;height:20px;flex:none;transition:transform .25s var(--ease)}
@@ -422,7 +447,7 @@ p{margin:0}
 .sm-card-ico svg{width:100%;height:100%;display:block}
 .sm-card-t{font-size:14px;font-weight:600;color:var(--ink);line-height:1.25}
 .sm-card-link{
-  display:inline-block;margin-top:2px;font-size:13px;font-weight:600;color:var(--red);
+  display:inline-block;margin-top:2px;font-size:14px;font-weight:600;color:var(--red-700);
 }
 .sm-card-link:hover{text-decoration:underline}
 
@@ -434,11 +459,11 @@ p{margin:0}
 .sm-contacto{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .sm-via{
   display:inline-flex;align-items:center;gap:8px;
-  font-size:14.5px;font-weight:500;color:var(--ink);transition:color .2s var(--ease);
+  font-size:14px;font-weight:500;color:var(--ink);transition:color .2s var(--ease);
 }
 .sm-via-ico{display:block;width:18px;height:18px;flex:none;color:var(--red)}
 .sm-via-ico svg{width:100%;height:100%;display:block}
-.sm-via:hover{color:var(--red)}
+.sm-via:hover{color:var(--red-700)}
 .sm-social{display:flex;gap:10px}
 .sm-social a{
   width:36px;height:36px;border-radius:50%;display:grid;place-content:center;
@@ -472,7 +497,7 @@ p{margin:0}
      entera de rojo: en una sola columna el texto en rojo pesa
      demasiado y compite con los titulos de grupo. */
   .sm-col a[aria-current="page"]{
-    color:#4B4F5A;font-weight:inherit;
+    color:var(--body);font-weight:inherit;
     text-decoration:underline;
     text-decoration-color:var(--red);
     text-decoration-thickness:2.5px;
@@ -605,7 +630,7 @@ p{margin:0}
   text-shadow:0 2px 10px rgba(0,0,0,.32),0 1px 2px rgba(0,0,0,.26);
 }
 
-.hero-sub{margin-top:18px;color:rgba(255,255,255,.9);font-size:17.5px;font-weight:500;max-width:430px}
+.hero-sub{margin-top:18px;color:var(--blanco-2);font-size:18px;font-weight:500;max-width:430px}
 
 /* Formulario */
 /* Vidrio esmerilado. La tarjeta ya era translucida, pero sin desenfoque:
@@ -678,32 +703,32 @@ body:not(.form-abierto) .form-velo{opacity:0}
   width:34px;height:34px;border-radius:999px;
   margin:0 -4px -34px auto;
   place-content:center;
-  background:#EEF0F3;color:var(--ink-2);
+  background:var(--gris-100);color:var(--ink-2);
   transition:background .18s var(--ease),color .18s var(--ease);
 }
 .lead-cerrar svg{width:17px;height:17px;display:block}
-.lead-cerrar:hover{background:#E2E5EA;color:var(--ink)}
+.lead-cerrar:hover{background:var(--line);color:var(--ink)}
 
 .lead-title{
-  text-align:center;font-size:24px;font-weight:800;color:var(--ink);
+  text-align:center;font-size:22px;font-weight:800;color:var(--ink);
   letter-spacing:.005em;margin-bottom:11px;
 }
 .lead-title em{font-style:normal;color:var(--red)}
 
 .lead-form{display:grid;grid-template-columns:1fr 1fr;gap:13px 14px}
 
-.mod-q{grid-column:1/-1;font-size:13.5px;color:var(--ink-2);margin-bottom:-3px}
+.mod-q{grid-column:1/-1;font-size:14px;color:var(--ink-2);margin-bottom:-3px}
 .mod-switch{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .mod-opt{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   padding:11px 18px;border-radius:999px;
-  border:1.5px solid #CBD0DA;background:transparent;color:var(--body);
+  border:1.5px solid var(--gris-300);background:transparent;color:var(--body);
   font-size:14px;font-weight:500;text-align:left;
   transition:all .22s var(--ease);
 }
 .mod-opt svg{width:21px;height:21px;flex:none}
-.mod-opt:hover{border-color:#F6B9C9;color:var(--red)}
-.mod-opt.is-on{background:#FBDCE4;border-color:#FBDCE4;color:var(--red);font-weight:600}
+.mod-opt:hover{border-color:#F6B9C9;color:var(--red-700)}
+.mod-opt.is-on{background:#FBDCE4;border-color:#FBDCE4;color:var(--red-700);font-weight:600}
 
 /* ---- Campos con etiqueta flotante ----
    Reposo: la etiqueta va dentro del campo, en oscuro.
@@ -713,7 +738,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 .field input,.field select{
   position:relative;z-index:1;
-  width:100%;font:inherit;font-size:14.5px;color:var(--ink);
+  width:100%;font:inherit;font-size:14px;color:var(--ink);
   height:50px;padding:0 15px;border:0;border-radius:13px;
   background:transparent;
 }
@@ -726,12 +751,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .sel-btn{
   position:relative;z-index:1;display:flex;align-items:center;
   width:100%;height:50px;padding:0 44px 0 15px;
-  font:inherit;font-size:14.5px;color:var(--ink);text-align:left;
+  font:inherit;font-size:14px;color:var(--ink);text-align:left;
   background:transparent;border:0;border-radius:13px;cursor:pointer;
 }
 .sel-btn::after{
   content:'';position:absolute;right:15px;top:50%;width:11px;height:11px;
-  border-right:2px solid #565A67;border-bottom:2px solid #565A67;
+  border-right:2px solid var(--body);border-bottom:2px solid var(--body);
   transform:translateY(-70%) rotate(45deg);
   transition:transform .25s var(--ease);
 }
@@ -753,14 +778,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* La columna derecha despliega hacia la izquierda */
 .lead-form > .field:nth-of-type(even) .sel-list{left:auto;right:0}
 .sel-opt{
-  padding:10px 13px;border-radius:9px;font-size:14.5px;color:var(--ink-2);
+  padding:10px 13px;border-radius:9px;font-size:14px;color:var(--ink-2);
   cursor:pointer;line-height:1.3;
   transition:background .14s var(--ease),color .14s var(--ease);
 }
-.sel-opt.is-on{background:#FDE7EC;color:var(--red)}
-.sel-opt[aria-selected="true"]{color:var(--red);font-weight:600}
+.sel-opt.is-on{background:#FDE7EC;color:var(--red-700)}
+.sel-opt[aria-selected="true"]{color:var(--red-700);font-weight:600}
 .sel-list::-webkit-scrollbar{width:6px}
-.sel-list::-webkit-scrollbar-thumb{background:#D6D9E0;border-radius:99px}
+.sel-list::-webkit-scrollbar-thumb{background:var(--gris-300);border-radius:99px}
 
 /* La etiqueta flotante y la muesca ahora las manda el estado del campo */
 .field.is-open .sel-btn ~ .notch,
@@ -773,13 +798,13 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 /* El placeholder solo se ve cuando el campo está activo */
 .field input::placeholder{color:transparent;transition:color .2s var(--ease)}
-.field input:focus::placeholder{color:#A2A8B6}
+.field input:focus::placeholder{color:var(--gris-400)}
 
 /* Marco con muesca */
 .field .notch{
   position:absolute;top:-5px;left:0;right:0;bottom:0;
   margin:0;padding:0 9px;min-width:0%;overflow:hidden;pointer-events:none;
-  border:1.3px solid #565A67;border-radius:13px;
+  border:1.3px solid var(--body);border-radius:13px;
   transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
 }
 .field .notch legend{
@@ -792,7 +817,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 .field > label{
   position:absolute;left:15px;top:50%;transform:translateY(-50%);z-index:2;
-  font-size:13.5px;font-weight:500;color:var(--ink-2);line-height:1;
+  font-size:14px;font-weight:500;color:var(--ink-2);line-height:1;
   pointer-events:none;white-space:nowrap;
   max-width:calc(100% - 26px);overflow:hidden;text-overflow:ellipsis;
   transition:top .18s var(--ease),font-size .18s var(--ease),color .18s var(--ease);
@@ -804,7 +829,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .field input:not(:placeholder-shown) ~ label,
 .field.is-open > label,
 .field.is-filled > label{
-  top:0;font-size:12px;color:var(--red);max-width:calc(100% - 20px);
+  top:0;font-size:12px;color:var(--red-700);max-width:calc(100% - 20px);
 }
 .field input:focus ~ .notch legend,
 .field input:not(:placeholder-shown) ~ .notch legend,
@@ -820,7 +845,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* Casillas */
 .check{
   grid-column:1/-1;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;
-  font-size:12.5px;line-height:1.5;color:var(--ink-2);cursor:pointer;
+  font-size:12px;line-height:1.5;color:var(--ink-2);cursor:pointer;
 }
 .check input{position:absolute;opacity:0;width:0;height:0}
 .check .box{
@@ -836,35 +861,35 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .check input:checked + .box::after{opacity:1;transform:rotate(45deg) scale(1)}
 .check input:focus-visible + .box{outline:3px solid var(--red);outline-offset:2px}
 .check a{color:inherit;font-weight:700}
-.check a:hover{color:var(--red)}
+.check a:hover{color:var(--red-700)}
 .check-just .txt{text-align:justify}
 .check.has-error .box{box-shadow:0 0 0 3px rgba(255,14,73,.22)}
 
 .submit-btn{
   grid-column:1/-1;justify-self:center;margin-top:3px;
   display:inline-flex;align-items:center;gap:16px;
-  background:var(--red);color:#fff;font-weight:600;font-size:15.5px;
+  background:var(--red-600);color:#fff;font-weight:600;font-size:16px;
   padding:13px 20px 13px 30px;border-radius:999px;
   box-shadow:0 12px 30px rgba(255,14,73,.34);
   transition:transform .2s var(--ease),background .2s var(--ease),box-shadow .2s var(--ease);
 }
 .submit-btn [data-ico]{width:24px;height:24px;flex:none;transition:transform .25s var(--ease)}
-.submit-btn:hover{background:var(--red-600);transform:translateY(-2px);box-shadow:0 16px 36px rgba(255,14,73,.44)}
+.submit-btn:hover{background:var(--red-700);transform:translateY(-2px);box-shadow:0 16px 36px rgba(255,14,73,.44)}
 
 /* Inactivo mientras falten campos. Sigue siendo pulsable a propósito:
    al pulsarlo se marcan los campos que faltan. */
 .submit-btn.is-off{
-  background:#D9DCE3;color:#7A8090;box-shadow:none;cursor:not-allowed;
+  background:var(--gris-300);color:var(--muted);box-shadow:none;cursor:not-allowed;
 }
-.submit-btn.is-off:hover{background:#D9DCE3;transform:none;box-shadow:none}
+.submit-btn.is-off:hover{background:var(--gris-300);transform:none;box-shadow:none}
 .submit-btn.is-off:hover svg{transform:none}
 .submit-btn:hover [data-ico]{transform:translateX(4px)}
 
 /* Vacío no ocupa: si no, el hueco de abajo no cuadra con el de arriba */
-.form-msg{grid-column:1/-1;font-size:13.5px;font-weight:600;text-align:center;margin-top:-2px}
+.form-msg{grid-column:1/-1;font-size:14px;font-weight:600;text-align:center;margin-top:-2px}
 .form-msg:empty{display:none}
 .form-msg.ok{color:#1B9E5A}
-.form-msg.err{color:var(--red)}
+.form-msg.err{color:var(--red-700)}
 
 /* Flotantes */
 .floaters{
@@ -887,8 +912,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .floater-call{background:var(--red);display:none}
 .floater-badge{
   position:absolute;top:-2px;right:-2px;min-width:20px;height:20px;padding:0 5px;
-  border-radius:999px;background:var(--red);color:#fff;
-  font-size:11.5px;font-weight:700;line-height:20px;text-align:center;
+  border-radius:999px;background:var(--red-600);color:#fff;
+  font-size:12px;font-weight:700;line-height:20px;text-align:center;
   border:2px solid #fff;
 }
 
@@ -903,7 +928,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   --fh:52px;   /* alto del boton */
   --fi:26px;   /* tamano del icono */
   --aire:calc((var(--fh) - var(--fi)) / 2);
-  background:var(--red);
+  background:var(--red-600);
   width:auto;min-width:var(--fh);height:var(--fh);
   display:flex;align-items:center;gap:0;padding:0;
 }
@@ -922,7 +947,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
    pastilla nacia abierta. */
 .floater-txt{
   max-width:0;overflow:hidden;
-  font-size:14.5px;font-weight:600;white-space:nowrap;
+  font-size:14px;font-weight:600;white-space:nowrap;
   transition:max-width .3s var(--ease);
 }
 .floater-txt > span{display:block;padding-right:var(--aire)}
@@ -933,7 +958,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* ---------- Menu de WhatsApp ---------- */
 .wa-caja{position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
 .wa-menu{
-  background:var(--red);color:#fff;border-radius:16px;
+  background:var(--red-600);color:#fff;border-radius:16px;
   padding:6px 18px;min-width:196px;
   box-shadow:0 14px 34px rgba(0,0,0,.28);
   animation:waEntra .2s var(--ease);
@@ -941,7 +966,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 @keyframes waEntra{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .wa-op{
   display:flex;align-items:center;gap:9px;
-  padding:13px 0;font-size:14.5px;font-weight:600;color:#fff;
+  padding:13px 0;font-size:14px;font-weight:600;color:#fff;
   transition:opacity .18s var(--ease),transform .18s var(--ease);
 }
 .wa-op + .wa-op{border-top:1.5px dashed rgba(255,255,255,.55)}
@@ -957,7 +982,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   font-size:clamp(34px,4.6vw,52px);text-transform:uppercase;font-weight:800;letter-spacing:.01em;
 }
 .section-title em{font-style:normal;color:var(--red)}
-.section-sub{margin-top:14px;font-size:16.5px;color:var(--body)}
+.section-sub{margin-top:14px;font-size:16px;color:var(--body)}
 .section-cta{text-align:center;margin-top:48px}
 
 /* Reveal on scroll */
@@ -995,9 +1020,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 .crumb{
   display:flex;align-items:center;gap:9px;justify-content:center;
-  margin-bottom:16px;font-size:13.5px;color:var(--muted);
+  margin-bottom:16px;font-size:14px;color:var(--muted);
 }
-.crumb a{color:var(--red);font-weight:600}
+.crumb a{color:var(--red-700);font-weight:600}
 .crumb a:hover{text-decoration:underline}
 .crumb span:last-child{color:var(--body)}
 
@@ -1077,14 +1102,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 .hub-body{position:relative;display:flex;flex-direction:column;gap:3px}
 .hub-kicker{
-  font-family:'Barlow',sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;
+  font-family:'Barlow',sans-serif;font-weight:600;font-size:14px;letter-spacing:.04em;
   text-transform:uppercase;opacity:.9;
 }
 .hub-title{
   font-family:'Barlow Condensed',sans-serif;font-weight:800;line-height:.98;
   font-size:clamp(30px,3.4vw,42px);text-transform:uppercase;letter-spacing:.01em;
 }
-.hub-meta{margin-top:8px;font-family:'Barlow',sans-serif;font-size:13.5px;font-weight:500;opacity:.9}
+.hub-meta{margin-top:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:500;opacity:.9}
 
 .hub-go{
   position:absolute;top:22px;right:22px;z-index:1;
@@ -1108,12 +1133,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* ---------- Chips ---------- */
 .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-bottom:44px}
 .chip{
-  font-size:13.5px;font-weight:600;padding:11px 20px;border-radius:999px;
+  font-size:14px;font-weight:600;padding:11px 20px;border-radius:999px;
   border:1.5px solid var(--line);color:var(--body);background:#fff;
   transition:all .22s var(--ease);
 }
-.chip:hover{border-color:var(--red);color:var(--red)}
-.chip.is-active{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 8px 20px rgba(255,14,73,.28)}
+.chip:hover{border-color:var(--red-700);color:var(--red-700)}
+.chip.is-active{background:var(--red-600);border-color:var(--red-600);color:#fff;box-shadow:0 8px 20px rgba(255,14,73,.28)}
 
 /* Con las 8 categorias llenas la fila se parte en dos en pantallas
    medianas. Antes de que eso pase pasa a ser una sola fila que se
@@ -1156,6 +1181,13 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 /* Tres por fila, pero la rejilla se estrecha: a todo el ancho las
    tarjetas salían de 377px, demasiado. */
+/* Con una o dos tarjetas -Office en cursos, idiomas- la rejilla de tres
+   dejaba un tercio vacio a la derecha y la pagina parecia a medias.
+   Se centran con el mismo ancho que tendrian en la fila de tres. */
+@media (min-width:821px){
+  .career-grid.is-corta{display:flex;justify-content:center}
+  .career-grid.is-corta > *{flex:0 1 calc((100% - 56px) / 3)}
+}
 .career-grid{
   display:grid;grid-template-columns:repeat(3,1fr);gap:28px;position:relative;
   max-width:1150px;margin-inline:auto;
@@ -1177,7 +1209,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .cc-top{position:relative}
 .cc-media{
   position:relative;width:100%;aspect-ratio:4/3.45;
-  border-radius:12px;overflow:hidden;background:#EDEFF4;
+  border-radius:12px;overflow:hidden;background:var(--gris-100);
 }
 .career-card .cc-img{
   position:absolute;inset:0;background-size:cover;background-position:center top;
@@ -1185,14 +1217,22 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 .career-card:hover .cc-img{transform:scale(1.06)}
 
-/* Carreras a las que todavia no les ha llegado la foto: en vez de una
-   imagen rota, el mismo gris del contenedor con un tinte de marca. */
-.cc-img-vacia{
+/* Cara de la tarjeta cuando no hay foto. Va siempre debajo de la foto,
+   no en su lugar: si el archivo no existe el navegador deja el fondo
+   transparente y asoma esto, sin tener que detectar el 404 desde JS.
+   Antes quedaba una caja gris lisa, que se leia como algo roto; ahora
+   es el tinte de marca con el icono del area. */
+.cc-vacia{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
   background:
-    linear-gradient(135deg,rgba(255,14,73,.10),rgba(250,212,79,.16)),
-    #EDEFF4;
+    linear-gradient(135deg,rgba(255,14,73,.10),rgba(250,212,79,.18)),
+    var(--gris-100);
+  color:var(--red);
 }
-.career-card:hover .cc-img-vacia{transform:none}
+/* Tamano fijo: en porcentaje se resolvia contra la pista y el icono se
+   quedaba pegado a la izquierda. */
+.cc-vacia svg{width:64px;height:64px;opacity:.55;display:block}
 
 /* El icono va junto al título. Sin la sombra que llevaba para
    sostenerse sobre la foto: aquí el fondo es blanco. */
@@ -1207,7 +1247,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   position:absolute;right:-4px;bottom:-10px;z-index:3;
   width:46px;height:46px;border-radius:50%;
   display:grid;place-content:center;
-  background:#fff;color:var(--red);
+  background:#fff;color:var(--red-700);
   border:1.6px solid var(--red);
   box-shadow:0 0 0 7px var(--bg);
   transition:background .22s var(--ease),color .22s var(--ease),transform .22s var(--ease);
@@ -1217,9 +1257,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 .cc-body{padding:22px 0 0;display:flex;flex-direction:column;flex:1}
 .cc-name{font-size:18px;font-weight:600;color:var(--ink);line-height:1.2;min-width:0}
-.career-card:hover .cc-name{color:var(--red)}
+.career-card:hover .cc-name{color:var(--red-700)}
 .cc-desc{
-  margin-top:9px;font-size:12.5px;color:var(--body);line-height:1.5;flex:1;
+  margin-top:9px;font-size:12px;color:var(--body);line-height:1.5;flex:1;
   /* Nunca mas de dos lineas: si una carrera trae un texto largo
      se recorta en vez de descuadrar la altura de la fila. */
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
@@ -1227,8 +1267,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 .cc-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .cc-tag{
-  font-size:11.5px;font-weight:500;
-  color:var(--red);background:#FBF0C4;padding:6px 13px;border-radius:999px;
+  font-size:12px;font-weight:500;
+  color:var(--red-700);background:#FBF0C4;padding:6px 13px;border-radius:999px;
   white-space:nowrap;
 }
 
@@ -1243,7 +1283,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .cifras .section-head{max-width:1000px}
 .stats-card{
   display:grid;grid-template-columns:repeat(4,1fr);gap:0;
-  border:1.5px solid #E2E3E8;border-radius:24px;
+  border:1.5px solid var(--line);border-radius:24px;
   padding:44px 26px;background:#fff;
   box-shadow:0 14px 40px rgba(18,19,26,.06);
 }
@@ -1276,7 +1316,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
    columna, a las demas les quedaba menos sitio y "Convenios laborales"
    partia en dos. Al no poder partirse, su ancho entra en el minimo de
    la celda y la rejilla le reserva el hueco. */
-.stat-label{margin-top:6px;font-size:14.5px;color:var(--body);line-height:1.3;white-space:nowrap}
+.stat-label{margin-top:6px;font-size:14px;color:var(--body);line-height:1.3;white-space:nowrap}
 /* Rebote de la cifra al terminar el conteo */
 .stat-num.is-pop{animation:statPop .4s var(--ease)}
 @keyframes statPop{0%{transform:scale(1)}40%{transform:scale(1.13)}100%{transform:scale(1)}}
@@ -1300,7 +1340,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   padding-top:104px;padding-bottom:96px;
 }
 .porque .section-title{color:#fff}
-.porque .section-sub{color:rgba(255,255,255,.72)}
+.porque .section-sub{color:var(--blanco-3)}
 
 /* El visor va fuera del .shell, a ancho completo: con 100vh de alto,
    un recuadro de 1040px dejaria franjas negras enormes arriba y abajo.
@@ -1334,7 +1374,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .pq-play svg{width:100%;height:100%;display:block}
 
 /* Foto del espacio + velo + textos */
-.pq-stage{position:absolute;inset:0;background:#12131A center/cover no-repeat;overflow:hidden}
+.pq-stage{position:absolute;inset:0;background:var(--ink) center/cover no-repeat;overflow:hidden}
 .pq-stage.is-zoom{animation:pqZoom 16s linear both}
 @keyframes pqZoom{from{transform:scale(1.02)}to{transform:scale(1.09)}}
 .pq-view-photo .pq-veil{
@@ -1354,13 +1394,13 @@ body:not(.form-abierto) .form-velo{opacity:0}
   font-size:clamp(24px,2.6vw,34px);line-height:1.05;text-transform:uppercase;color:#fff;
 }
 .pq-now-count{
-  position:relative;flex:none;padding-left:12px;font-size:12.5px;font-weight:600;
-  letter-spacing:.08em;color:rgba(255,255,255,.7);
+  position:relative;flex:none;padding-left:12px;font-size:12px;font-weight:600;
+  letter-spacing:.08em;color:var(--blanco-3);
 }
 .pq-now-count::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:13px;background:rgba(255,255,255,.34)}
-.pq-now-desc{margin-top:8px;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.9);max-width:440px}
-.pq-cta{margin-top:16px;background:var(--red);color:#fff;box-shadow:0 12px 28px rgba(255,14,73,.3)}
-.pq-cta:hover{background:#fff;color:var(--red)}
+.pq-now-desc{margin-top:8px;font-size:14px;line-height:1.5;color:var(--blanco-2);max-width:440px}
+.pq-cta{margin-top:16px;background:var(--red-600);color:#fff;box-shadow:0 12px 28px rgba(255,14,73,.3)}
+.pq-cta:hover{background:#fff;color:var(--red-700)}
 .pq-cta .ico-arrow{transition:transform .25s var(--ease)}
 .pq-cta:hover .ico-arrow{transform:translate(3px,-3px)}
 
@@ -1386,7 +1426,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .pq-thumb{
   position:relative;flex:0 0 clamp(150px,17vw,186px);aspect-ratio:16/10;
   border-radius:13px;overflow:hidden;scroll-snap-align:start;
-  background:#22242E center/cover no-repeat;border:2px solid transparent;opacity:.72;
+  background:var(--ink) center/cover no-repeat;border:2px solid transparent;opacity:.72;
   transition:opacity .25s var(--ease),border-color .25s var(--ease),transform .3s var(--ease);
 }
 .pq-thumb:hover{opacity:1;transform:translateY(-3px)}
@@ -1394,11 +1434,11 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .pq-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,9,14,.7),transparent 60%)}
 .pq-thumb-name{
   position:absolute;left:8px;bottom:8px;right:8px;z-index:2;
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;
   text-transform:uppercase;letter-spacing:.02em;color:#fff;line-height:1.1;
 }
 /* Minivista del video: fondo rojo + icono play */
-.pq-thumb-video{background:var(--red);opacity:.9}
+.pq-thumb-video{background:var(--red-600);opacity:.9}
 .pq-thumb-video.is-on{opacity:1;border-color:#fff}
 .pq-thumb-video::after{background:none}
 .pq-thumb-play{
@@ -1453,7 +1493,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .sedes-title{display:inline-flex;flex-direction:column;text-transform:uppercase;color:var(--ink)}
 .sedes-title .sm{font-weight:700;font-size:clamp(24px,2.6vw,36px);letter-spacing:.02em}
 .sedes-title .lg{font-weight:900;font-size:clamp(38px,5vw,62px);letter-spacing:.005em;margin-top:-.06em;color:var(--red)}
-.sedes-sub{margin-top:14px;color:var(--body);font-size:16.5px}
+.sedes-sub{margin-top:14px;color:var(--body);font-size:16px}
 .sedes-sub strong{font-weight:700;color:var(--ink)}
 
 /* Grid de cards de sede: mismo lenguaje que las cards de carrera */
@@ -1467,12 +1507,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
    oculto: asi aparece solo en movil sin necesidad de otra regla. */
 .sede-select .sede-q{
   display:block;text-align:center;margin-bottom:12px;
-  font-size:15px;font-weight:600;color:var(--ink-2);
+  font-size:16px;font-weight:600;color:var(--ink-2);
 }
 .sede-select select{
   width:100%;height:52px;padding:0 46px 0 18px;
   border:1.5px solid var(--line);border-radius:999px;
-  font:inherit;font-size:15.5px;font-weight:500;color:var(--ink);background:#fff;
+  font:inherit;font-size:16px;font-weight:500;color:var(--ink);background:#fff;
   appearance:none;-webkit-appearance:none;cursor:pointer;
 }
 .sede-select select:focus{outline:0;border-color:var(--red);box-shadow:0 0 0 3px rgba(255,14,73,.13)}
@@ -1488,7 +1528,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .sede-caja{position:relative}
 .sede-caja::after{
   content:'';position:absolute;right:20px;top:50%;width:11px;height:11px;
-  border-right:2px solid #565A67;border-bottom:2px solid #565A67;
+  border-right:2px solid var(--body);border-bottom:2px solid var(--body);
   transform:translateY(-70%) rotate(45deg);
   pointer-events:none;
   transition:border-color .18s var(--ease),transform .25s var(--ease);
@@ -1512,7 +1552,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .sede-btn{
   display:flex;align-items:center;width:100%;height:52px;padding:0 46px 0 18px;
   border:1.5px solid var(--line);border-radius:999px;background:#fff;
-  font:inherit;font-size:15.5px;font-weight:500;color:var(--ink);
+  font:inherit;font-size:16px;font-weight:500;color:var(--ink);
   text-align:left;cursor:pointer;
   transition:border-color .18s var(--ease),box-shadow .18s var(--ease);
 }
@@ -1526,8 +1566,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .sede-caja.is-open .sel-list{opacity:1;visibility:visible;transform:none}
 /* Cabecera de zona dentro de la lista */
 .sel-group{
-  padding:10px 13px 5px;font-size:11.5px;font-weight:700;letter-spacing:.06em;
-  text-transform:uppercase;color:#9AA0AE;
+  padding:10px 13px 5px;font-size:12px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);
 }
 .sel-group:first-child{padding-top:4px}
 
@@ -1542,12 +1582,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .sede-info{
   position:relative;isolation:isolate;overflow:hidden;
   display:flex;flex-direction:column;justify-content:flex-end;
-  min-height:588px;border-radius:24px;color:#fff;background:#1B1C22;
+  min-height:588px;border-radius:24px;color:#fff;background:var(--ink);
   box-shadow:0 14px 40px rgba(18,19,26,.14);
 }
 .sede-foto{
   position:absolute;inset:0;z-index:-2;
-  background:#1B1C22 center/cover no-repeat;
+  background:var(--ink) center/cover no-repeat;
 }
 .sede-foto-vacia{
   background-image:linear-gradient(135deg,rgba(255,14,73,.5),rgba(41,37,138,.6));
@@ -1581,7 +1621,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
   font-size:clamp(22px,2.2vw,27px);line-height:1.05;color:#fff;
 }
-.sede-dato{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.92)}
+.sede-dato{display:flex;align-items:flex-start;gap:11px;font-size:14px;line-height:1.5;color:var(--blanco-2)}
 .sede-dato-ico{display:block;width:17px;height:17px;flex:none;margin-top:3px;color:#fff;opacity:.8}
 .sede-dato-ico svg{width:100%;height:100%;display:block}
 .sede-dato b{display:block;font-weight:600;color:#fff;margin-bottom:3px}
@@ -1590,7 +1630,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* El iframe de Maps se inserta por JS al acercarse la seccion: son 12
    sedes y cargarlos todos de golpe seria absurdo. */
 .sede-mapa{
-  position:relative;border-radius:24px;overflow:hidden;background:#EDEFF4;
+  position:relative;border-radius:24px;overflow:hidden;background:var(--gris-100);
   min-height:520px;box-shadow:0 14px 40px rgba(18,19,26,.10);
 }
 .sede-mapa iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -1670,7 +1710,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   container-type:inline-size;
   position:relative;width:100%;aspect-ratio:9/16;
   border-radius:22px;overflow:hidden;
-  background:#111 center/cover no-repeat;cursor:pointer;
+  background:var(--ink) center/cover no-repeat;cursor:pointer;
   box-shadow:0 10px 30px rgba(18,19,26,.14);
   transition:box-shadow .3s var(--ease);
 }
@@ -1695,7 +1735,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .exp-titulo{
   position:absolute;left:0;right:0;bottom:0;z-index:3;
   padding:44px 18px 18px;
-  font-size:15px;font-weight:600;line-height:1.35;color:#fff;
+  font-size:16px;font-weight:600;line-height:1.35;color:#fff;
   text-shadow:0 1px 3px rgba(0,0,0,.5);
   background:linear-gradient(to top,rgba(8,9,14,.9) 0,rgba(8,9,14,.55) 45%,transparent 100%);
   /* Como maximo tres lineas: los titulos largos no deben comerse el video */
@@ -1727,13 +1767,13 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .news-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
 
 .news-media{position:relative}
-.news-thumb{aspect-ratio:4/3.1;border-radius:12px;background:#EDEFF4 center/cover no-repeat}
+.news-thumb{aspect-ratio:4/3.1;border-radius:12px;background:var(--gris-100) center/cover no-repeat}
 /* El botón lleva un anillo del color de la tarjeta: parece un recorte */
 .news-go{
   position:absolute;right:-4px;bottom:-10px;
   width:46px;height:46px;border-radius:50%;
   display:grid;place-content:center;
-  background:#fff;color:var(--red);
+  background:#fff;color:var(--red-700);
   border:1.6px solid var(--red);
   box-shadow:0 0 0 7px #fff;
   transition:background .22s var(--ease),color .22s var(--ease),transform .22s var(--ease);
@@ -1743,19 +1783,19 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 .news-body{padding:22px 6px 0;display:flex;flex-direction:column;flex:1}
 .news-title{font-size:18px;font-weight:600;color:var(--ink);line-height:1.2}
-.news-card:hover .news-title{color:var(--red)}
-.news-excerpt{margin-top:9px;font-size:12.5px;color:var(--body);line-height:1.5;flex:1}
+.news-card:hover .news-title{color:var(--red-700)}
+.news-excerpt{margin-top:9px;font-size:12px;color:var(--body);line-height:1.5;flex:1}
 .news-tag{
-  margin-top:22px;align-self:flex-start;font-size:11.5px;font-weight:500;
-  color:var(--red);background:#FBF0C4;padding:6px 13px;border-radius:999px;
+  margin-top:22px;align-self:flex-start;font-size:12px;font-weight:500;
+  color:var(--red-700);background:#FBF0C4;padding:6px 13px;border-radius:999px;
 }
 
 /* ============================================================
    FOOTER
    ============================================================ */
 .site-footer{
-  position:relative;background:#272423;color:rgba(255,255,255,.72);
-  padding-top:70px;font-size:14.5px;overflow:hidden;
+  position:relative;background:#272423;color:var(--blanco-3);
+  padding-top:70px;font-size:14px;overflow:hidden;
 }
 /* Marca de agua del fondo */
 .footer-mark{
@@ -1770,32 +1810,32 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 .fcol-title{
   display:flex;align-items:center;gap:11px;
-  font-size:21px;text-transform:uppercase;letter-spacing:.055em;color:#fff;margin-bottom:30px;
+  font-size:22px;text-transform:uppercase;letter-spacing:.055em;color:#fff;margin-bottom:30px;
 }
 .fcol-title .chev{display:block;width:12px;height:16px;color:var(--red);flex:none}
 .fcol-title .chev svg{width:100%;height:100%;display:block}
 
 .fcol-sub{
-  margin:26px 0 14px;font-weight:500;color:rgba(255,255,255,.62);
-  font-size:14.5px;text-transform:uppercase;letter-spacing:.06em;
+  margin:26px 0 14px;font-weight:500;color:var(--blanco-3);
+  font-size:14px;text-transform:uppercase;letter-spacing:.06em;
 }
-.fcol-text{color:rgba(255,255,255,.72)}
+.fcol-text{color:var(--blanco-3)}
 
 /* Teléfonos */
 .tel-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .tel-list li{display:flex;align-items:center;gap:12px}
-.tel-list [data-ico]{width:22px;height:22px;flex:none;color:rgba(255,255,255,.85)}
-.tel-list a{color:rgba(255,255,255,.78);transition:color .2s var(--ease)}
+.tel-list [data-ico]{width:22px;height:22px;flex:none;color:var(--blanco-2)}
+.tel-list a{color:var(--blanco-2);transition:color .2s var(--ease)}
 .tel-list a:hover{color:#fff}
 
 /* Horario */
 .horario{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .horario li{display:flex;flex-direction:column;gap:5px;line-height:1.35}
-.horario strong{font-weight:400;color:rgba(255,255,255,.78)}
-.horario span{color:rgba(255,255,255,.66)}
+.horario strong{font-weight:400;color:var(--blanco-2)}
+.horario span{color:var(--blanco-3)}
 
 .fcol-list li{margin-bottom:17px}
-.fcol-list a{color:rgba(255,255,255,.72);transition:color .2s var(--ease),padding-left .2s var(--ease);display:inline-block}
+.fcol-list a{color:var(--blanco-3);transition:color .2s var(--ease),padding-left .2s var(--ease);display:inline-block}
 .fcol-list a:hover{color:#fff;padding-left:5px}
 
 /* Redes: círculo blanco, glifo oscuro */
@@ -1817,17 +1857,17 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 .reclamaciones:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.3)}
 .rec-txt{
-  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:15px;line-height:1.12;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;line-height:1.12;
   text-transform:uppercase;letter-spacing:.03em;text-align:center;color:#0B4EA2;
 }
 .rec-book{width:76px;height:auto;color:#1668C4}
 
 /* Barra inferior */
 .footer-bar{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.35);padding:24px 0 28px}
-.footer-bar-inner{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;font-size:14.5px}
-.footer-bar p{color:rgba(255,255,255,.82)}
+.footer-bar-inner{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;font-size:14px}
+.footer-bar p{color:var(--blanco-2)}
 .footer-bar nav{display:flex;gap:38px;flex-wrap:wrap}
-.footer-bar nav a{color:rgba(255,255,255,.82);text-decoration:underline;text-underline-offset:3px}
+.footer-bar nav a{color:var(--blanco-2);text-decoration:underline;text-underline-offset:3px}
 .footer-bar nav a:hover{color:var(--red)}
 
 /* ---------- SISE en cifras: cortes propios ----------
@@ -1839,7 +1879,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .stat{gap:12px;padding:4px 14px}
   .stat-ico{width:46px;height:46px}
   .stat-num{font-size:clamp(30px,3.4vw,40px)}
-  .stat-label{font-size:13px}
+  .stat-label{font-size:14px}
 }
 @media (max-width:1000px){
   /* Dos columnas: en fila ya no caben cuatro etiquetas enteras */
@@ -1849,14 +1889,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .stat:nth-child(even){border-left:1px solid rgba(18,19,26,.10)}
   .stat-ico{width:44px;height:44px}
   .stat-num{font-size:clamp(28px,4.4vw,38px)}
-  .stat-label{font-size:13.5px}
+  .stat-label{font-size:14px}
 }
 @media (max-width:560px){
   .stats-card{padding:26px 8px}
   .stat{gap:9px;padding:4px 9px}
   .stat-ico{width:32px;height:32px}
   .stat-num{font-size:22px}
-  .stat-label{font-size:11.5px;margin-top:3px}
+  .stat-label{font-size:12px;margin-top:3px}
 }
 @media (max-width:440px){
   /* Se mantiene el 2x2, pero con el icono ENCIMA en vez de al lado:
@@ -1866,9 +1906,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .stat{flex-direction:column;align-items:center;text-align:center;gap:7px;padding:4px 8px}
   .stat-txt{text-align:center}
   .stat-ico{width:34px;height:34px}
-  .stat-num{font-size:26px}
+  .stat-num{font-size:28px}
   .stat-num{transform-origin:center}
-  .stat-label{font-size:11.5px}
+  .stat-label{font-size:12px}
 }
 
 /* ============================================================
@@ -2010,7 +2050,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   /* Empleabilidad tambien en movil. En compacto: con el logo y la
      hamburguesa al lado, a tamano completo no cabe en 375px. */
   .btn-empleo{
-    padding:8px 12px;font-size:13px;gap:7px;
+    padding:8px 12px;font-size:14px;gap:7px;
     white-space:nowrap;flex:none;
   }
   .btn-empleo .lottie{width:20px;height:20px}
@@ -2036,7 +2076,6 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 
 @media (max-width:600px){
-  body{font-size:16px}
   .sedes{padding:40px 0}
   .hero-bg{min-height:500px}
   .hero-nav{padding-bottom:18px}
@@ -2048,9 +2087,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
      apiladas porque a tamano completo "Semipresencial" no entraba en
      media tarjeta; con el texto y el relleno mas justos, si. */
   .mod-switch{grid-template-columns:1fr 1fr;gap:10px}
-  .mod-opt{padding:10px 12px;font-size:13px;gap:6px}
+  .mod-opt{padding:10px 12px;font-size:14px;gap:6px}
   .mod-opt [data-ico],.mod-opt svg{width:18px;height:18px}
-  .lead-title{font-size:27px}
+  .lead-title{font-size:28px}
   .submit-btn{width:100%;justify-content:center;padding-inline:24px}
   /* Carrusel horizontal: apiladas, las 6 carreras ocupaban 4,4 pantallas
      y las 4 novedades otras 2,7. Con deslizamiento lateral se quedan
@@ -2087,9 +2126,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
      encogia a cero y la etiqueta no aparecia nunca. */
   .floater-form{--fh:46px;--fi:23px;width:auto;min-width:var(--fh);height:var(--fh)}
   .floater-txt{flex:none}
-  .floater-txt{max-width:var(--wtxt,240px);font-size:13.5px}
+  .floater-txt{max-width:var(--wtxt,240px);font-size:14px}
   .wa-menu{min-width:180px;padding:4px 16px}
-  .wa-op{padding:11px 0;font-size:13.5px}
+  .wa-op{padding:11px 0;font-size:14px}
 }
 
 /* Accesibilidad: sin animaciones */
@@ -2146,8 +2185,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .conv-item img{width:88%;height:auto}
 /* Respaldo mientras no esta el archivo del logo */
 .conv-word{
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;
-  letter-spacing:.02em;text-transform:uppercase;color:#9AA0AE;text-align:center;line-height:1.05;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;
+  letter-spacing:.02em;text-transform:uppercase;color:var(--gris-400);text-align:center;line-height:1.05;
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -2244,8 +2283,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 .car-hero-inner{position:relative;z-index:2;padding-top:calc(var(--header-h) + 54px);padding-bottom:clamp(30px,4vw,58px)}
 .car-tag{
-  display:inline-block;background:#fff;color:var(--red);
-  font-family:'Barlow',sans-serif;font-size:12.5px;font-weight:600;
+  display:inline-block;background:#fff;color:var(--red-700);
+  font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;
   letter-spacing:.05em;text-transform:uppercase;
   padding:8px 16px;border-radius:999px;margin-bottom:14px;
 }
@@ -2255,7 +2294,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   text-shadow:0 2px 14px rgba(0,0,0,.35);
 }
 .car-hero-title em{font-style:normal;color:var(--red)}
-.car-hero-sub{margin-top:12px;color:rgba(255,255,255,.9);font-size:16.5px;font-weight:500;max-width:520px}
+.car-hero-sub{margin-top:12px;color:var(--blanco-2);font-size:16px;font-weight:500;max-width:520px}
 
 /* ---------- Banner de las paginas de oferta ----------
    El mismo de la ficha de carrera, mas bajo. Aqui no hay una carrera
@@ -2316,11 +2355,11 @@ body:not(.form-abierto) .form-velo{opacity:0}
    propio bloque y el amarillo asomando por los bordes solo ensuciaba. */
 .car-why-block{position:relative;min-width:0;margin-top:clamp(34px,4vw,56px)}
 
-.crumb{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);margin-bottom:26px}
+.crumb{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:14px;color:var(--muted);margin-bottom:26px}
 .crumb a{color:var(--body);font-weight:500;transition:color .2s var(--ease)}
-.crumb a:hover{color:var(--red)}
+.crumb a:hover{color:var(--red-700)}
 .crumb .crumb-now{color:var(--ink);font-weight:600}
-.crumb .sep{color:#C7CBD6}
+.crumb .sep{color:var(--gris-300)}
 
 /* ---------- Entradilla de las paginas de oferta ----------
    Ruta, titulo y descripcion antes de los filtros. Alineada a la
@@ -2340,12 +2379,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
    entradilla para que valga en cualquier pagina que lleve migas. */
 .crumb--ruta{justify-content:flex-start}
 .crumb--ruta a{display:inline-flex;align-items:center;gap:7px;color:var(--ink);font-weight:500}
-.crumb--ruta a:hover{color:var(--red);text-decoration:none}
+.crumb--ruta a:hover{color:var(--red-700);text-decoration:none}
 /* Con "span" delante a proposito: la regla .crumb span:last-child de
    mas arriba tambien apunta aqui y, al llevar elemento ademas de clase,
    pesa mas que dos clases sueltas. Sin el, la pagina actual seguia
    saliendo gris. */
-.crumb--ruta span.crumb-now{color:var(--red);font-weight:600}
+.crumb--ruta span.crumb-now{color:var(--red-700);font-weight:600}
 .crumb-ico{width:16px;height:16px;flex:none;display:block}
 .crumb-ico svg{width:100%;height:100%;display:block}
 /* Titulo con raya roja debajo. Lo comparten la entradilla de las
@@ -2375,7 +2414,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   /* 1.55 y no 1.62: con solo dos renglones, un interlineado holgado se
      lee como un hueco entre lineas en vez de como un parrafo. */
   margin-top:18px;
-  font-size:16.5px;line-height:1.55;color:var(--body);
+  font-size:16px;line-height:1.55;color:var(--body);
   /* pretty y no balance: balance reparte los renglones a partes iguales
      y por eso encogia el parrafo a media columna, dejandolo mucho mas
      corto que las tarjetas de abajo. pretty deja el texto llegar hasta
@@ -2406,7 +2445,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
    toca -la pagina declara lang="es", asi que usa el diccionario
    correcto- y los espacios se quedan parejos. */
 .car-p{
-  font-size:16.5px;line-height:1.6;color:var(--body);
+  font-size:16px;line-height:1.6;color:var(--body);
   text-align:justify;hyphens:auto;
 }
 /* Tambien justificado en movil, por peticion. La particion de palabras
@@ -2435,7 +2474,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   /* En minuscula: en versalitas competia con el titulo de seccion, que
      tambien va en versalitas, y el ojo los leia como el mismo nivel. */
   font-family:'Barlow Condensed',sans-serif;font-weight:600;
-  font-size:26px;letter-spacing:.01em;color:var(--ink);
+  font-size:28px;letter-spacing:.01em;color:var(--ink);
   /* Mas aire arriba que abajo: asi se lee como el comienzo de un bloque
      nuevo y no como una linea suelta entre dos parrafos. */
   margin:52px 0 16px;
@@ -2492,7 +2531,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .fact-ico svg *{vector-effect:non-scaling-stroke;stroke-width:2.5}
 /* El rotulo es lo secundario y el dato lo importante: antes iba al
    reves, con "INICIO" en negrita oscura y "5 de enero" en gris claro. */
-.fact-t{font-weight:600;text-transform:uppercase;font-size:11.5px;letter-spacing:.11em;color:var(--body);line-height:1.2}
+.fact-t{font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.11em;color:var(--body);line-height:1.2}
 .fact-v{font-size:16px;font-weight:600;color:var(--ink);line-height:1.3;margin-top:2px}
 
 /* Grado y titulo */
@@ -2517,10 +2556,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
      que es como se lee. */
   .car-grado-ilu{width:56px;align-self:center;margin:0}
 }
-.car-grado p{font-size:15.5px;color:var(--body);line-height:1.6}
+.car-grado p{font-size:16px;color:var(--body);line-height:1.6}
 .car-grado strong{color:var(--ink);font-weight:700}
 .car-grado ul{margin:10px 0 0;display:grid;gap:7px}
-.car-grado li{position:relative;padding-left:16px;font-size:15px;color:var(--ink)}
+.car-grado li{position:relative;padding-left:16px;font-size:16px;color:var(--ink)}
 .car-grado li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--red)}
 
 /* ---------- Carril del formulario ----------
@@ -2555,9 +2594,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 .car-form-wrap{position:sticky;top:calc(var(--header-h) + 20px)}
 .lead-card--carrera{background:#fff;box-shadow:var(--shadow-md);animation:none;padding:26px 24px}
-.lead-card--carrera .lead-title{font-size:23px}
+.lead-card--carrera .lead-title{font-size:22px}
 .lead-card--carrera .lead-note{
-  text-align:center;font-size:13px;color:var(--muted);margin:-4px 0 15px;
+  text-align:center;font-size:14px;color:var(--muted);margin:-4px 0 15px;
 }
 
 .field-full{grid-column:1/-1}
@@ -2629,7 +2668,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   font-size:clamp(21px,2.4vw,25px);line-height:1.15;letter-spacing:.01em;
   color:var(--indigo);margin-bottom:6px;
 }
-.why-slide p{font-size:15px;line-height:1.6;color:var(--body);text-wrap:pretty}
+.why-slide p{font-size:16px;line-height:1.6;color:var(--body);text-wrap:pretty}
 
 /* Las flechas son las mismas del carril de laboratorios, clase incluida:
    dos controles iguales en la misma pagina que se vieran distintos solo
@@ -2720,7 +2759,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .labs-flecha{
   width:46px;height:46px;border-radius:50%;padding:0;cursor:pointer;
   display:grid;place-content:center;
-  background:#fff;color:var(--red);
+  background:#fff;color:var(--red-700);
   box-shadow:var(--shadow-sm);
   transition:background .22s var(--ease),color .22s var(--ease),
              transform .22s var(--ease),opacity .22s var(--ease);
@@ -2747,7 +2786,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .campo-roles li{
   display:inline-flex;align-items:center;gap:9px;
   background:#fff;border-radius:999px;padding:11px 18px;
-  font-size:14.5px;color:var(--ink);font-weight:500;
+  font-size:14px;color:var(--ink);font-weight:500;
   box-shadow:var(--shadow-sm);
 }
 .campo-roles li{transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
@@ -2782,12 +2821,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .conv-logo{
   display:grid;place-content:center;height:112px;background:#fff;border-radius:var(--r-lg);
   box-shadow:var(--shadow-sm);
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:23px;
-  color:#9AA0AE;letter-spacing:.03em;text-transform:uppercase;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;
+  color:var(--gris-400);letter-spacing:.03em;text-transform:uppercase;
 }
 .conv-logo img{width:88%;height:auto;transition:transform .3s var(--ease)}
 .conv-logo:hover img{transform:scale(1.07)}
-.conv-note{margin-top:14px;font-size:12.5px;color:var(--muted);text-align:center}
+.conv-note{margin-top:14px;font-size:12px;color:var(--muted);text-align:center}
 
 /* ---------- Malla ----------
    Los tres tipos de curso se distinguen por color, y ese mismo color se
@@ -2813,14 +2852,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
   background:#fff;border:1.5px solid var(--terciario);border-radius:var(--r-lg);
   padding:18px 24px;display:grid;gap:11px;max-width:820px;margin:0 0 24px;
 }
-.malla-linea{display:flex;align-items:center;gap:13px;font-size:14.5px;color:var(--body)}
+.malla-linea{display:flex;align-items:center;gap:13px;font-size:14px;color:var(--body)}
 .malla-linea::before{
   content:'';flex:none;width:4px;height:20px;border-radius:99px;background:var(--tono);
 }
 .malla-linea b{color:var(--ink);font-weight:700}
 .malla-linea strong{
   color:var(--ink);font-weight:700;text-transform:uppercase;
-  font-size:13px;letter-spacing:.04em;
+  font-size:14px;letter-spacing:.04em;
 }
 
 .malla-acc{max-width:980px;margin-inline:auto}
@@ -2832,7 +2871,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;
   padding:24px 28px;background:#fff;border:1.5px solid var(--line);border-radius:var(--r-lg);
   font-family:'Barlow Condensed',sans-serif;font-weight:700;
-  font-size:24px;line-height:1.15;letter-spacing:.01em;color:var(--ink);
+  font-size:22px;line-height:1.15;letter-spacing:.01em;color:var(--ink);
   transition:background .25s var(--ease),color .25s var(--ease);
 }
 .malla-caret{
@@ -2850,13 +2889,16 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .malla-ciclos{display:grid;gap:26px}
 @media(min-width:700px){.malla-ciclos{grid-template-columns:1fr 1fr;gap:30px}}
 .malla-ciclo h4{
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;
-  /* Nivel 2 dentro del panel de la malla, en rojo para separarlo del
-     nivel 2 de la pagina, que va en tinta. */
-  font-size:21px;letter-spacing:.01em;color:var(--red);margin-bottom:10px;
+  /* Nivel 3: por debajo del subtitulo de la ficha (28px, 600). Iba a
+     21px, en 700 y en rojo vivo, y pesaba mas que el nivel de arriba:
+     el ojo iba antes a "Ciclo 01" que a "Que aprenderas". Ahora es mas
+     pequeno y mas fino que el subtitulo, y el rojo de texto lo sigue
+     separando de la tinta sin gritar. */
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:18px;letter-spacing:.02em;color:var(--red-700);margin-bottom:10px;
 }
 .malla-ciclo ul{display:grid;gap:7px}
-.malla-ciclo li{position:relative;padding-left:16px;font-size:14.5px;color:var(--ink);line-height:1.45}
+.malla-ciclo li{position:relative;padding-left:16px;font-size:14px;color:var(--ink);line-height:1.45}
 /* Barrita del color de su tipo, no un punto: asi se ve de un vistazo
    cuantos cursos de cada clase trae el ciclo. */
 .malla-ciclo li::before{
@@ -2866,7 +2908,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .malla-ciclo li[data-t="exp"]{--tono:var(--red)}
 .malla-ciclo li[data-t="emp"]{--tono:var(--terciario)}
 .malla-ciclo li[data-t="esp"]{--tono:var(--indigo)}
-.malla-soon{color:var(--muted);font-size:14.5px}
+.malla-soon{color:var(--muted);font-size:14px}
 
 /* ---------- Certificaciones ---------- */
 /* Las dos listas comparten sitio en pestanas: nueve tarjetas seguidas
@@ -2917,7 +2959,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* El rotulo vuelve a ser una etiqueta pequeña, como estaba */
 .cert-n{
   font-weight:700;text-transform:uppercase;
-  font-size:13px;letter-spacing:.1em;color:var(--paso,var(--red));
+  font-size:14px;letter-spacing:.1em;color:var(--paso,var(--red-700));
 }
 .cert-card p{font-size:14px;color:var(--ink);line-height:1.4;font-weight:500}
 
@@ -2943,7 +2985,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .egr-video{
   position:relative;aspect-ratio:16/9;overflow:hidden;
   border-radius:var(--r-lg);
-  background:#0b0b0f center/cover no-repeat;
+  background:var(--ink) center/cover no-repeat;
   box-shadow:var(--shadow-md);
 }
 .egr-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
@@ -2971,13 +3013,13 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .egr-label > :not(.egr-comillas){position:relative;z-index:1}
 
 .egr-quote{
-  font-style:italic;font-size:19px;line-height:1.5;
+  font-style:italic;font-size:18px;line-height:1.5;
   max-width:62ch;
 }
 /* Filete corto encima del cargo: separa la voz de quien la dice */
 .egr-role{
   position:relative;padding-top:16px;
-  font-size:13.5px;font-weight:700;color:var(--red);
+  font-size:14px;font-weight:700;color:var(--red-700);
 }
 .egr-role::before{
   content:'';position:absolute;left:0;top:0;
@@ -2994,7 +3036,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 @media (max-width:820px){
   .egr-label{padding:26px 22px 28px;gap:12px}
-  .egr-quote{font-size:16.5px}
+  .egr-quote{font-size:16px}
   .egr-comillas{width:64px;height:64px;right:18px;top:16px}
 }
 
@@ -3025,6 +3067,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .egr-grid{grid-template-columns:1fr}
 }
 @media(max-width:640px){
+  /* En movil el titulo de seccion baja a 28px y el subtitulo seguia en
+     26: 1,07 de proporcion, y "Que aprenderas" se leia al mismo nivel
+     que "Malla curricular". A 22 vuelve a haber escalon. */
+  .car-h{font-size:22px;margin-top:40px}
   .car-modos{width:100%}
   .car-modos .mod-opt{flex:1;justify-content:center}
   /* Cuatro tarjetas no caben en una fila de movil */
