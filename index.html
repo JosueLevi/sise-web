@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=381">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=383">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -19,7 +19,7 @@
      sola precarga, en movil se bajaban 82 KB de la imagen de
      escritorio que no llega a pintarse nunca. -->
 <link rel="preload" as="image" href="assets/img/hero-01.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=381">
+<link rel="stylesheet" href="assets/css/style.css?v=383">
 </head>
 <body class="inicio">
 
@@ -270,6 +270,8 @@
 <section class="section porque" id="porque">
   <div class="pq-pin">
     <div class="pq-panel">
+      <!-- Fondo con parallax: va mas lento que la fila -->
+      <div class="pq-fondo" aria-hidden="true"><span>HAZLABIEN</span><span>HAZLABIEN</span><span>HAZLABIEN</span></div>
       <header class="section-head reveal">
         <h2 class="section-title">&iquest;Por qu&eacute; elegir <em>SISE?</em></h2>
         <p class="section-sub">M&iacute;ralo en un minuto y explora nuestros laboratorios.</p>
@@ -284,6 +286,13 @@
             </button>
           </div>
         </div>
+      </div>
+      <!-- Guia de deslizamiento: solo cuando la fila se mueve con el dedo -->
+      <div class="pq-guia" aria-hidden="true">
+        <span class="pq-guia-txt">Desliza
+          <svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-5-5m5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="pq-guia-barra"><span></span></span>
       </div>
     </div>
   </div>
@@ -461,8 +470,8 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=381"></script>
-<script src="assets/js/data.js?v=381"></script>
-<script src="assets/js/main.js?v=381"></script>
+<script src="assets/js/icons.js?v=383"></script>
+<script src="assets/js/data.js?v=383"></script>
+<script src="assets/js/main.js?v=383"></script>
 </body>
 </html>

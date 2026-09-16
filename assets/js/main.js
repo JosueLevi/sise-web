@@ -1172,6 +1172,25 @@
     if ('ResizeObserver' in window) new ResizeObserver(mideViaje).observe(pqCarril);
     window.addEventListener('resize', mideViaje, { passive: true });
 
+    /* Deslizamiento con el dedo (movil): la barra de la guia y el fondo
+       siguen a la fila. Cuanto se ve de la fila y cuanto se ha
+       recorrido van en dos variables que usa el CSS. */
+    const pqPanel = $('.pq-panel', pqSeccion);
+    let pqTick = false;
+    function sigueFila() {
+      pqTick = false;
+      const total = pqCaja.scrollWidth, visto = pqCaja.clientWidth;
+      const rango = Math.max(1, total - visto);
+      pqPanel.style.setProperty('--pq-vista', Math.min(1, visto / total).toFixed(3));
+      pqPanel.style.setProperty('--pq-prog', Math.min(1, pqCaja.scrollLeft / rango).toFixed(3));
+      if (pqCaja.scrollLeft > 8) pqPanel.classList.add('is-movida');
+    }
+    pqCaja.addEventListener('scroll', () => {
+      if (!pqTick) { pqTick = true; requestAnimationFrame(sigueFila); }
+    }, { passive: true });
+    sigueFila();
+    window.addEventListener('resize', sigueFila, { passive: true });
+
     /* Con teclado, una tarjeta que aun no ha llegado estaria fuera de la
        ventana: se baja la pagina lo justo para traerla. */
     pqCarril.addEventListener('focusin', (e) => {

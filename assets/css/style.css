@@ -1347,12 +1347,48 @@ body:not(.form-abierto) .form-velo{opacity:0}
      .pq-caja       ventana de la fila, recorta
      .pq-carril     la fila que se mueve */
 .porque{position:relative;background:transparent}
-.pq-pin{padding-inline:var(--gut)}
+.pq-pin{padding-inline:0}
+/* A todo el ancho y sin esquinas redondeadas, en cualquier pantalla */
 .pq-panel{
   position:relative;isolation:isolate;overflow:hidden;
-  border-radius:var(--r-xl);background:#000;
+  background:#000;
   padding-block:clamp(30px,4vw,48px);
 }
+
+/* Fondo con parallax: la marca de agua del pie, en grande y muy tenue.
+   Va en la franja de arriba, detras del titulo: es la unica zona que la
+   fila deja libre. Detras de las tarjetas solo asomaba en los huecos y
+   parecia un fallo. Se desplaza mas lento que la fila. */
+.pq-fondo{
+  position:absolute;left:0;top:clamp(6px,1.5vw,20px);z-index:-1;
+  display:flex;gap:.25em;white-space:nowrap;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:clamp(120px,17vw,240px);line-height:.82;letter-spacing:.01em;
+  color:#fff;opacity:.05;
+  pointer-events:none;user-select:none;
+  /* En movil lo mueve el deslizamiento de la fila (main.js) */
+  translate:calc(var(--pq-prog, 0) * -45vw) 0;
+}
+
+/* Guia de deslizamiento: "Desliza" y una barra que avanza con la fila.
+   El pulgar mide lo que se ve de la fila y viaja lo que queda. */
+.pq-guia{
+  display:flex;align-items:center;gap:14px;
+  padding:16px clamp(20px,4vw,56px) 0;
+  font-size:14px;font-weight:500;color:var(--blanco-2);
+}
+.pq-guia-txt{display:inline-flex;align-items:center;gap:6px;flex:none;transition:opacity .3s var(--ease)}
+.pq-guia-txt svg{width:18px;height:18px;animation:pqEmpuja 1.6s var(--ease) infinite}
+@keyframes pqEmpuja{0%,100%{translate:0 0}50%{translate:6px 0}}
+.is-movida .pq-guia-txt{opacity:.45}
+.is-movida .pq-guia-txt svg{animation:none}
+.pq-guia-barra{flex:1;height:3px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
+.pq-guia-barra > span{
+  display:block;height:100%;border-radius:inherit;background:var(--red);
+  width:calc(var(--pq-vista, .3) * 100%);
+  translate:calc(var(--pq-prog, 0) * (1 / var(--pq-vista, .3) - 1) * 100%) 0;
+}
+@media (prefers-reduced-motion:reduce){ .pq-guia-txt svg{animation:none} }
 .porque .section-head{margin-bottom:clamp(20px,2.4vw,30px);padding-inline:var(--gut)}
 .porque .section-title{color:#fff}
 .porque .section-sub{color:var(--blanco-3)}
@@ -1503,6 +1539,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
     .porque.is-carril .pq-video{height:100%;width:auto;aspect-ratio:16/9}
     .porque.is-carril .pq-lab{height:100%;width:auto}
 
+    .porque.is-carril .pq-guia{display:none}
+    .porque.is-carril .pq-fondo{
+      top:calc(var(--header-h) - 8px);
+      animation:pqFondo linear both;
+      animation-timeline:--pq;animation-range:contain;
+    }
     .porque.is-carril .pq-lab-foto{
       animation:pqFoto linear both;
       animation-timeline:--pq;animation-range:contain;
@@ -1517,6 +1559,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* La foto va algo mas lenta que su tarjeta y la trama en sentido
    contrario: tres planos a distinta velocidad. */
 @keyframes pqFoto{from{translate:9% 0}to{translate:-9% 0}}
+/* El fondo recorre un tercio de lo que recorre la fila */
+@keyframes pqFondo{from{translate:0 0}to{translate:calc(var(--pq-dist, 0px) * -.35) 0}}
 @keyframes pqTrama{from{translate:-14% 0}to{translate:14% 0}}
 
 /* ============================================================
