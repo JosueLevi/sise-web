@@ -487,35 +487,32 @@ const PORQUE_SLIDES = [
   {
     img: 'assets/img/porque-sise-1.webp',
     imgMovil: 'assets/img/porque-sise-1-movil.webp',
-    mosaico: 'assets/img/porque-sise-1-mosaico.webp',
     titulo: 'Aulas equipadas',
+    // No va en el carril de "Por que elegir SISE": solo laboratorios
+    enPorque: false,
     texto: 'Ambientes modernos y cómodos para tus clases del día a día.'
   },
   {
     img: 'assets/img/porque-sise-02.webp',
     imgMovil: 'assets/img/porque-sise-02-movil.webp',
-    mosaico: 'assets/img/porque-sise-02-mosaico.webp',
     titulo: 'Laboratorio de Mac',
     texto: 'Equipos Apple de última generación para diseño, edición y desarrollo.'
   },
   {
     img: 'assets/img/porque-sise-03.webp',
     imgMovil: 'assets/img/porque-sise-03-movil.webp',
-    mosaico: 'assets/img/porque-sise-03-mosaico.webp',
     titulo: 'Laboratorio gastronómico',
     texto: 'Cocina profesional equipada para cocinar como en un restaurante real.'
   },
   {
     img: 'assets/img/porque-sise-04.webp',
     imgMovil: 'assets/img/porque-sise-04-movil.webp',
-    mosaico: 'assets/img/porque-sise-04-mosaico.webp',
     titulo: 'Laboratorio de diseño gráfico',
     texto: 'Estaciones de alto rendimiento con monitores calibrados para creativos.'
   },
   {
     img: 'assets/img/porque-sise-05.webp',
     imgMovil: 'assets/img/porque-sise-05-movil.webp',
-    mosaico: 'assets/img/porque-sise-05-mosaico.webp',
     titulo: 'Housekeeping',
     texto: 'Habitación-modelo para dominar los estándares reales de la hotelería.'
   }

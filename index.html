@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=375">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=379">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -19,7 +19,7 @@
      sola precarga, en movil se bajaban 82 KB de la imagen de
      escritorio que no llega a pintarse nunca. -->
 <link rel="preload" as="image" href="assets/img/hero-01.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=375">
+<link rel="stylesheet" href="assets/css/style.css?v=379">
 </head>
 <body class="inicio">
 
@@ -264,22 +264,26 @@
 </section>
 
 <!-- ============ ¿POR QUÉ ELEGIR SISE? ============ -->
-<!-- Mosaico: el video ocupa dos por dos y los cinco espacios llenan el
-     resto, todos a la vista. Los espacios los pinta main.js desde
-     PORQUE_SLIDES y se abren en la ventana compartida. -->
+<!-- Panel con carril: el video y las tarjetas de laboratorios en una
+     fila. En escritorio el panel se queda fijo y el scroll la desplaza
+     de lado; las tarjetas las pinta main.js desde PORQUE_SLIDES. -->
 <section class="section porque" id="porque">
-  <div class="shell">
-    <header class="section-head reveal">
-      <h2 class="section-title">&iquest;Por qu&eacute; elegir <em>SISE?</em></h2>
-      <p class="section-sub">M&iacute;ralo en un minuto y explora nuestros espacios.</p>
-    </header>
+  <div class="pq-pin">
+    <div class="pq-panel">
+      <header class="section-head reveal">
+        <h2 class="section-title">&iquest;Por qu&eacute; elegir <em>SISE?</em></h2>
+        <p class="section-sub">M&iacute;ralo en un minuto y explora nuestros laboratorios.</p>
+      </header>
 
-    <div class="pq-mosaico reveal" id="pqMosaico">
-      <div class="pq-video" id="pqVideoView" data-yt="E2R48vT67i8">
-        <div class="pq-poster" id="pqPoster" aria-hidden="true"></div>
-        <button class="pq-play" id="pqPlay" type="button" aria-label="Reproducir el video de SISE">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.42)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
-        </button>
+      <div class="pq-caja" id="pqCaja">
+        <div class="pq-carril" id="pqCarril">
+          <div class="pq-video" id="pqVideoView" data-yt="E2R48vT67i8">
+            <div class="pq-poster" id="pqPoster" aria-hidden="true"></div>
+            <button class="pq-play" id="pqPlay" type="button" aria-label="Reproducir el video de SISE">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.42)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -457,8 +461,8 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=375"></script>
-<script src="assets/js/data.js?v=375"></script>
-<script src="assets/js/main.js?v=375"></script>
+<script src="assets/js/icons.js?v=379"></script>
+<script src="assets/js/data.js?v=379"></script>
+<script src="assets/js/main.js?v=379"></script>
 </body>
 </html>

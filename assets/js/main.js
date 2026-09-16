@@ -1088,24 +1088,27 @@
   }
 
     /* ============================================================
-     6. ¿POR QUÉ ELEGIR SISE? — mosaico: video + espacios
+     6. ¿POR QUÉ ELEGIR SISE? — panel con carril horizontal
      ============================================================
-     Antes el video ocupaba la pantalla y los espacios iban en
-     miniaturas debajo: habia que pulsar para verlos y solo uno a la
-     vez. Ahora todo esta a la vista con el mismo peso; cada espacio se
-     abre en grande en la ventana compartida (7d). */
-  const pqMosaico = $('#pqMosaico');
+     El video y las tarjetas de los laboratorios van en una fila. En
+     escritorio el panel se queda fijo y el scroll la desplaza (lo hace
+     el CSS); aqui solo se pinta, se mide cuanto tiene que viajar y se
+     abre cada laboratorio en la ventana compartida (7d). */
+  const pqSeccion = $('#porque');
+  const pqCarril  = $('#pqCarril');
   const PQ = (typeof PORQUE_SLIDES !== 'undefined') ? PORQUE_SLIDES
            : (typeof PORQUE_IMGS !== 'undefined') ? PORQUE_IMGS : [];
 
-  if (pqMosaico) {
-    const slides = PQ.map((s) => (typeof s === 'string' ? { img: s } : s));
+  if (pqSeccion && pqCarril) {
+    // "Aulas equipadas" no va en el carril: solo laboratorios
+    const slides = PQ.map((s) => (typeof s === 'string' ? { img: s } : s))
+                     .filter((s) => s.enPorque !== false);
     const videoView = $('#pqVideoView');
+    const pqCaja = $('#pqCaja');
+    const pqPin  = $('.pq-pin', pqSeccion);
     const dos = (n) => String(n).padStart(2, '0');
 
-    /* --- Video: portada propia, sin autoplay ---
-       El iframe de YouTube solo se inserta cuando el usuario pulsa el
-       play. Hasta entonces se ve la miniatura del propio video. */
+    /* --- Video: portada propia, sin autoplay --- */
     const idYT    = videoView.dataset.yt;
     const poster  = $('#pqPoster', videoView);
     const btnPlay = $('#pqPlay', videoView);
@@ -1128,7 +1131,7 @@
       if (poster) poster.remove();
       if (btnPlay) btnPlay.remove();
     }
-    // Abrir un espacio pausa el video si estaba sonando
+    // Abrir un laboratorio pausa el video si estaba sonando
     function pausaYT() {
       const f = ytCargado && videoView.querySelector('iframe');
       if (f && f.contentWindow) f.contentWindow.postMessage(
@@ -1136,21 +1139,54 @@
     }
     if (btnPlay) btnPlay.addEventListener('click', cargaYT);
 
-    /* --- Espacios --- */
+    /* --- Tarjetas --- */
     const flechaAbrir = '<svg viewBox="0 0 24 24"><path d="M8 16 16 8m0 0H9.5M16 8v6.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    pqMosaico.insertAdjacentHTML('beforeend', slides.map((s, i) => `
-      <button class="pq-espacio" type="button" data-i="${i}"
-              aria-label="Ver ${esc(s.titulo || 'espacio')} en grande">
-        <span class="pq-foto" ${attrFondo(imgDe(s, 'mosaico') || imgDe(s), false)}></span>
+    pqCarril.insertAdjacentHTML('beforeend', slides.map((s, i) => `
+      <button class="pq-lab" type="button" data-i="${i}"
+              aria-label="Ver ${esc(s.titulo || 'laboratorio')} en grande">
+        <span class="pq-lab-foto" ${attrFondo(s.imgMovil || s.img, false)}></span>
+        <span class="pq-lab-trama" aria-hidden="true"></span>
         <span class="pq-texto">
           <span class="pq-nombre">${esc(s.titulo || '')}</span>
-          ${s.texto ? `<span class="pq-desc"><span>${esc(s.texto)}</span></span>` : ''}
+          ${s.texto ? `<span class="pq-desc">${esc(s.texto)}</span>` : ''}
         </span>
         <span class="pq-abrir" aria-hidden="true">${flechaAbrir}</span>
       </button>`).join(''));
-    observarNuevos(pqMosaico);
+    observarNuevos(pqCarril);
 
-    /* --- Espacio en grande, en la ventana compartida ---
+    /* --- Cuanto tiene que viajar la fila ---
+       Es el ancho de la fila menos el hueco visible. De ese numero
+       salen el alto del recorrido y el final de la animacion. Se
+       recalcula si cambia el tamano: en escritorio las tarjetas se
+       miden por el alto de pantalla. */
+    pqSeccion.classList.add('is-carril');
+    const fijo = () => getComputedStyle(pqPin).position === 'sticky';
+    function mideViaje() {
+      const cs = getComputedStyle(pqCaja);
+      const visible = pqCaja.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const viaje = Math.max(0, Math.round(pqCarril.offsetWidth - visible));
+      pqSeccion.style.setProperty('--pq-dist', viaje + 'px');
+      return viaje;
+    }
+    mideViaje();
+    if ('ResizeObserver' in window) new ResizeObserver(mideViaje).observe(pqCarril);
+    window.addEventListener('resize', mideViaje, { passive: true });
+
+    /* Con teclado, una tarjeta que aun no ha llegado estaria fuera de la
+       ventana: se baja la pagina lo justo para traerla. */
+    pqCarril.addEventListener('focusin', (e) => {
+      const t = e.target.closest('.pq-lab, .pq-video, .pq-play');
+      if (!t || !fijo()) return;
+      const tarjeta = t.closest('.pq-lab, .pq-video');
+      const cs = getComputedStyle(pqCaja);
+      const visible = pqCaja.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const viaje = mideViaje();
+      const hace = Math.min(viaje, Math.max(0, tarjeta.offsetLeft + tarjeta.offsetWidth - visible));
+      const inicio = pqSeccion.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: inicio + hace, behavior: 'instant' });
+    });
+
+    /* --- Laboratorio en grande, en la ventana compartida ---
        vModal, vCaja, vCerrar y vDesde se declaran en 7d: aqui solo se
        usan al pulsar, cuando ya existen. */
     const flechaNav = (dir, etiqueta, d) =>
@@ -1170,7 +1206,7 @@
       $('.pq-now-name', vCaja).textContent = s.titulo || '';
       $('.pq-now-count', vCaja).textContent = dos(actual + 1) + ' / ' + dos(slides.length);
       $('.pq-now-desc', vCaja).textContent = s.texto || '';
-      vModal.setAttribute('aria-label', s.titulo || 'Espacio SISE');
+      vModal.setAttribute('aria-label', s.titulo || 'Laboratorio SISE');
     }
 
     function abreEspacio(i, desde) {
@@ -1191,8 +1227,8 @@
               <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7m0 0H9m8 0v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
             <div class="vm-nav">
-              ${flechaNav(-1, 'Espacio anterior', 'M15 5l-7 7 7 7')}
-              ${flechaNav(1, 'Espacio siguiente', 'M9 5l7 7-7 7')}
+              ${flechaNav(-1, 'Laboratorio anterior', 'M15 5l-7 7 7 7')}
+              ${flechaNav(1, 'Laboratorio siguiente', 'M9 5l7 7-7 7')}
             </div>
           </div>
         </div>`;
@@ -1207,12 +1243,12 @@
       vCerrar.focus();
     }
 
-    pqMosaico.addEventListener('click', (e) => {
-      const b = e.target.closest('.pq-espacio');
+    pqCarril.addEventListener('click', (e) => {
+      const b = e.target.closest('.pq-lab');
       if (b) abreEspacio(parseInt(b.dataset.i, 10), b);
     });
 
-    // Con un espacio abierto, las flechas del teclado pasan de foto
+    // Con un laboratorio abierto, las flechas del teclado pasan de foto
     document.addEventListener('keydown', (e) => {
       if (!vModal || vModal.hidden || !vCaja.classList.contains('vm-caja--foto')) return;
       if (e.key === 'ArrowRight') pintaEspacio(actual + 1);

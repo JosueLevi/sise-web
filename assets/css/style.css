@@ -1331,43 +1331,59 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* ============================================================
    ¿POR QUÉ ELEGIR SISE?
    ============================================================ */
-/* ¿Por qué elegir SISE? — mosaico.
-   El video ocupa dos columnas por dos filas y los cinco espacios llenan
-   el resto: a la vista a la vez y con el mismo peso. Antes el video
-   tenia la pantalla entera y los espacios iban en miniaturas de 183px
-   debajo, escondidos tras un clic.
-   Las celdas pequenas van a 16:9, asi que el video, que suma dos de
-   ancho y dos de alto mas el hueco, queda en ~1,76: casi exacto 16:9,
-   sin franjas negras. */
-/* Banda negra a sangre, sin redondeos.
-   Nota para el futuro: no intentar fundirla contra el gris de la
-   pagina con un degradado ni con un blur. Cualquier transicion entre
-   #F4F4F4 y #000 atraviesa los grises intermedios y esa franja sucia
-   se ve peor que el corte limpio. Ya se probo. */
-.porque{
-  position:relative;background:#000;
-  padding-top:104px;padding-bottom:96px;
+/* ¿Por qué elegir SISE? — panel con carril horizontal.
+   Un panel negro con esquinas redondeadas y, dentro, una fila: el video
+   primero y luego cuatro tarjetas altas de laboratorios. En escritorio
+   el panel se queda fijo y el scroll vertical desplaza la fila hasta el
+   final; despues la pagina sigue bajando. En movil y donde el navegador
+   no soporta animaciones ligadas al scroll, la fila se desliza con el
+   dedo o la rueda, sin fijar nada.
+
+   Estructura:
+     .porque        el recorrido (en escritorio mide 100svh + lo que
+                    tiene que viajar la fila)
+     .pq-pin        lo que se queda fijo
+     .pq-panel      la caja negra redondeada
+     .pq-caja       ventana de la fila, recorta
+     .pq-carril     la fila que se mueve */
+.porque{position:relative;background:transparent}
+.pq-pin{padding-inline:var(--gut)}
+.pq-panel{
+  position:relative;isolation:isolate;overflow:hidden;
+  border-radius:var(--r-xl);background:#000;
+  padding-block:clamp(30px,4vw,48px);
 }
+.porque .section-head{margin-bottom:clamp(20px,2.4vw,30px);padding-inline:var(--gut)}
 .porque .section-title{color:#fff}
 .porque .section-sub{color:var(--blanco-3)}
 
-.pq-mosaico{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px;
+.pq-caja{
+  --pq-lado:clamp(20px,4vw,56px);
+  overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;scroll-padding-inline:var(--pq-lado);
+  scrollbar-width:none;
+  padding-inline:var(--pq-lado);
 }
+.pq-caja::-webkit-scrollbar{display:none}
+.pq-carril{display:flex;gap:clamp(12px,1.4vw,20px);width:max-content}
 
 /* ---- Video ---- */
 .pq-video{
-  grid-column:1 / 3;grid-row:1 / 3;
-  position:relative;overflow:hidden;border-radius:var(--r-md);background:#000;
+  flex:none;position:relative;overflow:hidden;scroll-snap-align:start;
+  /* Sin proporcion propia: toma el alto de las tarjetas de al lado, asi
+     la fila queda pareja. En movil sale casi cuadrado y la portada se
+     recorta por el centro; en escritorio va a 16:9 (mas abajo). */
+  /* 78vw en movil: asoma el borde de la primera tarjeta y se entiende
+     que la fila sigue hacia la derecha. */
+  width:min(78vw,760px);min-height:200px;
+  border-radius:var(--r-lg);background:#111;
 }
 .pq-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-/* Portada del video: sin autoplay, se carga al pulsar el play */
+/* Portada: sin autoplay, el reproductor se carga al pulsar */
 .pq-poster{position:absolute;inset:0;background:#000 center/cover no-repeat}
 /* El video es de formato cine (2,34:1) y su miniatura trae las franjas
-   negras dentro: 87px arriba y abajo de 720. A 132% de alto la imagen
-   las deja fuera y la portada llena la celda. Al reproducir no se
-   recorta: el reproductor tiene los controles abajo y se perderian. */
+   negras dentro: 87px arriba y abajo de 720. A 132% de alto quedan
+   fuera. Al reproducir no se recorta: se perderian los controles. */
 .pq-poster{background-size:auto 132%}
 .pq-poster::after{content:'';position:absolute;inset:0;background:rgba(8,9,14,.24)}
 .pq-play{
@@ -1379,55 +1395,53 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .pq-play:hover{transform:translate(-50%,-50%) scale(1.08)}
 .pq-play svg{width:100%;height:100%;display:block}
 
-/* ---- Espacios ---- */
-.pq-espacio{
-  position:relative;isolation:isolate;overflow:hidden;
-  aspect-ratio:16/9;padding:0;border:0;border-radius:var(--r-md);
-  background:var(--ink);color:#fff;text-align:left;cursor:pointer;
+/* ---- Laboratorios: tarjetas altas ---- */
+.pq-lab{
+  flex:none;position:relative;isolation:isolate;overflow:hidden;scroll-snap-align:start;
+  width:min(64vw,300px);aspect-ratio:3/4;
+  padding:0;border:0;border-radius:var(--r-lg);
+  background:#111;color:#fff;text-align:left;cursor:pointer;
 }
-.pq-foto{
-  position:absolute;inset:0;z-index:-2;
-  background:var(--ink) center/cover no-repeat;
-  transition:transform .6s var(--ease);
+/* La foto es mas ancha que la tarjeta: asi tiene margen para
+   desplazarse por dentro sin dejar ver el borde. */
+.pq-lab-foto{
+  position:absolute;top:0;bottom:0;left:-14%;right:-14%;z-index:-3;
+  background:#111 center/cover no-repeat;
 }
-/* Velo de abajo: el nombre va en blanco sobre fotos que traen de todo */
-.pq-espacio::after{
-  content:'';position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(to top,rgba(8,9,14,.88) 0,rgba(8,9,14,.42) 42%,transparent 72%);
-  transition:background .35s var(--ease);
+/* Velo de abajo para el texto */
+.pq-lab::after{
+  content:'';position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:linear-gradient(to top,rgba(8,9,14,.9) 0,rgba(8,9,14,.5) 34%,transparent 62%);
 }
-.pq-texto{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 16px}
+/* Trama de puntos sobre el velo. Se desvanece hacia arriba para no
+   ensuciar la foto; en escritorio se mueve en sentido contrario a la
+   foto y ahi esta la profundidad. */
+.pq-lab-trama{
+  position:absolute;left:-30%;right:-30%;bottom:0;height:52%;z-index:-1;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.34) 1.1px,transparent 1.6px);
+  background-size:16px 16px;
+  -webkit-mask-image:linear-gradient(to top,#000 0,rgba(0,0,0,.5) 45%,transparent 100%);
+  mask-image:linear-gradient(to top,#000 0,rgba(0,0,0,.5) 45%,transparent 100%);
+  opacity:.5;
+}
+.pq-lab .pq-texto{position:absolute;left:0;right:0;bottom:0;padding:clamp(16px,1.8vw,24px)}
 .pq-nombre{
   display:block;
   font-family:'Barlow Condensed',sans-serif;font-weight:800;
-  font-size:22px;line-height:1.05;text-transform:uppercase;letter-spacing:.01em;
+  font-size:clamp(22px,2vw,28px);line-height:1.02;text-transform:uppercase;letter-spacing:.01em;
 }
-/* La descripcion asoma al pasar el raton. En tactil no hay hover: se
-   lee en la ventana, que es donde cabe. */
-.pq-desc{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease)}
-.pq-desc > span{
-  overflow:hidden;min-height:0;
-  font-size:14px;line-height:1.45;color:var(--blanco-2);
-}
+.pq-lab .pq-desc{display:block;margin-top:8px;font-size:14px;line-height:1.45;color:var(--blanco-2)}
 .pq-abrir{
-  position:absolute;top:12px;right:12px;
-  width:38px;height:38px;border-radius:50%;
+  position:absolute;top:14px;right:14px;
+  width:40px;height:40px;border-radius:50%;
   display:grid;place-content:center;
   background:#fff;color:var(--red);
   box-shadow:0 6px 16px rgba(0,0,0,.25);
   transition:background .25s var(--ease),color .25s var(--ease),transform .25s var(--ease);
 }
 .pq-abrir svg{width:20px;height:20px;display:block}
-
-@media (hover:hover){
-  .pq-espacio:hover .pq-foto{transform:scale(1.06)}
-  .pq-espacio:hover::after{background:linear-gradient(to top,rgba(8,9,14,.92) 0,rgba(8,9,14,.6) 55%,rgba(8,9,14,.15) 100%)}
-  .pq-espacio:hover .pq-desc{grid-template-rows:1fr}
-  .pq-espacio:hover .pq-desc > span{padding-top:6px}
-  .pq-espacio:hover .pq-abrir{background:var(--red-600);color:#fff;transform:translate(2px,-2px)}
-}
-.pq-espacio:focus-visible{outline:3px solid #fff;outline-offset:3px}
-.pq-espacio:focus-visible .pq-desc{grid-template-rows:1fr}
+.pq-lab:hover .pq-abrir{background:var(--red-600);color:#fff;transform:translate(2px,-2px)}
+.pq-lab:focus-visible{outline:3px solid #fff;outline-offset:-3px}
 
 /* Textos de la ventana (nombre, contador, descripcion) y su boton */
 .pq-now{display:flex;align-items:center;gap:12px}
@@ -1446,22 +1460,58 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .pq-cta .ico-arrow{transition:transform .25s var(--ease)}
 .pq-cta:hover .ico-arrow{transform:translate(3px,-3px)}
 
-/* Tableta y movil: dos columnas. El video a todo el ancho y los cinco
-   espacios de dos en dos; el quinto, que quedaria solo, ocupa la fila
-   entera en una proporcion mas apaisada para no crecer de mas. */
-@media (max-width:900px){
-  .pq-mosaico{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .pq-video{grid-column:1 / -1;grid-row:auto;aspect-ratio:16/9}
-  .pq-espacio:last-child{grid-column:1 / -1;aspect-ratio:21/9}
+/* ---- Escritorio: panel fijo y la fila viaja con el scroll ----
+   La animacion va ligada al recorrido de .porque (--pq). Con
+   "contain", el 0% es cuando la seccion toca el borde de arriba y el
+   100% cuando su final toca el de abajo: exactamente el tramo en que
+   .pq-pin esta pegado. Ese tramo mide lo mismo que el viaje de la fila
+   (--pq-dist, lo calcula main.js), asi que un pixel de scroll mueve un
+   pixel la fila.
+   Solo con alto de pantalla suficiente: por debajo de 620px la fila
+   quedaria demasiado baja para leerse. */
+@supports (animation-timeline: view()) {
+  @media (min-width:901px) and (min-height:620px) and (prefers-reduced-motion:no-preference) {
+    .porque.is-carril{
+      padding:0;
+      height:calc(100svh + var(--pq-dist, 0px));
+      view-timeline:--pq block;
+    }
+    .porque.is-carril .pq-pin{
+      position:sticky;top:0;height:100svh;
+      display:flex;
+      /* Arriba deja sitio a la cabecera fija: cuando aparece ocupa de
+         10 a 84px, y el panel empieza 12px por debajo. */
+      padding:calc(var(--header-h) + 18px) var(--gut) 18px;
+    }
+    .porque.is-carril .pq-panel{flex:1;min-height:0;display:flex;flex-direction:column}
+    .porque.is-carril .pq-caja{
+      flex:1;min-height:0;
+      overflow:hidden;overflow:clip;scroll-snap-type:none;
+    }
+    .porque.is-carril .pq-carril{
+      height:100%;
+      animation:pqViaje linear both;
+      animation-timeline:--pq;
+      animation-range:contain;
+    }
+    .porque.is-carril .pq-video{height:100%;width:auto;aspect-ratio:16/9}
+    .porque.is-carril .pq-lab{height:100%;width:auto}
+
+    .porque.is-carril .pq-lab-foto{
+      animation:pqFoto linear both;
+      animation-timeline:--pq;animation-range:contain;
+    }
+    .porque.is-carril .pq-lab-trama{
+      animation:pqTrama linear both;
+      animation-timeline:--pq;animation-range:contain;
+    }
+  }
 }
-@media (max-width:600px){
-  .pq-mosaico{gap:10px}
-  .pq-espacio{aspect-ratio:4/3}
-  .pq-texto{padding:10px 12px 12px}
-  .pq-nombre{font-size:16px}
-  .pq-abrir{top:8px;right:8px;width:30px;height:30px}
-  .pq-abrir svg{width:16px;height:16px}
-}
+@keyframes pqViaje{from{translate:0 0}to{translate:calc(var(--pq-dist, 0px) * -1) 0}}
+/* La foto va algo mas lenta que su tarjeta y la trama en sentido
+   contrario: tres planos a distinta velocidad. */
+@keyframes pqFoto{from{translate:9% 0}to{translate:-9% 0}}
+@keyframes pqTrama{from{translate:-14% 0}to{translate:14% 0}}
 
 /* ============================================================
    SEDES — dos columnas: texto sobre el fondo de página, foto aparte.
@@ -3136,7 +3186,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
    PARALLAX DEL INICIO
    ============================================================
    Solo capas de fondo: la foto del banner, las pinceladas y el patron
-   de Experiencias. Textos, formulario, tarjetas y el mosaico del video
+   de Experiencias. Textos, formulario y tarjetas
    no se mueven: a otra velocidad cuestan de leer y de pulsar.
 
    Con animaciones ligadas al scroll de CSS, sin JavaScript: corren
