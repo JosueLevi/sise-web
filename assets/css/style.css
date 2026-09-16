@@ -23,6 +23,7 @@
      color, para los rgba() con transparencia: si se cambia uno hay que
      cambiar el otro. */
   --indigo:#4642A6;
+  --indigo-noche:#17153A;   /* fondo de "Por que elegir SISE" */
   --indigo-rgb:70,66,166;
 
   /* Grises. Habia 17 sueltos, varios a uno o dos pasos entre si; ahora
@@ -1336,8 +1337,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
    ¿POR QUÉ ELEGIR SISE?
    ============================================================ */
 /* ¿Por qué elegir SISE? — panel con carril horizontal.
-   Un panel oscuro a todo el ancho con una foto de fondo desenfocada y,
-   dentro, una fila: el video primero y luego cuatro tarjetas altas de
+   Un panel indigo oscuro a todo el ancho y, dentro, una fila: el video primero y luego cuatro tarjetas altas de
    laboratorios. En escritorio el panel se queda fijo y el scroll
    vertical desplaza la fila hasta el final; despues la pagina sigue.
    En movil y tableta la fila se convierte en rejilla: el video arriba y
@@ -1347,7 +1347,6 @@ body:not(.form-abierto) .form-velo{opacity:0}
      .pq-panel      el panel oscuro: titulo + recorrido
      .pq-recorrido  en escritorio mide 100svh + lo que viaja la fila
      .pq-pin        lo que se queda fijo: solo las imagenes
-     .pq-fondo      la foto de fondo, quieta dentro de .pq-pin
      .pq-caja       ventana de la fila, recorta
      .pq-carril     la fila que se mueve */
 .porque{position:relative;background:transparent}
@@ -1357,29 +1356,13 @@ body:not(.form-abierto) .form-velo{opacity:0}
      parte fija y su animacion se medirian contra el panel en vez de
      contra la pagina. */
   position:relative;isolation:isolate;overflow:hidden;overflow:clip;
-  background:#07080c;
+  /* Indigo muy oscuro de la marca: las fotos de los laboratorios, con
+     mucho blanco y rojo, destacan sin que el fondo compita. */
+  background:var(--indigo-noche);
   padding-block:clamp(30px,4vw,48px);
 }
 
-/* Fondo: la foto de las aulas, ya desenfocada en el archivo (5 KB).
-   Vive dentro de la parte fija y no se mueve: mientras las tarjetas
-   pasan de lado, el resplandor se queda en su sitio, y esa diferencia
-   de velocidad es el parallax. */
 .pq-pin{position:relative;isolation:isolate}
-.pq-fondo{
-  position:absolute;inset:0;z-index:-2;
-  background:url("../img/porque-fondo.webp") center/cover no-repeat;
-  opacity:.55;
-  pointer-events:none;
-}
-/* Velo: oscurece los lados y funde arriba y abajo con el color del
-   panel, para que la foto no marque un borde al llegar el titulo. */
-.pq-pin::before{
-  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:
-    linear-gradient(to bottom,#07080c 0,rgba(7,8,12,0) 24%,rgba(7,8,12,0) 76%,#07080c 100%),
-    radial-gradient(ellipse 75% 60% at 50% 50%,rgba(7,8,12,.15),rgba(7,8,12,.8) 76%);
-}
 
 /* Guia de deslizamiento: solo cuando la fila se mueve con el dedo o la
    rueda (escritorio sin soporte). "Desliza" y una barra que avanza. */
