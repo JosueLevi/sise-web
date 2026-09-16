@@ -2151,6 +2151,13 @@ body:not(.form-abierto) .form-velo{opacity:0}
   gap:clamp(28px,4vw,64px);align-items:center;
 }
 .conv-txt .section-head{margin-bottom:26px}
+/* Mismo cuerpo que el resto de titulos del inicio. Los titulos a la
+   izquierda topan en 44px, pero este comparte pagina con cinco a 52 y
+   era el unico distinto. A 52 sigue entrando en dos lineas en su
+   columna de 556px. Con un nivel mas de selector: la regla de los
+   titulos a la izquierda va mas abajo en el archivo y a igual peso
+   ganaba ella. */
+.conv-txt .section-head--left .section-title{font-size:clamp(34px,4.6vw,52px)}
 .conv-cta{display:inline-flex}
 
 /* Las dos columnas corren en sentidos opuestos */
