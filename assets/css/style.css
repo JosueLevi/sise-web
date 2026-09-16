@@ -1479,11 +1479,17 @@ body:not(.form-abierto) .form-velo{opacity:0}
     .porque.is-carril .pq-pin{
       position:sticky;top:0;height:100svh;
       display:flex;
-      /* Arriba deja sitio a la cabecera fija: cuando aparece ocupa de
-         10 a 84px, y el panel empieza 12px por debajo. */
-      padding:calc(var(--header-h) + 18px) var(--gut) 18px;
+      /* El panel ocupa la pantalla entera de alto; solo quedan los
+         margenes de los lados. */
+      padding:0 var(--gut);
     }
-    .porque.is-carril .pq-panel{flex:1;min-height:0;display:flex;flex-direction:column}
+    .porque.is-carril .pq-panel{
+      flex:1;min-height:0;display:flex;flex-direction:column;
+      /* La cabecera fija ocupa de 10 a 84px cuando aparece y va encima
+         del panel: el titulo arranca 20px por debajo. */
+      padding-top:calc(var(--header-h) + 26px);
+      padding-bottom:clamp(30px,4vh,44px);
+    }
     .porque.is-carril .pq-caja{
       flex:1;min-height:0;
       overflow:hidden;overflow:clip;scroll-snap-type:none;
