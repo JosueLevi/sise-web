@@ -1140,17 +1140,14 @@
     if (btnPlay) btnPlay.addEventListener('click', cargaYT);
 
     /* --- Tarjetas --- */
-    const flechaAbrir = '<svg viewBox="0 0 24 24"><path d="M8 16 16 8m0 0H9.5M16 8v6.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     pqCarril.insertAdjacentHTML('beforeend', slides.map((s, i) => `
       <button class="pq-lab" type="button" data-i="${i}"
               aria-label="Ver ${esc(s.titulo || 'laboratorio')} en grande">
         <span class="pq-lab-foto" ${attrFondo(s.imgMovil || s.img, false)}></span>
-        <span class="pq-lab-trama" aria-hidden="true"></span>
         <span class="pq-texto">
           <span class="pq-nombre">${esc(s.titulo || '')}</span>
           ${s.texto ? `<span class="pq-desc">${esc(s.texto)}</span>` : ''}
         </span>
-        <span class="pq-abrir" aria-hidden="true">${flechaAbrir}</span>
       </button>`).join(''));
     observarNuevos(pqCarril);
 
