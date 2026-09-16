@@ -3131,3 +3131,60 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .cert-grid{grid-template-columns:1fr}
   /* .lab-slide ya no se estrecha en movil: una foto por vista */
 }
+
+/* ============================================================
+   PARALLAX DEL INICIO
+   ============================================================
+   Solo capas de fondo: la foto del banner, las pinceladas y el patron
+   de Experiencias. Textos, formulario, tarjetas y el mosaico del video
+   no se mueven: a otra velocidad cuestan de leer y de pulsar.
+
+   Con animaciones ligadas al scroll de CSS, sin JavaScript: corren
+   fuera del hilo principal y no dan tirones. Donde no hay soporte la
+   pagina se queda quieta, como antes.
+
+   Solo en escritorio con raton, y nunca con "reducir movimiento". En
+   movil el efecto va a saltos y gasta bateria para poco.
+
+   Se usa la propiedad translate y no transform: el banner ya se
+   arrastra con transform y dos pinceladas van volteadas con
+   transform. translate se suma a los dos sin pisarlos. */
+@supports (animation-timeline: view()) {
+  @media (min-width:901px) and (hover:hover) and (prefers-reduced-motion:no-preference) {
+
+    /* Banner: la foto baja al 30% del scroll mientras el banner sale
+       de pantalla (720px de alto -> 216px de recorrido). Se mueve la
+       foto y no su caja: la caja la recorta, y asi no invade la
+       seccion de abajo aunque el banner no recorte su contenido. */
+    .inicio .hero-slide{
+      animation:pxBanner linear both;
+      animation-timeline:scroll(root block);
+      animation-range:0 720px;
+    }
+    @keyframes pxBanner{from{translate:0 0}to{translate:0 216px}}
+
+    /* Pinceladas y patron: cada seccion expone su propio recorrido por
+       pantalla, y sus capas lo usan. Unas suben mas rapido que la
+       seccion -se leen por delante- y otras mas lento -por detras-. */
+    .inicio .hub,
+    .inicio .sedes,
+    .inicio .experiencias{view-timeline:--px-seccion block}
+
+    .inicio .hub::before,
+    .inicio .sedes::after,
+    .inicio .experiencias::before{
+      animation:pxDelante linear both;
+      animation-timeline:--px-seccion;
+      animation-range:cover;
+    }
+    .inicio .hub::after,
+    .inicio .sedes::before,
+    .inicio .experiencias::after{
+      animation:pxDetras linear both;
+      animation-timeline:--px-seccion;
+      animation-range:cover;
+    }
+    @keyframes pxDelante{from{translate:0 60px}to{translate:0 -60px}}
+    @keyframes pxDetras{from{translate:0 -30px}to{translate:0 30px}}
+  }
+}
