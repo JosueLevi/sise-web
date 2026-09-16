@@ -1279,12 +1279,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* ============================================================
    SISE EN CIFRAS
    ============================================================ */
-/* Fondo crema, el tinte del amarillo. Iba en el gris de pagina, igual
-   que la oferta de arriba, y las dos secciones se leian como una sola.
-   Asi ningun fondo se repite con su vecino y el amarillo tiene su
-   momento, como el indigo lo tiene en Experiencias. La tarjeta blanca
-   de las cifras se despega mas del crema que del gris. */
-.cifras{background:var(--crema);padding:88px 0 92px}
+/* En el gris de pagina. Se probo en crema (#FBF0C4) y se descarto: a
+   tamano de banda pesaba cuatro veces mas que la lavanda de
+   Experiencias y amarilleaba el gris de alrededor. */
+.cifras{background:transparent;padding:88px 0 92px}
 /* La bajada de esta sección va en una sola línea en el diseño */
 .cifras .section-head{max-width:1000px}
 .stats-card{
