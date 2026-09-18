@@ -943,6 +943,14 @@
   if (grid) {
     const TIPO = grid.dataset.tipo || 'carreras';
     const D = datosDe(TIPO);
+    /* Paginas por modalidad: data-modalidad deja solo las carreras que
+       la ofrecen, y en la tarjeta solo su etiqueta. */
+    const MOD = grid.dataset.modalidad;
+    if (MOD) {
+      D.items = D.items
+        .filter((c) => !Array.isArray(c.modalidades) || c.modalidades.includes(MOD))
+        .map((c) => Array.isArray(c.modalidades) ? { ...c, modalidades: [MOD] } : c);
+    }
     const cajaChips = $('#areaChips');
 
     function render(filter) {

@@ -67,7 +67,8 @@ const MENU_PANEL = {
       titulo: 'Inicio',
       items: [
         { label: 'Home',                       url: 'index.html' },
-        { label: 'Carreras',                   url: 'carreras.html' },
+        { label: 'Carreras semipresenciales',  url: 'carreras-semipresenciales.html' },
+        { label: 'Carreras virtuales',         url: 'carreras-virtuales.html' },
         { label: 'Cursos y Especializaciones', url: 'cursos.html' },
         { label: 'Idiomas',                    url: 'idiomas.html' },
         { label: 'Nosotros',                   url: '#', sep: true },
@@ -170,6 +171,14 @@ const HERO_SLIDES = [
     l1: '',
     l2: '',
     sub: ''
+  },
+  {
+    // Pieza de campana de Animacion Digital: tambien trae su texto.
+    img: 'assets/img/hero-03.webp',
+    imgMovil: 'assets/img/hero-03-movil.webp',
+    l1: '',
+    l2: '',
+    sub: ''
   }
 ];
 
@@ -255,10 +264,18 @@ const CARRERAS = [
     url: '#'
   },
   {
+    nombre: 'Asistencia Administrativa',
+    descripcion: 'Organiza la oficina, la agenda y los documentos.',
+    cat: 'gestion',
+    modalidades: ['Semipresencial', 'Virtual'],
+    icon: 'administracion',
+    url: '#'
+  },
+  {
     nombre: 'Administración y Dirección de Negocios',
     descripcion: 'Lidera proyectos y decide con datos.',
     cat: 'gestion',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-direccion-negocios.webp',
     icon: 'direccion-negocios',
     url: '#'
@@ -267,7 +284,7 @@ const CARRERAS = [
     nombre: 'Recursos Humanos',
     descripcion: 'Atrae, forma y retiene al mejor talento.',
     cat: 'gestion',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-recursos-humanos.webp',
     icon: 'recursos-humanos',
     url: '#'
@@ -294,7 +311,7 @@ const CARRERAS = [
     nombre: 'Gestión y Dirección Financiera',
     descripcion: 'Planifica inversiones y controla el presupuesto.',
     cat: 'banca',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-gestion-y-direccion-financiera.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -303,7 +320,7 @@ const CARRERAS = [
     nombre: 'Enfermería Técnica',
     descripcion: 'Cuida y asiste al paciente junto al equipo médico.',
     cat: 'salud',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-enfermeria-tecnica.webp',
     icon: 'enfermeria',
     url: '#'
@@ -312,7 +329,7 @@ const CARRERAS = [
     nombre: 'Fisioterapia y Rehabilitación',
     descripcion: 'Recupera la movilidad con terapia y ejercicio.',
     cat: 'salud',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-fisioterapia-y-rehabilitacion.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -321,7 +338,7 @@ const CARRERAS = [
     nombre: 'Farmacia Técnica',
     descripcion: 'Dispensa, controla y orienta sobre medicamentos.',
     cat: 'salud',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-farmacia-tecnica.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -330,7 +347,7 @@ const CARRERAS = [
     nombre: 'Ciberseguridad',
     descripcion: 'Protege redes, datos y sistemas de ataques.',
     cat: 'tecnologia',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-ciberseguridad.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -342,6 +359,14 @@ const CARRERAS = [
     modalidades: ['Semipresencial', 'Virtual'],
     img: 'assets/img/carrera-desarrollo-de-sistemas-de-informacion.webp',
     icon: '',  // pendiente: falta el icono
+    url: '#'
+  },
+  {
+    nombre: 'Redes y Seguridad Informática',
+    descripcion: 'Instala y protege las redes de una empresa.',
+    cat: 'tecnologia',
+    modalidades: ['Virtual'],
+    icon: '',
     url: '#'
   },
   {
@@ -366,7 +391,7 @@ const CARRERAS = [
     nombre: 'Publicidad y Medios Digitales',
     descripcion: 'Planifica campañas y pauta en medios digitales.',
     cat: 'publicidad',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-publicidad-y-medios-digitales.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -375,7 +400,7 @@ const CARRERAS = [
     nombre: 'Dirección de Diseño Gráfico Publicitario',
     descripcion: 'Lidera el concepto creativo de una campaña.',
     cat: 'publicidad',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-direccion-de-diseno-grafico-publicitario.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -384,7 +409,7 @@ const CARRERAS = [
     nombre: 'Diseño de Interiores',
     descripcion: 'Proyecta y ambienta espacios habitables.',
     cat: 'diseno',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-diseno-de-interiores.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -393,7 +418,7 @@ const CARRERAS = [
     nombre: 'Diseño de Modas',
     descripcion: 'Diseña, patrona y confecciona colecciones.',
     cat: 'diseno',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-diseno-de-modas.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -402,7 +427,7 @@ const CARRERAS = [
     nombre: 'Gastronomía',
     descripcion: 'Cocina, gestiona carta y dirige una cocina.',
     cat: 'hoteleria',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-gastronomia.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -411,7 +436,7 @@ const CARRERAS = [
     nombre: 'Administración de Hoteles y Restaurantes',
     descripcion: 'Opera hoteles y restaurantes de punta a punta.',
     cat: 'hoteleria',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-administracion-de-hoteles-y-restaurantes.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -420,7 +445,7 @@ const CARRERAS = [
     nombre: 'Administración Industrial',
     descripcion: 'Optimiza producción, calidad y procesos de planta.',
     cat: 'ingenieria',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-administracion-industrial.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'
@@ -429,7 +454,7 @@ const CARRERAS = [
     nombre: 'Seguridad y Prevención de Riesgos',
     descripcion: 'Previene accidentes y audita seguridad laboral.',
     cat: 'ingenieria',
-    modalidades: ['Semipresencial', 'Virtual'],
+    modalidades: ['Semipresencial'],
     img: 'assets/img/carrera-seguridad-y-prevencion-de-riesgos.webp',
     icon: '',  // pendiente: falta el icono
     url: '#'

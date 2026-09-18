@@ -19,7 +19,9 @@ Y abrir <http://localhost:5510/>.
 
 ```
 index.html               Portada
-carreras.html            Listado de carreras por área
+carreras-semipresenciales.html  Carreras semipresenciales por área
+carreras-virtuales.html         Carreras virtuales (filtra por data-modalidad)
+carreras.html                   Redirige a carreras-semipresenciales.html
 cursos.html              Cursos y especializaciones
 idiomas.html             Idiomas
 carrera-logistica.html   Ficha de carrera (modelo para las demás)
