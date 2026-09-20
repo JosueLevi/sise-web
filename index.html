@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=415">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=425">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -19,7 +19,7 @@
      sola precarga, en movil se bajaban 82 KB de la imagen de
      escritorio que no llega a pintarse nunca. -->
 <link rel="preload" as="image" href="assets/img/hero-01.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=415">
+<link rel="stylesheet" href="assets/css/style.css?v=425">
 </head>
 <body class="inicio">
 
@@ -192,7 +192,7 @@
         </span>
       </a>
 
-      <a class="hub-card hub--amarillo" href="carreras-virtuales.html" style="animation-delay:80ms">
+      <a class="hub-card hub--azul" href="carreras-virtuales.html" style="animation-delay:80ms">
         <span class="hub-photo" style="background-image:url('assets/img/hub-virtual.webp')"></span>
         <span class="hub-body">
           <span class="hub-kicker">100% en l&iacute;nea</span>
@@ -205,7 +205,7 @@
       </a>
 
       <!-- TODO: enlazar a la pagina de Escuela cuando exista -->
-      <a class="hub-card hub--azul" href="#" style="animation-delay:160ms">
+      <a class="hub-card hub--amarillo" href="#" style="animation-delay:160ms">
         <span class="hub-photo" style="background-image:url('assets/img/hub-escuela.webp')"></span>
         <span class="hub-body">
           <span class="hub-kicker">Ahora somos</span>
@@ -259,45 +259,67 @@
   </div>
 </section>
 
-<!-- ============ SISE EN CIFRAS ============ -->
-<section class="section cifras" id="cifras">
+<!-- ============ PILARES SISE ============ -->
+<!-- Titulo sobre el fondo de la pagina y, debajo, una franja a todo el
+     ancho con la foto de la sede -quieta al desplazarse- y las tres
+     tarjetas de vidrio encima. -->
+<section class="section pilares" id="pilares">
   <div class="shell">
     <header class="section-head reveal">
-      <h2 class="section-title"><em>SISE</em> en cifras</h2>
-      <p class="section-sub">Resultados que respaldan nuestra trayectoria, excelencia académica y conexión directa con el mundo laboral</p>
+      <h2 class="section-title">Pilares <em>SISE</em></h2>
+      <p class="section-sub">Lo que sostiene nuestra forma de ense&ntilde;ar y lo que te llevas al salir.</p>
     </header>
+  </div>
 
-    <div class="stats-card reveal reveal-stagger" id="statsCard">
-      <div class="stat">
-        <span class="stat-ico" data-ico="cifra-anios" aria-hidden="true"></span>
-        <div class="stat-txt">
-          <p class="stat-num"><span class="counter" data-to="40" data-dur="1600">0</span> años</p>
-          <p class="stat-label">Formando profesionales</p>
-        </div>
-      </div>
+  <!-- Marco de la foto, a todo el ancho: dentro van el fondo quieto y
+       las tarjetas -->
+  <div class="pil-marco reveal">
+    <div class="pil-fondo" aria-hidden="true"><span></span></div>
+    <div class="shell">
+      <div class="pil-grid reveal reveal-stagger">
+      <article class="pil-card">
+        <span class="pil-ico"><svg class="pil-svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <defs><linearGradient id="pg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#4642A6"/><stop offset="1" stop-color="#FF0E49"/>
+            </linearGradient></defs>
+            <g stroke="url(#pg1)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M38 57v-6.4c0-2.3 1.4-3.7 3.6-4.4l3.4-1.1c2.4-.8 3.8-2.4 3.8-5V36h3.5c1.1 0 1.7-1.2 1.1-2.1l-4.6-7.4C47 16.8 39 10.5 29.7 10.5c-10.6 0-19.2 8.6-19.2 19.2 0 5 1.9 8.7 5 11.7V57"/>
+              <path d="M26.5 26.8c-2-1.6-4.7-2.6-7.7-2.8v12.2c3 .2 5.7 1.2 7.7 2.8z"/>
+              <path d="M26.5 26.8c2-1.6 4.7-2.6 7.7-2.8v12.2c-3 .2-5.7 1.2-7.7 2.8z"/>
+            </g>
+          </svg></span>
+        <h3 class="pil-title">Aprendizaje real y experiencial</h3>
+        <p class="pil-txt"><strong>Desde el primer ciclo aprendes haciendo:</strong> proyectos reales, trabajo en equipo con otras carreras y experiencias frente a p&uacute;blico real.</p>
+      </article>
 
-      <div class="stat">
-        <span class="stat-ico" data-ico="cifra-convenios" aria-hidden="true"></span>
-        <div class="stat-txt">
-          <p class="stat-num">+<span class="counter" data-to="30" data-dur="1600">0</span></p>
-          <p class="stat-label">Convenios laborales</p>
-        </div>
-      </div>
+      <article class="pil-card">
+        <span class="pil-ico"><svg class="pil-svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <defs><linearGradient id="pg2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#4642A6"/><stop offset="1" stop-color="#FF0E49"/>
+            </linearGradient></defs>
+            <g stroke="url(#pg2)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="27" cy="29" r="15"/>
+              <path d="M38 40 52 54"/>
+              <circle cx="27" cy="25" r="4.6"/>
+              <path d="M19.5 37c1.3-3.8 4-5.7 7.5-5.7s6.2 1.9 7.5 5.7"/>
+              <path d="M49 6.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8-4.2-4.1 5.9-.9z"/></g>
+          </svg></span>
+        <h3 class="pil-title">Agencia de talentos SISE</h3>
+        <p class="pil-txt"><strong>No solo te formamos, te acercamos al trabajo:</strong> ferias laborales, bolsa de trabajo, simulacros de entrevistas y conexi&oacute;n directa con empresas desde el primer ciclo.</p>
+      </article>
 
-      <div class="stat">
-        <span class="stat-ico" data-ico="cifra-sedes" aria-hidden="true"></span>
-        <div class="stat-txt">
-          <p class="stat-num">+<span class="counter" data-to="12" data-dur="1600">0</span> sedes</p>
-          <p class="stat-label">En lima metropolitana</p>
-        </div>
-      </div>
-
-      <div class="stat">
-        <span class="stat-ico" data-ico="cifra-egresados" aria-hidden="true"></span>
-        <div class="stat-txt">
-          <p class="stat-num">+<span class="counter" data-to="150000" data-dur="2000" data-sep="1">0</span></p>
-          <p class="stat-label">Egresados exitosos</p>
-        </div>
+      <article class="pil-card">
+        <span class="pil-ico"><svg class="pil-svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <defs><linearGradient id="pg3" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#4642A6"/><stop offset="1" stop-color="#FF0E49"/>
+            </linearGradient></defs>
+            <g stroke="url(#pg3)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M32 6.5l5.3 3.6 6.3-1 2.4 6 6 2.4-1 6.3 3.6 5.3-3.6 5.3 1 6.3-6 2.4-2.4 6-6.3-1-5.3 3.6-5.3-3.6-6.3 1-2.4-6-6-2.4 1-6.3L6.7 30l3.6-5.3-1-6.3 6-2.4 2.4-6 6.3 1z"/>
+              <path d="M23.5 30.5 29.5 36.5 41 25"/></g>
+          </svg></span>
+        <h3 class="pil-title">Prestigio avalado</h3>
+        <p class="pil-txt"><strong>M&aacute;s de 40 a&ntilde;os formando profesionales:</strong> sedes cerca de ti en Lima y doble certificaci&oacute;n junto a la Universidad Cient&iacute;fica del Sur.</p>
+      </article>
       </div>
     </div>
   </div>
@@ -475,8 +497,8 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=415"></script>
-<script src="assets/js/data.js?v=415"></script>
-<script src="assets/js/main.js?v=415"></script>
+<script src="assets/js/icons.js?v=425"></script>
+<script src="assets/js/data.js?v=425"></script>
+<script src="assets/js/main.js?v=425"></script>
 </body>
 </html>
