@@ -989,6 +989,66 @@
   }
 
   /* ============================================================
+     4b. PILARES — la foto y la pestana se relevan solas
+     ============================================================
+     Cada 3 segundos pasa al siguiente pilar: cambia la foto, se abre su
+     texto y su linea avanza. Se detiene al pasar el raton o al enfocar
+     con el teclado, y se puede saltar pulsando una pestana. */
+  const pilEscena = $('#pilEscena');
+  if (pilEscena && !reduceMotion) {
+    const capas = $$('.pil-capa', pilEscena);
+    const tabs  = $$('.pil-tab', pilEscena);
+    /* Lo que dura cada pilar. Sale del CSS (--pil-paso) para que el
+       reloj y la linea no se puedan desincronizar. */
+    const PASO = (parseFloat(getComputedStyle(pilEscena).getPropertyValue('--pil-paso')) || 5) * 1000;
+    let actualPil = 0, relojPil = null;
+
+    /* Vuelve a lanzar la animacion de la linea desde cero */
+    function reiniciaLinea(t) {
+      const barra = $('.pil-linea > span', t);
+      if (!barra) return;
+      barra.style.animation = 'none';
+      void barra.offsetWidth;
+      barra.style.animation = '';
+    }
+
+    function muestraPilar(i) {
+      actualPil = (i + tabs.length) % tabs.length;
+      capas.forEach((c, n) => c.classList.toggle('is-activa', n === actualPil));
+      tabs.forEach((t, n) => {
+        const on = n === actualPil;
+        t.classList.toggle('is-activa', on);
+        t.setAttribute('aria-selected', String(on));
+        if (on) reiniciaLinea(t);
+      });
+    }
+    /* Al arrancar se reinicia tambien la linea del pilar en curso: si no,
+       la del primero ya habia corrido -y terminado- mientras la seccion
+       estaba fuera de pantalla, y parecia atascada hasta que el usuario
+       tocaba algo. */
+    function arrancaPil() {
+      clearInterval(relojPil);
+      reiniciaLinea(tabs[actualPil]);
+      relojPil = setInterval(() => muestraPilar(actualPil + 1), PASO);
+    }
+    function detienePil() { clearInterval(relojPil); relojPil = null; }
+
+    tabs.forEach((t, n) => t.addEventListener('click', () => { muestraPilar(n); arrancaPil(); }));
+    pilEscena.addEventListener('mouseenter', detienePil);
+    pilEscena.addEventListener('mouseleave', arrancaPil);
+    pilEscena.addEventListener('focusin', detienePil);
+    pilEscena.addEventListener('focusout', arrancaPil);
+
+    /* Solo corre mientras se ve: fuera de pantalla no tiene sentido
+       gastar repintados. */
+    new IntersectionObserver((es) => {
+      es.forEach((e) => (e.isIntersecting ? arrancaPil() : detienePil()));
+    }, { threshold: 0.25 }).observe(pilEscena);
+
+    muestraPilar(0);
+  }
+
+  /* ============================================================
      5. CONTADORES ANIMADOS
      ============================================================ */
   const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
@@ -2056,24 +2116,9 @@
       return '';
     }
 
-    /* ---- Estado del botón ----
-       Se marca como inactivo hasta que estén todos los campos, pero NO
-       se usa el atributo 'disabled': un botón deshabilitado no se puede
-       pulsar y el usuario se queda sin saber qué le falta. Con
-       aria-disabled se ve apagado, y si lo pulsa se le señalan los
-       campos que faltan. */
-    const btnEnviar = $('.submit-btn', form);
-
-    function formularioCompleto() {
-      return $$('input[required], select[required]', form).every((el) => !fieldError(el));
-    }
-    function actualizaBoton() {
-      const ok = formularioCompleto();
-      btnEnviar.classList.toggle('is-off', !ok);
-      btnEnviar.setAttribute('aria-disabled', String(!ok));
-    }
-    ['input', 'change'].forEach((ev) => form.addEventListener(ev, actualizaBoton));
-    actualizaBoton();
+    /* El botón va siempre activo: apagado de salida parecía roto, y el
+       que llega al formulario no sabía si el problema era suyo. Al
+       enviar se señalan los campos que falten. */
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
