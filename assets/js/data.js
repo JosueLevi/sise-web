@@ -685,6 +685,20 @@ const IDIOMAS_CURSO = [
   { nombre: 'Lengua de señas',  cat: 'idiomas', url: '#' }
 ];
 
+/* ---------- ESCUELA ----------
+   Los programas con grado de bachiller, los mismos que anuncia la
+   tarjeta "Escuela" del inicio. Comparten el icono de Idiomas hasta
+   que haya uno propio. */
+const AREAS_ESCUELA = [
+  { slug: 'escuela', label: 'Escuela', icon: 'area-idiomas' }
+];
+
+const ESCUELA = [
+  { nombre: 'Dirección de Diseño Gráfico Publicitario', cat: 'escuela', url: '#' },
+  { nombre: 'Administración y Dirección de Negocios',   cat: 'escuela', url: '#' },
+  { nombre: 'Gestión y Dirección Financiera',           cat: 'escuela', url: '#' }
+];
+
 const MENU = [
   {
     label: 'Carreras',
@@ -701,9 +715,9 @@ const MENU = [
     cta: { label: 'Ver toda la oferta', url: '#' }
   },
   {
-    label: 'Idiomas',
+    label: 'Escuela',
     url: '#',
-    auto: 'idiomas'
+    auto: 'escuela'
   },
   { label: '¿Por qué SISE?', url: '#porque' }
 ];

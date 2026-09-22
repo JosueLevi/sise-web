@@ -7,19 +7,18 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=468">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=473">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Barlow+Condensed:wght@500;600;700;800;900&family=Permanent+Marker&display=swap" rel="stylesheet">
 
 <!-- Cada version del banner se precarga solo donde se usa: con una
      sola precarga, en movil se bajaban 82 KB de la imagen de
      escritorio que no llega a pintarse nunca. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-condensed-800.woff2">
 <link rel="preload" as="image" href="assets/img/hero-01.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=468">
+<link rel="stylesheet" href="assets/css/style.css?v=473">
 </head>
 <body class="inicio">
 
@@ -182,7 +181,7 @@
 
     <div class="hub-grid reveal reveal-stagger">
       <a class="hub-card hub--rojo" href="carreras-semipresenciales.html" style="animation-delay:0ms">
-        <span class="hub-photo" style="background-image:url('assets/img/hub-semipresencial.webp')"></span>
+        <span class="hub-photo" data-bg="assets/img/hub-semipresencial.webp"></span>
         <span class="hub-body">
           <span class="hub-kicker">Tu profesi&oacute;n</span>
           <span class="hub-title">Carreras <br>Semipresenciales</span>
@@ -194,7 +193,7 @@
       </a>
 
       <a class="hub-card hub--azul" href="carreras-virtuales.html" style="animation-delay:80ms">
-        <span class="hub-photo" style="background-image:url('assets/img/hub-virtual.webp')"></span>
+        <span class="hub-photo" data-bg="assets/img/hub-virtual.webp"></span>
         <span class="hub-body">
           <span class="hub-kicker">100% en l&iacute;nea</span>
           <span class="hub-title">Carreras <br>Virtuales</span>
@@ -207,7 +206,7 @@
 
       <!-- TODO: enlazar a la pagina de Escuela cuando exista -->
       <a class="hub-card hub--amarillo" href="#" style="animation-delay:160ms">
-        <span class="hub-photo" style="background-image:url('assets/img/hub-escuela.webp')"></span>
+        <span class="hub-photo" data-bg="assets/img/hub-escuela.webp"></span>
         <span class="hub-body">
           <span class="hub-kicker">Ahora somos</span>
           <span class="hub-title">Escuela</span>
@@ -272,9 +271,9 @@
     </header>
 
     <div class="pil-escena reveal" id="pilEscena">
-      <div class="pil-capa is-activa" style="background-image:url('assets/img/pilar-aprendizaje.webp')" aria-hidden="true"></div>
-      <div class="pil-capa" style="background-image:url('assets/img/pilar-talentos.webp')" aria-hidden="true"></div>
-      <div class="pil-capa" style="background-image:url('assets/img/pilar-prestigio.webp')" aria-hidden="true"></div>
+      <div class="pil-capa is-activa" data-bg="assets/img/pilar-aprendizaje.webp" aria-hidden="true"></div>
+      <div class="pil-capa" data-bg="assets/img/pilar-talentos.webp" aria-hidden="true"></div>
+      <div class="pil-capa" data-bg="assets/img/pilar-prestigio.webp" aria-hidden="true"></div>
 
       <div class="pil-frente">
         <div class="pil-tabs" role="tablist" aria-label="Pilares de SISE">
@@ -535,8 +534,8 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=468"></script>
-<script src="assets/js/data.js?v=468"></script>
-<script src="assets/js/main.js?v=468"></script>
+<script src="assets/js/icons.js?v=473"></script>
+<script src="assets/js/data.js?v=473"></script>
+<script src="assets/js/main.js?v=473"></script>
 </body>
 </html>

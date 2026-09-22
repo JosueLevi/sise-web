@@ -63,8 +63,25 @@
     el.removeAttribute('data-bg');
   }
 
+  /* Fondos declarados en el HTML con data-bg (tarjetas del hub, panel
+     de pilares, cierre): entran en la misma cola que los de data.js. */
+  function recogeFondosDelHtml() {
+    document.querySelectorAll('[data-bg]').forEach((el) => {
+      if (porCargar.indexOf(el) === -1) porCargar.push(el);
+    });
+  }
+
+  /* Cuanto se adelanta la carga. Al entrar solo una pantalla por
+     delante -lo demas competiria con la foto del banner, que es la que
+     mide el rendimiento-; cuando la pagina ya esta lista, dos y media,
+     para que nada llegue tarde al hacer scroll. */
+  let margenLazy = 1;
+  window.addEventListener('load', () => {
+    setTimeout(() => { margenLazy = 1.6; barrerFondos(); }, 700);
+  });
+
   function barrerFondos() {
-    const limite = window.innerHeight * 2.2;
+    const limite = window.innerHeight * margenLazy;
     porCargar = porCargar.filter((el) => {
       const r = el.getBoundingClientRect();
       if (r.top > limite || r.bottom < -limite) return true;
@@ -78,6 +95,7 @@
     lazyTick = true;
     setTimeout(() => { lazyTick = false; barrerFondos(); }, 90);
   }
+  recogeFondosDelHtml();
   window.addEventListener('scroll', onScrollLazy, { passive: true });
   window.addEventListener('resize', onScrollLazy, { passive: true });
 
@@ -239,10 +257,15 @@
       elCopy.classList.toggle('sin-texto', !(d0.l1 || d0.l2 || d0.sub));
     }
 
+    /* Solo la primera diapositiva se pide de inmediato: es la que mide
+       el rendimiento. Las demas esperan a que la pagina este lista, y
+       hasta entonces ni siquiera estan en la cola de carga. */
+    const pendientes = [];
     const capas = hs.map((d, i) => {
       const c = document.createElement('div');
       c.className = 'hero-slide' + (i === 0 ? ' is-on' : '');
-      fondoDato(c, d, 'img', i === 0);
+      if (i === 0) fondoDato(c, d, 'img', true);
+      else pendientes.push(() => fondoDato(c, d, 'img', false));
       /* Encuadre propio de la diapositiva. La misma foto apaisada tiene
          que aguantar el banner ancho del escritorio y la caja casi
          cuadrada del movil, y el sujeto no siempre esta al centro: en
@@ -259,6 +282,10 @@
       heroStage.appendChild(c);
       return c;
     });
+
+    const cargaResto = () => pendientes.forEach((f) => f());
+    if (document.readyState === 'complete') setTimeout(cargaResto, 600);
+    else window.addEventListener('load', () => setTimeout(cargaResto, 600));
 
     // Con una sola diapositiva no hay carrusel que valga
     if (hs.length > 1) {
@@ -374,7 +401,9 @@
       cursos:   { areas: (typeof AREAS_CURSOS !== 'undefined') ? AREAS_CURSOS : [],
                   items: (typeof CURSOS !== 'undefined') ? CURSOS : [] },
       idiomas:  { areas: (typeof AREAS_IDIOMAS !== 'undefined') ? AREAS_IDIOMAS : [],
-                  items: (typeof IDIOMAS_CURSO !== 'undefined') ? IDIOMAS_CURSO : [] }
+                  items: (typeof IDIOMAS_CURSO !== 'undefined') ? IDIOMAS_CURSO : [] },
+      escuela:  { areas: (typeof AREAS_ESCUELA !== 'undefined') ? AREAS_ESCUELA : [],
+                  items: (typeof ESCUELA !== 'undefined') ? ESCUELA : [] }
     }[tipo] || { areas: [], items: [] };
     return cfg.areas
       .map((a) => ({ label: a.label, icon: a.icon, items: cfg.items.filter((c) => c.cat === a.slug) }))
@@ -894,7 +923,9 @@
       cursos:   { areas: (typeof AREAS_CURSOS !== 'undefined') ? AREAS_CURSOS : [],
                   items: (typeof CURSOS !== 'undefined') ? CURSOS : [] },
       idiomas:  { areas: (typeof AREAS_IDIOMAS !== 'undefined') ? AREAS_IDIOMAS : [],
-                  items: (typeof IDIOMAS_CURSO !== 'undefined') ? IDIOMAS_CURSO : [] }
+                  items: (typeof IDIOMAS_CURSO !== 'undefined') ? IDIOMAS_CURSO : [] },
+      escuela:  { areas: (typeof AREAS_ESCUELA !== 'undefined') ? AREAS_ESCUELA : [],
+                  items: (typeof ESCUELA !== 'undefined') ? ESCUELA : [] }
     }[tipo] || { areas: [], items: [] };
   }
 
@@ -1580,7 +1611,7 @@
       const hor = s.horario || contacto.horario || [];
 
       sedeInfo.innerHTML = `
-        <div class="sede-foto${s.img ? '' : ' sede-foto-vacia'}" ${s.img ? attrFondo(imgDe(s), true) : ''}></div>
+        <div class="sede-foto${s.img ? '' : ' sede-foto-vacia'}" ${s.img ? attrFondo(imgDe(s), false) : ''}></div>
         <div class="sede-datos">
           <h3 class="sede-nombre">Sede ${esc(s.nombre)}</h3>
           <p class="sede-dato">
@@ -2245,8 +2276,21 @@
       document.head.appendChild(sc);
     };
 
-    if (document.readyState === 'complete') cargaLottie();
-    else window.addEventListener('load', cargaLottie);
+    /* 46 KB para un icono: se piden cuando el navegador esta ocioso, o
+       antes si el raton o el teclado llegan al boton. */
+    let pedido = false;
+    const pideLottie = () => { if (!pedido) { pedido = true; cargaLottie(); } };
+    lotties.forEach((c) => {
+      const zona = c.closest('a, button') || c;
+      zona.addEventListener('pointerenter', pideLottie, { once: true });
+      zona.addEventListener('focusin', pideLottie, { once: true });
+    });
+    const enReposo = () => {
+      if ('requestIdleCallback' in window) requestIdleCallback(pideLottie, { timeout: 4000 });
+      else setTimeout(pideLottie, 2500);
+    };
+    if (document.readyState === 'complete') enReposo();
+    else window.addEventListener('load', enReposo);
   }
 
   /* Repinta las rejillas al cruzar el punto de corte (imgMovil) */
