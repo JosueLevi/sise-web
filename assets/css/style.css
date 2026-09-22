@@ -374,7 +374,7 @@ p{margin:0}
 .sm-deco{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 /* Un absoluto pinta por encima de los hermanos sin posicionar, asi que
    el contenido necesita su propia capa para quedar delante. */
-.sm-top,.sm-search,.sm-body,.sm-found,.sm-foot{position:relative;z-index:1}
+.sm-top,.sm-body,.sm-foot{position:relative;z-index:1}
 .sm-deco > span{position:absolute;display:block;aspect-ratio:67/71}
 /* El icono viene solo contorneado; aquí se quiere la silueta maciza. */
 .sm-deco > span svg{width:100%;height:100%;display:block}
@@ -383,10 +383,16 @@ p{margin:0}
    sale de la proporcion del icono; en pantallas estrechas eso la hace
    mas ancha que la ventana, y el overflow:hidden del contenedor la
    recorta por los lados, que es justo el efecto buscado. */
+/* Discreta y en el hueco de la derecha: a toda altura y en el centro
+   cruzaba por detras de las columnas, y pegada abajo se montaba sobre
+   la linea del pie y las redes. */
+/* Sangrada por el borde derecho y cortada por el: asi se lee como
+   fondo de marca. Suelta en medio del panel parecia un descuido, y a
+   toda altura cruzaba por detras del texto. */
 .sm-deco-1{
-  top:0;height:100%;width:auto;
-  left:50%;transform:translateX(-50%);
-  color:rgba(255,14,73,.075);
+  right:-7%;top:50%;height:auto;width:min(46vw,560px);
+  transform:translateY(-50%);
+  color:rgba(255,14,73,.055);
 }
 
 /* ---- Cabecera ---- */
@@ -411,22 +417,47 @@ p{margin:0}
 /* ---- Columnas ---- */
 .sm-body{
   flex:1;display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr)) minmax(196px,244px);
+  /* La primera columna es mas ancha: sus etiquetas son las mas largas
+     y partian en dos lineas mientras las otras tres sobraban sitio. */
+  grid-template-columns:1.3fr 1fr 1.15fr 1.15fr minmax(196px,238px);
   gap:clamp(22px,3vw,46px);padding:clamp(28px,4vw,48px) 0;
 }
 /* display:contents deja que las tres columnas del <nav> sean celdas de
    la rejilla junto a la tarjeta, sin perder la semántica del nav. */
 .sm-cols{display:contents}
-.sm-col-t{font-weight:700;font-size:18px;color:var(--red-700);margin-bottom:14px}
+/* Rojo de marca, no el oscuro: es el color con el que se reconoce SISE.
+   A 19px en negrita cuenta como texto grande y basta con 3:1. */
+.sm-col-t{font-weight:700;font-size:19px;color:var(--red);margin-bottom:14px}
 .sm-col a{
   display:block;padding:7px 0;font-size:16px;color:var(--body);
+  text-wrap:pretty;
   transition:color .2s var(--ease),transform .2s var(--ease);
 }
 .sm-col a:hover,.sm-col a:focus-visible{color:var(--red-700);transform:translateX(3px)}
 /* Separa la oferta académica del resto de páginas del sitio */
 .sm-col a.has-sep{margin-top:12px;padding-top:15px;border-top:1px solid var(--line)}
-/* Dónde estás ahora */
-.sm-col a[aria-current="page"]{color:var(--red-700);font-weight:600}
+/* Donde estas ahora: negrita y una linea roja debajo. En rojo entero
+   pesaba mas que los titulos de grupo. */
+.sm-col a[aria-current="page"]{
+  font-weight:700;
+  text-decoration:underline;
+  text-decoration-color:var(--red);
+  text-decoration-thickness:2.5px;
+  text-underline-offset:5px;
+}
+
+/* ---- Accesos por area ---- */
+.sm-sub-t{
+  margin-top:18px;font-size:12px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);
+}
+.sm-areas{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.sm-areas a{
+  padding:6px 12px;border-radius:999px;border:1px solid var(--line);
+  background:#fff;color:var(--body);font-size:12.5px;white-space:nowrap;
+  transition:border-color .2s var(--ease),color .2s var(--ease);
+}
+.sm-areas a:hover{border-color:var(--red);color:var(--red-700);transform:none}
 
 /* ---- Columna derecha: admisión primero, soporte después ---- */
 .sm-side{align-self:start;display:grid;gap:14px}
@@ -470,6 +501,9 @@ p{margin:0}
   font-size:14px;font-weight:500;color:var(--ink);transition:color .2s var(--ease);
 }
 .sm-via-ico{display:block;width:18px;height:18px;flex:none;color:var(--red)}
+.sm-via-txt{display:flex;flex-direction:column;line-height:1.25}
+.sm-via-txt b{font-weight:700;color:var(--ink);font-size:14px}
+.sm-via-txt span{font-size:13px;color:var(--body)}
 .sm-via-ico svg{width:100%;height:100%;display:block}
 .sm-via:hover{color:var(--red-700)}
 .sm-social{display:flex;gap:10px}
@@ -501,16 +535,14 @@ p{margin:0}
     width:min(76vw,420px);
     transform:translate(-50%,-50%);
   }
-  /* La pagina actual se marca con un subrayado, no tinendo la linea
-     entera de rojo: en una sola columna el texto en rojo pesa
-     demasiado y compite con los titulos de grupo. */
-  .sm-col a[aria-current="page"]{
-    color:var(--body);font-weight:inherit;
-    text-decoration:underline;
-    text-decoration-color:var(--red);
-    text-decoration-thickness:2.5px;
-    text-underline-offset:5px;
+  /* El aspa arriba queda lejos del pulgar: en movil baja a una esquina
+     flotante dentro del panel. */
+  .menu-close{
+    position:fixed;right:16px;bottom:16px;z-index:5;
+    width:54px;height:54px;border-radius:50%;
+    background:var(--red);color:#fff;box-shadow:0 12px 26px rgba(255,14,73,.36);
   }
+  .menu-close:hover{background:var(--red-700);transform:none}
 }
 @media (max-width:560px){
   .sm-body{grid-template-columns:1fr;padding:24px 0}
@@ -1145,6 +1177,33 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .hub--amarillo::after{background:linear-gradient(to top,rgba(251,221,110,.94) 0,rgba(251,221,110,.66) 26%,rgba(251,221,110,.14) 48%,transparent 62%)}
 }
 
+/* ---------- Carrera nueva ----------
+   Se activa con nuevo:true en data.js. Rojo de marca con letra blanca.
+   A este cuerpo se queda en 3,9:1, por debajo de 4,5:1, pero es una
+   etiqueta de refuerzo: lo que hay que leer es el nombre que va al
+   lado, no ella. */
+.tag-nuevo{
+  display:inline-block;vertical-align:middle;margin-left:6px;
+  padding:2px 7px;border-radius:999px;
+  background:var(--red);color:#fff;
+  font-size:10px;font-weight:700;line-height:1.5;letter-spacing:.06em;text-transform:uppercase;
+}
+/* Punto en el boton del menu: avisa de que dentro hay algo nuevo */
+.nav-punto{
+  display:inline-block;width:7px;height:7px;margin-left:5px;border-radius:50%;
+  background:var(--red);vertical-align:super;
+  box-shadow:0 0 0 3px rgba(255,14,73,.22);
+}
+/* Etiqueta sobre la foto de la tarjeta de carrera */
+.cc-media{position:relative}
+.cc-nuevo{
+  position:absolute;top:12px;left:12px;z-index:2;
+  padding:5px 11px;border-radius:999px;
+  background:var(--red);color:#fff;
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  box-shadow:0 6px 14px rgba(255,14,73,.3);
+}
+
 /* ---------- Chips ---------- */
 .chips{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-bottom:44px}
 .chip{
@@ -1302,7 +1361,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .pil-escena{
   /* Lo que dura cada pilar. main.js lee este mismo valor, asi que
      cambiarlo aqui cambia el avance de la linea y el relevo. */
-  --pil-paso:5s;
+  --pil-paso:4s;
   position:relative;isolation:isolate;overflow:hidden;
   border-radius:clamp(18px,2vw,28px);
   min-height:clamp(540px,64vh,720px);
@@ -1315,11 +1374,25 @@ body:not(.form-abierto) .form-velo{opacity:0}
   opacity:0;transition:opacity .9s var(--ease);
 }
 .pil-capa.is-activa{opacity:1}
-/* Velo: la foto cambia, y el texto tiene que leerse sobre cualquiera.
-   Ahora que el titulo esta fuera, arriba puede ir mas limpio. */
+/* Acercamiento lento mientras el pilar esta activo, para que la foto no
+   se sienta quieta. Dura un poco mas que el pilar -lo que tarda el
+   fundido de salida- y asi no se detiene de golpe antes de irse. La que
+   sale se queda en el zoom final: si volviera a 1 se veria el salto
+   durante el fundido. */
+.pil-capa{transform:scale(1.08);transform-origin:50% 55%}
+.pil-capa.is-activa{animation:pilZoom calc(var(--pil-paso) + .9s) ease-out both}
+.pil-escena.is-pausada .pil-capa.is-activa{animation-play-state:paused}
+@keyframes pilZoom{from{transform:scale(1)}to{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){
+  .pil-capa,.pil-capa.is-activa{animation:none;transform:none}
+}
+/* Velo solo donde va el texto: la foto se ve limpia hasta la mitad y
+   se oscurece suave hacia las pestanas. */
 .pil-escena::before{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(7,8,12,.3),rgba(7,8,12,.18) 34%,rgba(7,8,12,.84));
+  background:linear-gradient(180deg,
+    rgba(7,8,12,0) 0,rgba(7,8,12,0) 48%,
+    rgba(7,8,12,.42) 68%,rgba(7,8,12,.8) 100%);
 }
 .pil-frente{
   position:relative;z-index:1;width:100%;
@@ -1354,6 +1427,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .pil-linea{display:block;height:2px;background:rgba(255,255,255,.26);border-radius:99px;overflow:hidden}
 .pil-linea > span{display:block;height:100%;width:0;background:var(--red);border-radius:inherit}
 .pil-tab.is-activa .pil-linea > span{animation:pilAvance var(--pil-paso) linear forwards}
+/* En pausa la linea se congela donde iba */
+.pil-escena.is-pausada .pil-linea > span{animation-play-state:paused}
 @keyframes pilAvance{from{width:0}to{width:100%}}
 .pil-tab:hover .pil-title{color:#fff}
 .pil-tab:focus-visible{outline:3px solid #fff;outline-offset:6px;border-radius:6px}
@@ -1371,7 +1446,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .pil-capa{background-position:center 35%}
   /* El pie mas cerrado: ahi va todo el texto */
   .pil-escena::before{
-    background:linear-gradient(180deg,rgba(7,8,12,.26),rgba(7,8,12,.16) 26%,rgba(7,8,12,.88) 62%,rgba(7,8,12,.94));
+    background:linear-gradient(180deg,
+      rgba(7,8,12,0) 0,rgba(7,8,12,0) 32%,
+      rgba(7,8,12,.55) 52%,rgba(7,8,12,.88) 70%,rgba(7,8,12,.92) 100%);
   }
   .pil-tabs{grid-template-columns:1fr;gap:0}
   .pil-tab{gap:8px;padding-block:14px}
@@ -2911,6 +2988,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
   align-items:center;gap:clamp(10px,2vw,26px);
 }
 .why-ilu{width:100%;height:auto;display:block}
+/* Foto recortada, en vertical: se mide por el alto y no por el ancho,
+   o a lo ancho de la columna saldria el doble de alta que la vineta.
+   El archivo mide 317px de alto: no se pasa de ahi para no ampliarla. */
+.why-ilu--foto{width:auto;max-width:100%;height:min(317px,34vw);margin-inline:auto;object-fit:contain}
 .why-lado{min-width:0}
 
 .why-globo{
@@ -2970,11 +3051,20 @@ body:not(.form-abierto) .form-velo{opacity:0}
    dos controles iguales en la misma pagina que se vieran distintos solo
    confundirian. */
 .why-nav{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+/* Escritorio: las flechas salen del flujo para que la vineta quede
+   centrada con la foto; si contaran, el bloque crecia hacia abajo y la
+   vineta subia. El margen de la escena les reserva su sitio. */
+@media (min-width:821px){
+  .why-lado{position:relative}
+  .why-nav{position:absolute;right:0;top:100%}
+  .why-escena{margin-bottom:62px}
+}
 
 @media (max-width:820px){
   /* La ilustracion se pone encima y el pico sube al centro. */
   .why-escena{grid-template-columns:1fr;gap:6px;justify-items:center}
   .why-ilu{width:min(230px,62%)}
+  .why-ilu--foto{width:auto;height:240px}
   .why-lado{width:100%}
   .why-globo::after{
     left:50%;top:-9px;margin-left:-8px;

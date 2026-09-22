@@ -396,7 +396,7 @@
                   <p class="mega-area">
                     <span class="mega-ico" aria-hidden="true">${ico(a.icon)}</span>${esc(a.label)}
                   </p>
-                  ${a.items.map((c) => `<a role="menuitem" href="${esc(c.url || '#')}">${esc(c.nombre)}</a>`).join('')}
+                  ${a.items.map((c) => `<a role="menuitem" href="${esc(c.url || '#')}">${esc(c.nombre)}${c.nuevo ? ' <span class="tag-nuevo">Nuevo</span>' : ''}</a>`).join('')}
                 </div>`).join('')}`
           : m.items.map((it) => `<a role="menuitem" href="${esc(it.url)}"${it.destacado ? ' class="is-cta"' : ''}>${esc(it.label)}</a>`).join('');
 
@@ -404,7 +404,7 @@
           <div class="nav-item${m.auto && !compacto ? ' has-mega' : ''}">
             <button class="nav-link nav-toggle" type="button"
                     aria-expanded="false" aria-controls="drop-${i}">
-              ${esc(m.label)}<span class="caret" aria-hidden="true">${ico('caret')}</span>
+              ${esc(m.label)}${m.auto && grupos(m.auto).some((a) => a.items.some((c) => c.nuevo)) ? '<span class="nav-punto" aria-label="Hay novedades"></span>' : ''}<span class="caret" aria-hidden="true">${ico('caret')}</span>
             </button>
             <div class="drop${m.auto ? ' drop-mega' : ''}${compacto ? ' is-compact' : ''}" id="drop-${i}" role="menu">
               ${cuerpo}
@@ -465,6 +465,12 @@
   const pagActual = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
 
   if (menuNav && typeof MENU_PANEL !== 'undefined') {
+    /* Areas de carrera, para llegar a lo que se busca sin pasar por el
+       listado entero. El enlace lleva la area en la direccion y la
+       pagina de carreras abre ya filtrada. */
+    const areasMenu = (typeof AREAS !== 'undefined') ? AREAS : [];
+    const hayNueva = (typeof CARRERAS !== 'undefined') && CARRERAS.some((c) => c.nuevo);
+
     menuNav.innerHTML = MENU_PANEL.columnas.map((c) => `
       <div class="sm-col">
         <p class="sm-col-t">${esc(c.titulo)}</p>
@@ -473,8 +479,14 @@
           // Solo se marca el enlace a la pagina entera. Los que llevan a
           // una seccion (index.html#sedes) no: no estas "en" Sedes.
           const aqui = archivo === pagActual && it.url.indexOf('#') === -1;
-          return `<a href="${esc(it.url)}"${it.sep ? ' class="has-sep"' : ''}${aqui ? ' aria-current="page"' : ''}>${esc(it.label)}</a>`;
+          const nueva = hayNueva && archivo === 'carreras-semipresenciales.html';
+          return `<a href="${esc(it.url)}"${aqui ? ' aria-current="page"' : ''}>${esc(it.label)}${nueva ? ' <span class="tag-nuevo">Nuevo</span>' : ''}</a>`;
         }).join('')}
+        ${c.areas && areasMenu.length ? `
+          <p class="sm-sub-t">Por área</p>
+          <div class="sm-areas">
+            ${areasMenu.map((a) => `<a href="carreras-semipresenciales.html?area=${esc(a.slug)}">${esc(a.label)}</a>`).join('')}
+          </div>` : ''}
       </div>`).join('');
 
     const menuSide = $('#menuSide');
@@ -506,7 +518,8 @@
       const vias = [MENU_PANEL.whatsapp, MENU_PANEL.telefono].filter(Boolean);
       menuContacto.innerHTML = vias.map((v) => `
         <a class="sm-via" href="${esc(v.url)}"${v.url.indexOf('http') === 0 ? ' target="_blank" rel="noopener"' : ''}>
-          <span class="sm-via-ico" aria-hidden="true">${ico(v.icono)}</span>${esc(v.texto)}
+          <span class="sm-via-ico" aria-hidden="true">${ico(v.icono)}</span>
+          <span class="sm-via-txt"><b>${esc(v.texto)}</b>${v.dato ? `<span>${esc(v.dato)}</span>` : ''}</span>
         </a>`).join('');
     }
 
@@ -921,6 +934,7 @@
       <a class="career-card" href="${esc(c.url || '#')}" data-cat="${esc(c.cat)}" style="animation-delay:${i * 60}ms">
         <div class="cc-top">
           <div class="cc-media">
+            ${c.nuevo ? '<span class="cc-nuevo">Nuevo</span>' : ''}
             <div class="cc-vacia" aria-hidden="true">${iconoArea(c) || icon}</div>
             ${imgDe(c) ? `<div class="cc-img" ${attrFondo(imgDe(c), i < 4)}></div>` : ''}
           </div>
@@ -984,6 +998,18 @@
       });
     }
 
+    /* ?area=gestion en la direccion abre esa area marcada: es lo que
+       usan los accesos por area del menu desplegado. */
+    const areaPedida = new URLSearchParams(location.search).get('area');
+    if (areaPedida && cajaChips) {
+      const chip = $(`[data-filter="${CSS.escape(areaPedida)}"]`, cajaChips);
+      if (chip) {
+        $$('[data-filter]', cajaChips).forEach((b) => {
+          b.classList.remove('is-active'); b.setAttribute('aria-selected', 'false');
+        });
+        chip.classList.add('is-active'); chip.setAttribute('aria-selected', 'true');
+      }
+    }
     const chipInicial = cajaChips ? $('.chip.is-active', cajaChips) : null;
     render(chipInicial ? chipInicial.dataset.filter : 'todas');
   }
@@ -991,25 +1017,40 @@
   /* ============================================================
      4b. PILARES — la foto y la pestana se relevan solas
      ============================================================
-     Cada 3 segundos pasa al siguiente pilar: cambia la foto, se abre su
-     texto y su linea avanza. Se detiene al pasar el raton o al enfocar
-     con el teclado, y se puede saltar pulsando una pestana. */
+     Cada pilar dura --pil-paso (CSS): cambia la foto, se abre su texto
+     y su linea avanza. El raton no lo detiene -solo sirve para elegir
+     pestana-; si lo pausa el foco del teclado dentro, para quien navega
+     asi, y al reanudar la linea sigue desde donde iba. */
   const pilEscena = $('#pilEscena');
   if (pilEscena && !reduceMotion) {
     const capas = $$('.pil-capa', pilEscena);
     const tabs  = $$('.pil-tab', pilEscena);
-    /* Lo que dura cada pilar. Sale del CSS (--pil-paso) para que el
-       reloj y la linea no se puedan desincronizar. */
-    const PASO = (parseFloat(getComputedStyle(pilEscena).getPropertyValue('--pil-paso')) || 5) * 1000;
-    let actualPil = 0, relojPil = null;
+    const PASO = (parseFloat(getComputedStyle(pilEscena).getPropertyValue('--pil-paso')) || 4) * 1000;
+    const estado = { visible: false, teclado: false };
+    let actualPil = 0, reloj = null, restante = PASO, inicio = 0;
 
-    /* Vuelve a lanzar la animacion de la linea desde cero */
     function reiniciaLinea(t) {
       const barra = $('.pil-linea > span', t);
       if (!barra) return;
       barra.style.animation = 'none';
       void barra.offsetWidth;
       barra.style.animation = '';
+    }
+
+    /* Corre solo si se ve y nadie lo esta mirando de cerca */
+    function evalua() {
+      const corre = estado.visible && !estado.teclado;
+      if (corre && !reloj) {
+        inicio = performance.now();
+        reloj = setTimeout(siguiente, restante);
+        pilEscena.classList.remove('is-pausada');
+      } else if (!corre && reloj) {
+        clearTimeout(reloj); reloj = null;
+        restante = Math.max(0, restante - (performance.now() - inicio));
+        pilEscena.classList.add('is-pausada');
+      } else if (!corre) {
+        pilEscena.classList.add('is-pausada');
+      }
     }
 
     function muestraPilar(i) {
@@ -1021,30 +1062,29 @@
         t.setAttribute('aria-selected', String(on));
         if (on) reiniciaLinea(t);
       });
+      // cada pilar empieza con su tiempo completo
+      clearTimeout(reloj); reloj = null; restante = PASO;
+      evalua();
     }
-    /* Al arrancar se reinicia tambien la linea del pilar en curso: si no,
-       la del primero ya habia corrido -y terminado- mientras la seccion
-       estaba fuera de pantalla, y parecia atascada hasta que el usuario
-       tocaba algo. */
-    function arrancaPil() {
-      clearInterval(relojPil);
-      reiniciaLinea(tabs[actualPil]);
-      relojPil = setInterval(() => muestraPilar(actualPil + 1), PASO);
-    }
-    function detienePil() { clearInterval(relojPil); relojPil = null; }
+    function siguiente() { reloj = null; muestraPilar(actualPil + 1); }
 
-    tabs.forEach((t, n) => t.addEventListener('click', () => { muestraPilar(n); arrancaPil(); }));
-    pilEscena.addEventListener('mouseenter', detienePil);
-    pilEscena.addEventListener('mouseleave', arrancaPil);
-    pilEscena.addEventListener('focusin', detienePil);
-    pilEscena.addEventListener('focusout', arrancaPil);
+    tabs.forEach((t, n) => t.addEventListener('click', () => muestraPilar(n)));
 
-    /* Solo corre mientras se ve: fuera de pantalla no tiene sentido
-       gastar repintados. */
+    /* Solo el foco de teclado pausa: el de un clic o un toque no */
+    pilEscena.addEventListener('focusin', () => {
+      estado.teclado = !!pilEscena.querySelector(':focus-visible'); evalua();
+    });
+    pilEscena.addEventListener('focusout', (e) => {
+      if (!pilEscena.contains(e.relatedTarget)) { estado.teclado = false; evalua(); }
+    });
+
+    /* Solo corre mientras se ve. Al entrar por primera vez la linea del
+       primero arranca desde cero, en sincronia con el reloj. */
     new IntersectionObserver((es) => {
-      es.forEach((e) => (e.isIntersecting ? arrancaPil() : detienePil()));
+      es.forEach((e) => { estado.visible = e.isIntersecting; evalua(); });
     }, { threshold: 0.25 }).observe(pilEscena);
 
+    pilEscena.classList.add('is-pausada');
     muestraPilar(0);
   }
 

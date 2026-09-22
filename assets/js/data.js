@@ -54,27 +54,33 @@ const FLOTANTES = {
 /* ============================================================
    MENU DESPLEGADO (el que abre la hamburguesa)
    ============================================================
-   Mapa del sitio completo. Es el unico menu en movil, asi que la
-   primera columna incluye Cursos e Idiomas ademas de Carreras: en
-   pantallas pequenas la barra superior no se ve y sin ellos esas dos
-   secciones quedarian sin ninguna via de acceso.
-
-   sep:true en un item dibuja un separador ENCIMA de el. Se usa para
-   despegar la oferta academica del resto de paginas del sitio. */
+   Mapa del sitio completo. Es el unico menu en movil, asi que tiene
+   que dar acceso a toda la oferta academica, no solo a las paginas
+   sueltas. */
 const MENU_PANEL = {
+  /* Cuatro columnas con nombre propio. Antes habia una sola, llamada
+     "Inicio", que mezclaba la oferta academica con el resto del sitio.
+
+     areas:true anade bajo la columna los accesos por area. */
   columnas: [
     {
-      titulo: 'Inicio',
+      titulo: 'Estudia en SISE',
+      areas: true,
       items: [
-        { label: 'Home',                       url: 'index.html' },
         { label: 'Carreras semipresenciales',  url: 'carreras-semipresenciales.html' },
         { label: 'Carreras virtuales',         url: 'carreras-virtuales.html' },
         { label: 'Cursos y Especializaciones', url: 'cursos.html' },
-        { label: 'Idiomas',                    url: 'idiomas.html' },
-        { label: 'Nosotros',                   url: '#', sep: true },
-        { label: 'Sedes',                      url: 'index.html#sedes' },
-        { label: 'Blog',                       url: 'index.html#novedades' },
-        { label: 'Eventos',                    url: '#' }
+        { label: 'Idiomas',                    url: 'idiomas.html' }
+      ]
+    },
+    {
+      titulo: 'Conócenos',
+      items: [
+        { label: 'Home',      url: 'index.html' },
+        { label: 'Nosotros',  url: '#' },
+        { label: 'Sedes',     url: 'index.html#sedes' },
+        { label: 'Blog',      url: 'index.html#novedades' },
+        { label: 'Eventos',   url: '#' }
       ]
     },
     {
@@ -82,7 +88,7 @@ const MENU_PANEL = {
       items: [
         { label: 'Plataforma para alumnos',   url: '#' },
         { label: 'Plataforma para egresados', url: '#' },
-        { label: 'Atención al estudiante',  url: '#' }
+        { label: 'Atención al estudiante',    url: '#' }
       ]
     },
     {
@@ -92,7 +98,7 @@ const MENU_PANEL = {
         { label: 'Bienestar',              url: '#' },
         { label: 'Responsabilidad Social', url: '#' },
         { label: 'Convenios',              url: 'index.html#convenios' },
-        { label: 'Acreditación',         url: '#' }
+        { label: 'Acreditación',           url: '#' }
       ]
     }
   ],
@@ -120,8 +126,10 @@ const MENU_PANEL = {
     vacio: 'No encontramos nada con ese nombre.'
   },
 
-  telefono: { texto: '(01) 625 5656', url: 'tel:+5116255656', icono: 'telefono' },
-  whatsapp: { texto: '924 298 424', url: 'https://wa.me/51924298424', icono: 'whatsapp' },
+  /* Con etiqueta: antes solo estaba el numero y no se leia como
+     algo pulsable ni se sabia a donde llevaba. */
+  telefono: { texto: 'Llámanos', dato: '(01) 625 5656', url: 'tel:+5116255656', icono: 'telefono' },
+  whatsapp: { texto: 'Escríbenos', dato: '924 298 424', url: 'https://wa.me/51924298424', icono: 'whatsapp' },
 
   redes: [
     { nombre: 'Facebook',  icono: 'facebook',  url: '#' },
@@ -190,6 +198,10 @@ const HERO_SLIDES = [
    descripcion: OPCIONAL. Una línea corta bajo el título. Si se deja
                 vacía no se pinta: no invento textos de carrera.
 
+   nuevo: OPCIONAL. true la marca como carrera nueva: sale la etiqueta
+          "Nuevo" en el menú, en su tarjeta y un punto en "Carreras".
+          Quitarlo cuando deje de ser novedad.
+
    modalidades: en qué formatos se puede estudiar. La duración de cada
    una sale de DURACION_POR_MODALIDAD, así no hay que repetirla en las
    24 carreras. Si alguna dura distinto, se sobreescribe con
@@ -249,6 +261,7 @@ const CARRERAS = [
     nombre: 'Marketing',
     descripcion: 'Crea campañas y marcas que la gente recuerda.',
     cat: 'gestion',
+    nuevo: true,
     modalidades: ['Semipresencial', 'Virtual'],
     img: 'assets/img/carrera-marketing.webp',
     icon: 'marketing',
