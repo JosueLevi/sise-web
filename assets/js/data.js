@@ -167,6 +167,7 @@ const MENU_PANEL = {
 const HERO_SLIDES = [
   {
     img: 'assets/img/hero-01.webp',
+    imgMovil: 'assets/img/hero-01-movil.webp',
     l1: 'Se estudia',
     l2: 'Como se vive',
     sub: 'Aquí no se ensaya, no se practica. Se vive.'
@@ -174,6 +175,7 @@ const HERO_SLIDES = [
   {
     // Sin texto: la imagen ya trae el suyo. Deja l1/l2/sub vacíos para eso.
     img: 'assets/img/hero-02.webp',
+    imgMovil: 'assets/img/hero-02-movil.webp',
     // El rotulo va a la izquierda: en movil hay que anclarlo a ese lado
     posMovil: 'left 28%',
     l1: '',
@@ -618,6 +620,47 @@ const NOVEDADES = {
    Mismo patrón que CARRERAS: el desplegable del menú se arma solo
    agrupando CURSOS por AREAS_CURSOS, en este orden. Añadir un curso
    aquí lo hace aparecer en el menu sin tocar nada más. */
+/* ---------- CATALOGO DE CURSOS ----------
+   Cada curso admite, ademas de nombre/img/cat/url:
+     horas:  duracion, en numero (16 -> "16 horas")
+     precio: precio actual, en soles
+     antes:  precio tachado, si esta en oferta
+     resumen: su propio texto
+   Mientras no esten, la tarjeta se adapta: sin horas no pinta el reloj
+   y sin precio pone "Consultar precio".
+
+   Texto de apoyo de la tarjeta. Mientras no haya uno propio por curso,
+   se usa el de su area: cada curso admite "resumen" y, si lo trae,
+   manda sobre este. PROVISIONAL: reemplazar por el texto real. */
+const RESUMEN_AREA_CURSOS = {
+  'office':      'Domina las herramientas de oficina que piden hoy las empresas.',
+  'negocios':    'Herramientas de gestión para vender, administrar y decidir mejor.',
+  'gastronomia': 'Técnica de cocina y pastelería con práctica en taller.',
+  'diseno-com':  'Diseño y comunicación para proyectos reales, de la idea al entregable.',
+  'salud':       'Formación técnica para el cuidado y la atención del paciente.',
+  'tecnologia':  'Tecnología aplicada: datos, redes y desarrollo con enfoque práctico.',
+  'ingenieria':  'Procesos, seguridad y gestión aplicados a la industria.',
+  'modas':       'Confección y diseño de moda con práctica en taller.'
+};
+
+/* La portada del catalogo y el carrito */
+const TIENDA_CURSOS = {
+  titulo: 'Suma una habilidad',
+  destacado: 'este ciclo',
+  texto: 'Cursos cortos y especializaciones con práctica desde la primera sesión. Elige por área y arma tu propia ruta.',
+  cta: 'Ver el catálogo',
+  cta2: 'Hablar con un asesor',
+  urlCta2: 'https://wa.link/zgq8zu',
+  img: 'assets/img/cursos-hero.webp',
+  imgMovil: 'assets/img/cursos-hero-movil.webp',
+  carrito: {
+    titulo: 'Tu selección',
+    vacio: 'Todavía no has añadido ningún curso.',
+    cta: 'Enviar por WhatsApp',
+    url: 'https://wa.link/zgq8zu'
+  }
+};
+
 const AREAS_CURSOS = [
   { slug: 'office',     label: 'Office',                   icon: 'area-office' },
   { slug: 'negocios',   label: 'Negocios',                 icon: 'area-gestion' },

@@ -100,6 +100,7 @@
   --carbon:#272423;     /* footer */
   --negro:#07080C;     /* paneles oscuros: Por que elegir SISE y Experiencias */
   --negro-rgb:7,8,12;
+  --tienda-lado:clamp(16px,4vw,72px);   /* margen lateral del catalogo */
   --bg:#F5F4F2;        /* fondo general: gris apenas calido, conversa con el carbon del footer */
   --bg-soft:#F6F7FA;
   --line:#E7E9F0;
@@ -1233,12 +1234,6 @@ body:not(.form-abierto) .form-velo{opacity:0}
   background:var(--red);color:#fff;
   font-size:10px;font-weight:700;line-height:1.5;letter-spacing:.06em;text-transform:uppercase;
 }
-/* Punto en el boton del menu: avisa de que dentro hay algo nuevo */
-.nav-punto{
-  display:inline-block;width:7px;height:7px;margin-left:5px;border-radius:50%;
-  background:var(--red);vertical-align:super;
-  box-shadow:0 0 0 3px rgba(255,14,73,.22);
-}
 /* Etiqueta sobre la foto de la tarjeta de carrera */
 .cc-media{position:relative}
 .cc-nuevo{
@@ -2190,6 +2185,370 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .cierre-acciones .btn-ghost:hover{background:#fff;color:var(--ink);border-color:#fff}
 
 /* ============================================================
+   CURSOS — catalogo
+   ============================================================ */
+/* Portada del catalogo: bloque de color con el texto a la izquierda y
+   la foto a la derecha, dentro de la caja. Es la unica pagina con este
+   aire de tienda; las carreras siguen con el banner institucional. */
+.tienda-top{padding-top:calc(var(--header-h) + 26px);padding-bottom:0}
+/* Casi a todo el ancho: se sale del contenedor central y solo deja el
+   aire justo para no chocar con los botones flotantes. */
+/* Un solo margen lateral para toda la pagina del catalogo */
+.tienda-top > .shell,
+.tienda > .shell{max-width:none;padding-inline:var(--tienda-lado)}
+/* La foto ocupa el bloque entero y el texto va encima, con un velo que
+   la oscurece de izquierda a derecha para que se lea. */
+.tienda-hero{
+  position:relative;isolation:isolate;overflow:hidden;
+  border-radius:clamp(20px,2.4vw,30px);
+  min-height:clamp(380px,38vw,520px);
+  display:flex;align-items:flex-end;
+  padding:clamp(28px,3.6vw,56px);
+  background:var(--negro) center/cover no-repeat;
+  color:#fff;
+}
+.tienda-hero::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(7,8,12,.86),rgba(7,8,12,.56) 48%,rgba(7,8,12,.16) 80%),
+    linear-gradient(0deg,rgba(7,8,12,.52),rgba(7,8,12,0) 46%);
+}
+.tienda-txt{position:relative;max-width:560px}
+.tienda-titulo{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(34px,4.6vw,56px);line-height:.98;letter-spacing:.01em;color:#fff;
+}
+.tienda-titulo em{font-style:normal;color:var(--red)}
+.tienda-sub{margin-top:14px;font-size:16px;line-height:1.55;color:var(--blanco-2)}
+/* Botones algo mas chicos que los generales, como los del inicio */
+.tienda-btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.tienda-btns .btn{padding:11px 22px;font-size:15px}
+/* Sobre la foto, el boton secundario va en blanco */
+.tienda-hero .btn-ghost{border-color:rgba(255,255,255,.55);color:#fff}
+.tienda-hero .btn-ghost:hover{background:#fff;color:var(--ink);border-color:#fff}
+
+
+/* Cabecera del listado: titulo a la izquierda y cuantos cursos hay */
+.tienda{padding-top:clamp(34px,4vw,54px)}
+/* La entrada de estos bloques solo sube y aparece: con la escala del
+   resto del sitio, mientras dura la animacion se veian mas estrechos
+   que la foto y parecian desalineados. */
+.tienda .reveal:not(.is-in){transform:translateY(22px)}
+.tienda-cab{
+  display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;margin-bottom:22px;
+}
+.section-title--left{text-align:left}
+.tienda-cuenta{font-size:14px;color:var(--muted)}
+.tienda .chips{justify-content:flex-start;margin-bottom:26px}
+
+/* ---- Tarjeta de curso ----
+   La foto va con margen dentro de la tarjeta, no a sangre, y debajo el
+   nombre, la duracion, el precio y las dos acciones. No es un enlace
+   entero porque dentro hay dos botones. */
+/* Cuatro columnas fijas y a todo el ancho del catalogo. Sin esto, la
+   rejilla heredaba el tope de 1150px de la de carreras y, con una o dos
+   tarjetas, su centrado las estiraba al triple. */
+.tienda-grid,
+.tienda-grid.is-corta{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:20px;justify-content:start;
+  max-width:none;margin-inline:0;
+}
+.tienda-grid.is-corta > *{flex:none}
+.curso-card{
+  position:relative;display:flex;flex-direction:column;
+  border-radius:22px;background:#fff;border:1px solid var(--gris-100);
+  padding:14px 14px 18px;
+  box-shadow:0 10px 26px rgba(18,19,26,.06);
+  transition:transform .28s var(--ease),box-shadow .28s var(--ease);
+}
+.curso-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(18,19,26,.12)}
+.curso-media{
+  position:relative;aspect-ratio:16/10;border-radius:16px;
+  background:var(--crema);overflow:hidden;
+}
+/* Mientras no hay foto del curso: el icono de su area sobre el crema */
+.curso-vacia{
+  position:absolute;inset:0;display:grid;place-content:center;
+  color:var(--red-700);opacity:.5;
+}
+.curso-vacia svg{width:56px;height:56px;display:block}
+.curso-img{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  transition:transform .6s var(--ease);
+}
+.curso-card:hover .curso-img{transform:scale(1.05)}
+/* Chapa redonda en la esquina, montada sobre el borde de la tarjeta */
+.curso-nuevo{
+  position:absolute;top:-10px;right:-10px;z-index:3;
+  width:58px;height:58px;border-radius:50%;
+  display:grid;place-content:center;
+  background:var(--red);color:#fff;
+  font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  box-shadow:0 8px 18px rgba(255,14,73,.34);
+}
+.curso-body{display:flex;flex-direction:column;flex:1;padding:16px 6px 0}
+/* Dos lineas fijas: con nombres de una y de dos lineas, las filas de
+   botones quedaban a distinta altura. */
+.curso-nombre{
+  font-size:18px;font-weight:700;line-height:1.25;color:var(--ink);
+  min-height:2.5em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.curso-desc{margin-top:8px;font-size:14px;line-height:1.5;color:var(--body)}
+/* Area y duracion: datos, no promesas */
+.curso-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.curso-tag{
+  padding:4px 10px;border-radius:999px;background:var(--gris-100);
+  font-size:12px;color:var(--body);
+}
+
+/* Duracion a la izquierda y, cuando lo haya, el precio a la derecha */
+.curso-datos{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:16px;
+}
+.curso-datos:only-child{margin-top:0}
+.curso-horas{display:inline-flex;align-items:center;gap:7px;font-size:14px;color:var(--body)}
+.curso-horas svg{width:18px;height:18px;flex:none;color:var(--muted)}
+.curso-precio{display:inline-flex;align-items:baseline;gap:8px;white-space:nowrap}
+.curso-precio s{font-size:14px;color:var(--gris-400)}
+.curso-precio b{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:24px;letter-spacing:.01em;color:var(--red);
+}
+/* Sin precio el texto es largo: ahi va al cuerpo normal */
+.curso-precio b:not(:only-child),
+.curso-precio b{line-height:1}
+
+/* Pegadas abajo, para que todas las tarjetas de la fila las alineen */
+.curso-acciones{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:16px}
+/* Comprar: pastilla de contorno, como en el diseno de referencia */
+.curso-ver{
+  flex:1;justify-content:center;padding:12px 18px;font-size:15px;font-weight:600;
+  background:transparent;color:var(--red-700);border:1.5px solid var(--red);
+  cursor:pointer;
+}
+.curso-ver:hover{background:var(--red);border-color:var(--red);color:#fff}
+/* Apartar: el mismo alto, en circulo de contorno */
+.curso-add{
+  flex:none;width:46px;height:46px;display:grid;place-content:center;
+  border-radius:50%;border:1.5px solid var(--red);background:#fff;color:var(--red);
+  cursor:pointer;transition:all .2s var(--ease);
+}
+.curso-add svg{width:20px;height:20px;display:block}
+.curso-add:hover{background:var(--red-soft)}
+.curso-add.is-puesto{background:var(--red);border-color:var(--red);color:#fff}
+
+/* ---- Cabecera del catalogo ----
+   En su sitio de siempre, pero en vidrio claro y con todo en rojo: el
+   panel negro pesaba demasiado al lado de la foto. Es la misma tanto
+   arriba como al bajar, porque aqui la cabecera no se aparta. */
+/* ---- Cabecera del catalogo ----
+   En su sitio de siempre, pero en vidrio claro y con todo en rojo: el
+   panel negro pesaba demasiado al lado de la foto. Es la misma tanto
+   arriba como al bajar, porque aqui la cabecera no se aparta. */
+/* ---- Cabecera del catalogo ----
+   En su sitio de siempre, pero en vidrio claro y con todo en rojo: el
+   panel negro pesaba demasiado al lado de la foto. Es la misma tanto
+   arriba como al bajar, porque aqui la cabecera no se aparta. */
+/* ---- Cabecera del catalogo ----
+   En su sitio de siempre, pero en vidrio claro y con todo en rojo: el
+   panel negro pesaba demasiado al lado de la foto. Es la misma tanto
+   arriba como al bajar, porque aqui la cabecera no se aparta. */
+.pagina-catalogo .site-header .nav-pill,
+.pagina-catalogo .site-header.is-stuck .nav-pill{
+  background:rgba(255,255,255,.82);
+  border-color:rgba(255,255,255,.7);
+  backdrop-filter:blur(18px) saturate(1.25);-webkit-backdrop-filter:blur(18px) saturate(1.25);
+  box-shadow:0 12px 30px rgba(7,8,12,.12);
+}
+.pagina-catalogo .nav-pill .nav-link,
+.pagina-catalogo .nav-pill .main-nav a{color:var(--red-700);text-shadow:none}
+.pagina-catalogo .nav-pill .nav-link:hover,
+.pagina-catalogo .nav-pill .main-nav a:hover{color:var(--red)}
+.pagina-catalogo .nav-pill .caret{color:var(--red)}
+.pagina-catalogo .brand{color:var(--red)}
+/* Hamburguesa: la caja en rojo y las rayas en blanco. Con las dos en
+   rojo se perdian sobre el propio boton. */
+.pagina-catalogo .burger{background:var(--red);color:#fff}
+.pagina-catalogo .burger:hover{background:var(--red-700)}
+/* El icono hereda currentColor; pintarle el fondo lo tapaba con un
+   cuadro blanco. */
+.pagina-catalogo .burger{color:#fff}
+/* El icono animado de Empleabilidad hereda currentColor: sobre el boton
+   rojo va en blanco. */
+.pagina-catalogo .btn-empleo .lottie{color:#fff}
+
+
+.pagina-catalogo .btn-empleo{background:var(--red);color:#fff;border-color:var(--red)}
+.pagina-catalogo .btn-empleo [data-ico]{color:#fff}
+/* La cabecera es clara y fija: el contenido que pasa por debajo tiene
+   que empezar mas abajo o se lee a traves del vidrio. */
+.pagina-catalogo .tienda{padding-top:clamp(40px,5vw,72px)}
+.pagina-catalogo .btn-empleo:hover{background:var(--red-700);border-color:var(--red-700)}
+
+
+
+
+/* ---- Menu de categorias del catalogo ----
+   Las pastillas del resto del sitio son de filtro rapido; aqui la
+   categoria manda, asi que llevan icono y cuantos cursos tienen. */
+.tienda .chips{
+  display:flex;gap:8px;justify-content:flex-start;flex-wrap:nowrap;
+  overflow-x:auto;scrollbar-width:none;
+  margin:0 0 18px;padding-bottom:4px;
+}
+.tienda .chips::-webkit-scrollbar{display:none}
+.tienda .chip{
+  display:inline-flex;align-items:center;gap:8px;flex:none;
+  padding:9px 16px 9px 12px;border-radius:14px;
+  border:1.5px solid var(--gris-100);background:#fff;color:var(--body);
+  font-size:14px;font-weight:600;
+}
+.tienda .chip .chip-ico{display:block;width:20px;height:20px;flex:none;color:var(--red)}
+.tienda .chip .chip-ico svg{width:100%;height:100%;display:block}
+.tienda .chip .chip-n{
+  font-size:12px;font-weight:700;color:var(--muted);
+  background:var(--gris-100);border-radius:999px;padding:1px 7px;
+}
+.tienda .chip:hover{border-color:var(--red);color:var(--red)}
+.tienda .chip.is-active{
+  background:var(--red);border-color:var(--red);color:#fff;
+  box-shadow:0 8px 20px rgba(255,14,73,.24);
+}
+.tienda .chip.is-active .chip-ico{color:#fff}
+.tienda .chip.is-active .chip-n{background:rgba(255,255,255,.22);color:#fff}
+
+/* ---- Barra de buscador y orden ----
+   Los dos campos comparten alto, radio y borde con las pastillas de
+   categoria: se leen como una sola barra de herramientas. */
+.tienda-barra{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 22px}
+.tienda-buscar{
+  flex:1;min-width:240px;display:flex;align-items:center;gap:10px;
+  height:52px;padding:0 18px;border-radius:14px;
+  background:#fff;border:1.5px solid var(--gris-100);
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.tienda-buscar:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,14,73,.13)}
+.tienda-lupa{display:block;width:19px;height:19px;flex:none;color:var(--red)}
+.tienda-lupa svg{width:100%;height:100%;display:block}
+.tienda-buscar input{
+  flex:1;min-width:0;border:0;background:none;outline:0;
+  font-family:inherit;font-size:15px;color:var(--ink);
+}
+.tienda-buscar input::placeholder{color:var(--muted)}
+/* El desplegable nativo pinta su propia flecha y cada navegador la suya:
+   se apaga y se dibuja la del sitio. */
+.tienda-orden{
+  display:flex;align-items:center;gap:10px;flex:none;
+  height:52px;padding:0 16px 0 18px;border-radius:14px;
+  background:#fff;border:1.5px solid var(--gris-100);
+}
+.tienda-orden:focus-within{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,14,73,.13)}
+.tienda-orden-t{font-size:13px;color:var(--muted);white-space:nowrap}
+.tienda-orden select{
+  appearance:none;-webkit-appearance:none;
+  border:0;background:none;outline:0;cursor:pointer;
+  padding-right:22px;font-family:inherit;font-size:15px;font-weight:600;color:var(--ink);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FF0E49' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right center;background-size:16px;
+}
+
+@media (max-width:640px){
+  .tienda-barra{gap:8px}
+  .tienda-buscar,.tienda-orden{height:48px}
+  .tienda-orden{flex:1;justify-content:space-between}
+}
+
+/* ---- Aviso del carrito ---- */
+.aviso{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);
+  z-index:95;padding:12px 22px;border-radius:999px;
+  background:var(--negro);color:#fff;font-size:14px;font-weight:600;
+  box-shadow:0 14px 30px rgba(7,8,12,.32);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .22s var(--ease),transform .22s var(--ease),visibility .22s;
+}
+.aviso.is-on{opacity:1;visibility:visible;transform:translate(-50%,0)}
+
+/* ---- Carrito ---- */
+/* Encima de los dos flotantes: ocupan 52px cada uno con 12 de hueco y
+   24 del borde, asi que la pila llega a 140px. */
+.carrito-abre{
+  position:fixed;right:20px;bottom:156px;z-index:90;
+  width:52px;height:52px;border-radius:50%;display:grid;place-content:center;
+  background:#fff;color:var(--ink);border:1.5px solid var(--line);
+  box-shadow:0 14px 30px rgba(18,19,26,.16);cursor:pointer;
+  transition:transform .2s var(--ease),background .2s var(--ease);
+}
+.carrito-abre:hover{transform:translateY(-2px)}
+.carrito-abre.tiene{background:var(--red);border-color:var(--red);color:#fff}
+.carrito-ico svg{width:24px;height:24px;display:block}
+.carrito-n{
+  position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;padding:0 6px;
+  border-radius:999px;background:var(--red);color:#fff;
+  font-size:12px;font-weight:700;display:grid;place-content:center;
+  box-shadow:0 0 0 2px #fff;
+}
+.carrito{
+  position:fixed;inset:0;z-index:70;background:rgba(10,11,16,.5);
+  opacity:0;visibility:hidden;transition:opacity .25s var(--ease),visibility .25s;
+}
+.carrito.is-open{opacity:1;visibility:visible}
+.carrito-caja{
+  position:absolute;top:0;right:0;height:100%;width:min(380px,92vw);
+  background:#fff;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .3s var(--ease);
+  box-shadow:-18px 0 44px rgba(10,11,16,.18);
+}
+.carrito.is-open .carrito-caja{transform:none}
+.carrito-top{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:20px 22px;border-bottom:1px solid var(--gris-100);
+}
+.carrito-t{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;text-transform:uppercase;color:var(--ink)}
+.carrito-x{width:38px;height:38px;border-radius:10px;display:grid;place-content:center;color:var(--ink);cursor:pointer}
+.carrito-x svg{width:20px;height:20px}
+.carrito-x:hover{background:var(--gris-100)}
+.carrito-lista{flex:1;overflow-y:auto;padding:14px 22px;display:grid;gap:8px;align-content:start}
+.carrito-it{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 14px;border-radius:12px;background:var(--bg);font-size:15px;color:var(--ink);
+}
+.carrito-quita{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-content:center;color:var(--muted);cursor:pointer}
+.carrito-quita svg{width:16px;height:16px}
+.carrito-quita:hover{background:#fff;color:var(--red-700)}
+.carrito-vacio{font-size:14px;color:var(--muted);padding:8px 2px}
+.carrito-pie{padding:16px 22px 22px;border-top:1px solid var(--gris-100)}
+.carrito-pie:empty{display:none}
+.carrito-cta{width:100%;justify-content:center}
+
+@media (min-width:1500px){ .tienda-grid{grid-template-columns:repeat(5,1fr)} }
+@media (max-width:1180px){ .tienda-grid{grid-template-columns:repeat(3,1fr)} }
+@media (max-width:900px){
+  /* En vertical el velo sube desde abajo, que es donde va el texto */
+  .tienda-hero{min-height:0;aspect-ratio:3/2.9;padding:22px 18px 26px}
+  .tienda-hero::before{
+    background:linear-gradient(0deg,rgba(7,8,12,.9),rgba(7,8,12,.42) 54%,rgba(7,8,12,.18));
+  }
+  .tienda-txt{max-width:none}
+  .tienda-grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  .carrito-abre{right:14px;bottom:136px;width:48px;height:48px}
+}
+@media (max-width:560px){
+  .curso-card{padding:10px 10px 14px}
+  .curso-body{padding:12px 4px 0}
+  .curso-nombre{font-size:16px}
+  .curso-datos{margin-top:12px}
+  .curso-precio b{font-size:20px}
+  .curso-acciones{gap:8px;margin-top:12px}
+  .curso-ver{padding:10px 12px;font-size:14px}
+  .curso-add{width:42px;height:42px}
+  .curso-nuevo{width:50px;height:50px;font-size:10px;top:-8px;right:-8px}
+}
+
+/* ============================================================
    FOOTER
    ============================================================ */
 .site-footer{
@@ -2311,6 +2670,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .hero-grid{grid-template-columns:1fr;gap:40px}
   .hero-copy{max-width:none}
   .lead-card{max-width:560px;width:100%;margin-inline:auto}
+}
+/* Tableta: el titulo va arriba a lo ancho y el formulario se arrima a
+   la derecha, como en escritorio. Centrado caia justo encima de la
+   persona de la foto. */
+@media (min-width:821px) and (max-width:1024px){
+  .hero-grid{gap:26px}
+  .hero-copy{max-width:72%}
+  .lead-card{max-width:430px;margin-inline:auto 0}
   .sedes-head{text-align:center}
   .sedes-title{align-items:center}
   .footer-grid{grid-template-columns:1fr 1fr;gap:38px}
@@ -3392,8 +3759,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
    ocupaban media pantalla para decir dos cosas. */
 .cert-tabs{justify-content:flex-start;margin-bottom:26px}
 .cert-grid[hidden]{display:none}
-.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;max-width:1100px;margin-inline:auto}
-.cert-grid--3{max-width:760px}
+/* Tres por fila y casi cuadradas, tanto los modulos como los ciclos de
+   empleabilidad. Con el minimo de 300px de antes solo entraban dos por
+   fila dentro de la columna de la ficha. */
+.cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:none;margin-inline:0}
+.cert-card{aspect-ratio:1/.92}
+.cert-card{min-height:0;padding:20px 16px}
+.cert-n{font-size:13px}
+.cert-card p{line-height:1.35}
 /* La cifra manda, como en el panel de "por que estudiarla": son una
    secuencia -modulo 1, 2, 3- y el numero es lo que lo cuenta. Centradas
    y con el rotulo pequeño arriba, las nueve tarjetas se leian iguales.
@@ -3466,6 +3839,29 @@ body:not(.form-abierto) .form-velo{opacity:0}
   box-shadow:var(--shadow-md);
 }
 .egr-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* El de la ficha va bajo el titulo, antes del texto. La portada se
+   acerca despacio al pasar el raton y un velo de abajo sostiene el
+   rotulo. */
+.car-video{
+  margin:0 0 30px;isolation:isolate;
+  box-shadow:0 18px 44px rgba(18,19,26,.16);
+  transition:box-shadow .3s var(--ease),background-size .6s var(--ease);
+  background-size:104%;
+}
+.car-video:hover{background-size:110%;box-shadow:0 24px 56px rgba(18,19,26,.22)}
+.car-video::after{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(0deg,rgba(7,8,12,.72),rgba(7,8,12,.18) 42%,rgba(7,8,12,0) 66%);
+}
+.car-video-pie{
+  position:absolute;left:clamp(16px,2vw,24px);bottom:clamp(14px,1.8vw,20px);z-index:3;
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:14px;font-weight:600;color:#fff;
+}
+.car-video-pie::before{
+  content:'';width:9px;height:9px;border-radius:50%;flex:none;
+  background:var(--red);box-shadow:0 0 0 4px rgba(255,14,73,.28);
+}
 
 /* En el marcado la cita va antes que el video, que es donde tiene
    sentido leerla; en pantalla va despues. */
@@ -3509,7 +3905,11 @@ body:not(.form-abierto) .form-velo{opacity:0}
   transition:transform .25s var(--ease);
 }
 .egr-play:hover{transform:translate(-50%,-50%) scale(1.09)}
-.egr-play svg{width:100%;height:100%;display:block}
+.egr-play svg{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 22px rgba(7,8,12,.4))}
+/* En rojo de marca, no en gris translucido: es la accion principal de
+   la pieza. */
+.egr-play svg circle{fill:var(--red)}
+.egr-play:hover svg circle{fill:var(--red-700)}
 
 @media (max-width:820px){
   .egr-label{padding:26px 22px 28px;gap:12px}
@@ -3555,7 +3955,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .fact{padding:26px 12px;min-height:205px;border-radius:22px 22px 74px 22px}
   /* Una sola columna: a dos, las tarjetas se quedaban en 166px y el
      nombre de la certificacion salia en cuatro renglones. */
-  .cert-grid{grid-template-columns:1fr}
+  /* En una sola columna, cuadradas quedarian larguisimas: dos por fila
+     y con alto normal. */
+  .cert-grid{grid-template-columns:1fr 1fr}
+  .cert-card{aspect-ratio:auto;min-height:126px}
   /* .lab-slide ya no se estrecha en movil: una foto por vista */
 }
 

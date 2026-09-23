@@ -104,10 +104,15 @@
      Si existe, se usa en pantallas estrechas: así no hay que recortar
      una foto apaisada a cuadrada y perder los laterales. */
   const MQ_MOVIL = window.matchMedia('(max-width: 820px)');
-  const imgDe = (d, campo) => {
+  /* El banner tiene su propio corte porque se apila antes que el resto:
+     a 1024px el formulario baja debajo de la foto. De momento coincide
+     con el general -la foto vertical solo encaja en un telefono-, pero
+     queda separado para poder moverlo sin tocar lo demas. */
+  const MQ_BANNER = MQ_MOVIL;
+  const imgDe = (d, campo, mq) => {
     const base = campo || 'img';
     const movil = d[base + 'Movil'] || d[base + 'movil'];
-    return (MQ_MOVIL.matches && movil) ? movil : d[base];
+    return ((mq || MQ_MOVIL).matches && movil) ? movil : d[base];
   };
 
   // Elementos que hay que repintar si se cruza el punto de corte
@@ -120,21 +125,23 @@
     barrerFondos();
   }
 
-  function fondoDato(el, d, campo, yaMismo) {
-    conFondoDinamico.push({ el, d, campo });
-    fondo(el, imgDe(d, campo), yaMismo);
+  function fondoDato(el, d, campo, yaMismo, mq) {
+    conFondoDinamico.push({ el, d, campo, mq });
+    fondo(el, imgDe(d, campo, mq), yaMismo);
   }
 
   /* Al cruzar el punto de corte se cambian las imágenes ya pintadas.
      Se comprueba tanto con el evento de matchMedia como en cada resize:
      algunos navegadores y vistas embebidas no emiten el primero. */
   let eraMovil = MQ_MOVIL.matches;
+  let eraBanner = MQ_BANNER.matches;
 
   function revisaCorte() {
-    if (MQ_MOVIL.matches === eraMovil) return;
+    if (MQ_MOVIL.matches === eraMovil && MQ_BANNER.matches === eraBanner) return;
     eraMovil = MQ_MOVIL.matches;
-    conFondoDinamico.forEach(({ el, d, campo }) => {
-      const url = imgDe(d, campo);
+    eraBanner = MQ_BANNER.matches;
+    conFondoDinamico.forEach(({ el, d, campo, mq }) => {
+      const url = imgDe(d, campo, mq);
       if (el.dataset.bg) el.dataset.bg = url;
       else el.style.backgroundImage = `url('${url}')`;
     });
@@ -142,6 +149,7 @@
   }
 
   MQ_MOVIL.addEventListener('change', revisaCorte);
+  MQ_BANNER.addEventListener('change', revisaCorte);
   window.addEventListener('resize', revisaCorte, { passive: true });
   window.addEventListener('orientationchange', revisaCorte);
   // Para el HTML generado con plantillas
@@ -219,7 +227,10 @@
     if (Math.abs(salto) < GESTO_MINIMO) return;
     ultimoY = y;
 
-    if (y < CABECERA_SEGURA || hayAlgoAbierto() || Date.now() < treguaHasta) {
+    /* En el catalogo la cabecera no se aparta al bajar: ahi se usa a
+       cada rato para cambiar de categoria. */
+    if (document.body.classList.contains('pagina-catalogo') ||
+        y < CABECERA_SEGURA || hayAlgoAbierto() || Date.now() < treguaHasta) {
       mostrarMenu();
       return;
     }
@@ -264,8 +275,8 @@
     const capas = hs.map((d, i) => {
       const c = document.createElement('div');
       c.className = 'hero-slide' + (i === 0 ? ' is-on' : '');
-      if (i === 0) fondoDato(c, d, 'img', true);
-      else pendientes.push(() => fondoDato(c, d, 'img', false));
+      if (i === 0) fondoDato(c, d, 'img', true, MQ_BANNER);
+      else pendientes.push(() => fondoDato(c, d, 'img', false, MQ_BANNER));
       /* Encuadre propio de la diapositiva. La misma foto apaisada tiene
          que aguantar el banner ancho del escritorio y la caja casi
          cuadrada del movil, y el sujeto no siempre esta al centro: en
@@ -274,10 +285,10 @@
       if (d.pos || d.posMovil) {
         const encuadra = () => {
           c.style.backgroundPosition =
-            (MQ_MOVIL.matches && d.posMovil) ? d.posMovil : (d.pos || '');
+            (MQ_BANNER.matches && d.posMovil) ? d.posMovil : (d.pos || '');
         };
         encuadra();
-        MQ_MOVIL.addEventListener('change', encuadra);
+        MQ_BANNER.addEventListener('change', encuadra);
       }
       heroStage.appendChild(c);
       return c;
@@ -433,7 +444,7 @@
           <div class="nav-item${m.auto && !compacto ? ' has-mega' : ''}">
             <button class="nav-link nav-toggle" type="button"
                     aria-expanded="false" aria-controls="drop-${i}">
-              ${esc(m.label)}${m.auto && grupos(m.auto).some((a) => a.items.some((c) => c.nuevo)) ? '<span class="nav-punto" aria-label="Hay novedades"></span>' : ''}<span class="caret" aria-hidden="true">${ico('caret')}</span>
+              ${esc(m.label)}<span class="caret" aria-hidden="true">${ico('caret')}</span>
             </button>
             <div class="drop${m.auto ? ' drop-mega' : ''}${compacto ? ' is-compact' : ''}" id="drop-${i}" role="menu">
               ${cuerpo}
@@ -959,6 +970,72 @@
     return '';
   }
 
+  /* Nombre visible del area de un curso */
+  function nombreArea(slug) {
+    const l = (typeof AREAS_CURSOS !== 'undefined') ? AREAS_CURSOS : [];
+    const a = l.find((x) => x.slug === slug);
+    return a ? a.label : '';
+  }
+
+  /* Resumen de la tarjeta: el propio del curso o, si no lo trae, el de
+     su area. */
+  function resumenDe(c) {
+    if (c.resumen) return c.resumen;
+    const porArea = (typeof RESUMEN_AREA_CURSOS !== 'undefined') ? RESUMEN_AREA_CURSOS : {};
+    return porArea[c.cat] || '';
+  }
+
+  /* Tarjeta de catalogo: foto, nombre, resumen y dos acciones, ver el
+     curso o apartarlo. Es un article y no un enlace entero porque
+     dentro hay dos botones. */
+  const ICO_CARRO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 2-1.6L20 7H6"/>
+        <circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>
+      </svg>`;
+  const soles = (n) => 'S/ ' + Number(n).toLocaleString('es-PE');
+
+  function cursoHTML(c, i) {
+    const resumen = resumenDe(c);
+    return `
+      <article class="curso-card" data-cat="${esc(c.cat)}" style="animation-delay:${i * 50}ms">
+        <div class="curso-media">
+          ${c.nuevo ? '<span class="curso-nuevo">Nuevo</span>' : ''}
+          <!-- Debajo de la foto: si el archivo no existe, el navegador
+               deja el fondo transparente y asoma el icono del area. -->
+          <div class="curso-vacia" aria-hidden="true">${iconoArea(c) || ico('carrera')}</div>
+          ${imgDe(c) ? `<div class="curso-img" ${attrFondo(imgDe(c), i < 3)}></div>` : ''}
+        </div>
+        <div class="curso-body">
+          <h3 class="curso-nombre">${esc(c.nombre)}</h3>
+          <!-- Solo se pinta el texto propio del curso. El generico por
+               area se repetia igual en todas las tarjetas de un area y
+               se leia como relleno; en su lugar van dos etiquetas, que
+               dicen algo distinto en cada una. -->
+          ${c.resumen ? `<p class="curso-desc">${esc(c.resumen)}</p>` : ''}
+          <div class="curso-tags">
+            <span class="curso-tag">${esc(nombreArea(c.cat))}</span>
+            ${c.horas ? `<span class="curso-tag">${esc(c.horas)} horas</span>` : ''}
+          </div>
+
+          <!-- Duracion. Si el curso aun no la trae, la fila no se pinta
+               y la tarjeta no queda con un hueco. El precio se vera
+               dentro de la ficha del curso. -->
+          ${c.horas ? `<div class="curso-datos">
+            <span class="curso-horas">${ico('duracion')}${esc(c.horas)} horas</span>
+            ${c.precio ? `<span class="curso-precio">
+              ${c.antes ? `<s>${esc(soles(c.antes))}</s>` : ''}<b>${esc(soles(c.precio))}</b>
+            </span>` : ''}
+          </div>` : ''}
+
+          <div class="curso-acciones">
+            <a class="btn btn-pill curso-ver" href="${esc(c.url || '#')}">Ver curso</a>
+            <button class="curso-add" type="button" data-curso="${esc(c.nombre)}"
+                    aria-label="A&ntilde;adir ${esc(c.nombre)} a mi selecci&oacute;n">${ICO_CARRO}</button>
+          </div>
+        </div>
+      </article>`;
+  }
+
   function cardHTML(c, i) {
     const icon = ico(c.icon) || ico('carrera');
     return `
@@ -999,15 +1076,25 @@
     const cajaChips = $('#areaChips');
 
     function render(filter) {
-      const list = (!filter || filter === 'todas')
+      let list = (!filter || filter === 'todas')
         ? D.items
         : D.items.filter((c) => c.cat === filter);
+      if (typeof window.__filtraCatalogo === 'function') list = window.__filtraCatalogo(list);
+      const plantilla = TIPO === 'cursos' ? cursoHTML : cardHTML;
       grid.innerHTML = list.length
-        ? list.map(cardHTML).join('')
+        ? list.map(plantilla).join('')
         : '<p class="grid-empty">Pronto publicaremos esta area.</p>';
       // Con una o dos tarjetas la fila se centra en vez de dejar un hueco
       grid.classList.toggle('is-corta', list.length > 0 && list.length < 3);
+      const cuenta = $('#tiendaCuenta');
+      if (cuenta) {
+        const area = D.areas.find((a) => a.slug === filter);
+        cuenta.textContent = list.length
+          ? `${list.length} ${list.length === 1 ? 'curso' : 'cursos'}` + (area ? ` en ${area.label}` : '')
+          : 'Ning\u00fan curso con ese nombre';
+      }
       observarNuevos(grid);
+      if (typeof window.__pintaCarrito === 'function') window.__pintaCarrito();
     }
     // Se expone para el repintado al cruzar el punto de corte movil
     window.__render = render;
@@ -1015,9 +1102,24 @@
     // Chips: un area por cada categoria con contenido
     if (cajaChips) {
       const conItems = D.areas.filter((a) => D.items.some((c) => c.cat === a.slug));
-      cajaChips.innerHTML = conItems.map((a, n) => `
-        <button class="chip${n === 0 ? ' is-active' : ''}" data-filter="${esc(a.slug)}"
-                role="tab" aria-selected="${n === 0}">${esc(a.label)}</button>`).join('');
+      /* data-todas en el contenedor anade la opcion de verlo todo, y
+         entonces es la que abre: en cursos, empezar por la primera area
+         mostraba 2 de 33. */
+      const todas = cajaChips.dataset.todas;
+      /* data-rico: la pastilla lleva ademas el icono del area y cuantos
+         cursos tiene. Es el menu del catalogo. */
+      const rico = cajaChips.dataset.rico !== undefined;
+      const cuantos = (slug) => D.items.filter((c) => c.cat === slug).length;
+      const pastilla = (slug, label, activa, icon, n) => `
+        <button class="chip${activa ? ' is-active' : ''}" data-filter="${esc(slug)}"
+                role="tab" aria-selected="${activa}">
+          ${rico && icon ? `<span class="chip-ico" aria-hidden="true">${ico(icon)}</span>` : ''}
+          ${esc(label)}
+          ${rico ? `<span class="chip-n">${n}</span>` : ''}
+        </button>`;
+      cajaChips.innerHTML =
+        (todas ? pastilla('todas', todas, true, 'menu', D.items.length) : '') +
+        conItems.map((a, n) => pastilla(a.slug, a.label, !todas && n === 0, a.icon, cuantos(a.slug))).join('');
       cajaChips.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-filter]');
         if (!btn) return;
@@ -1027,6 +1129,30 @@
         btn.classList.add('is-active'); btn.setAttribute('aria-selected', 'true');
         render(btn.dataset.filter);
       });
+    }
+
+    /* ---- Buscador y orden del catalogo ----
+       Filtran sobre lo que ya dejo el area elegida. */
+    const campoBusca = $('#cursoBuscar');
+    const campoOrden = $('#cursoOrden');
+    if (campoBusca || campoOrden) {
+      const sinTildes = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      window.__filtraCatalogo = (lista) => {
+        let out = lista.slice();
+        const q = campoBusca ? sinTildes(campoBusca.value.trim()) : '';
+        if (q.length > 1) out = out.filter((c) => sinTildes(c.nombre).includes(q));
+        const orden = campoOrden ? campoOrden.value : 'destacados';
+        if (orden === 'az') out.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+        if (orden === 'za') out.sort((a, b) => b.nombre.localeCompare(a.nombre, 'es'));
+        if (orden === 'corto') out.sort((a, b) => (a.horas || 1e9) - (b.horas || 1e9));
+        return out;
+      };
+      const repinta = () => {
+        const activo = cajaChips ? $('.chip.is-active', cajaChips) : null;
+        render(activo ? activo.dataset.filter : 'todas');
+      };
+      if (campoBusca) campoBusca.addEventListener('input', repinta);
+      if (campoOrden) campoOrden.addEventListener('change', repinta);
     }
 
     /* ?area=gestion en la direccion abre esa area marcada: es lo que
@@ -1117,6 +1243,128 @@
 
     pilEscena.classList.add('is-pausada');
     muestraPilar(0);
+  }
+
+  /* ============================================================
+     4c. CATALOGO DE CURSOS — portada y carrito
+     ============================================================
+     El carrito no cobra: guarda lo que le interesa al visitante en su
+     propio navegador y al final arma un mensaje de WhatsApp con la
+     lista. Asi el catalogo se comporta como una tienda sin necesitar
+     pasarela de pago ni cuentas de usuario. */
+  const tiendaHero = $('#tiendaHero');
+  if (tiendaHero && typeof TIENDA_CURSOS !== 'undefined') {
+    const t = TIENDA_CURSOS;
+    fondoDato(tiendaHero, t, 'img', true);
+    tiendaHero.innerHTML = `
+      <div class="tienda-txt">
+        <h1 class="tienda-titulo">${esc(t.titulo)} <em>${esc(t.destacado)}</em></h1>
+        <p class="tienda-sub">${esc(t.texto)}</p>
+        <div class="tienda-btns">
+          <a class="btn btn-pill btn-primary" href="#oferta">${esc(t.cta)}</a>
+          <a class="btn btn-pill btn-ghost" href="${esc(t.urlCta2)}" target="_blank" rel="noopener">${esc(t.cta2)}</a>
+        </div>
+      </div>`;
+  }
+
+  const carrito = $('#carrito');
+  if (carrito && typeof TIENDA_CURSOS !== 'undefined') {
+    const cfg = TIENDA_CURSOS.carrito || {};
+    const LLAVE = 'sise-cursos';
+    const abre = $('#carritoAbre');
+    const cierra = $('#carritoCerrar');
+    const lista = $('#carritoLista');
+    const pie = $('#carritoPie');
+    const marca = $('#carritoN');
+
+    /* El navegador puede tener el almacenamiento bloqueado (modo
+       privado, ajustes): si falla, el carrito sigue funcionando en
+       memoria durante la visita. */
+    let sel = [];
+    try { sel = JSON.parse(localStorage.getItem(LLAVE) || '[]'); } catch (e) { sel = []; }
+    if (!Array.isArray(sel)) sel = [];
+
+    function guarda() {
+      try { localStorage.setItem(LLAVE, JSON.stringify(sel)); } catch (e) { /* sin guardar */ }
+    }
+
+    function pinta() {
+      marca.textContent = sel.length;
+      marca.hidden = sel.length === 0;
+      abre.classList.toggle('tiene', sel.length > 0);
+      $$('.curso-add').forEach((b) => {
+        const dentro = sel.indexOf(b.dataset.curso) !== -1;
+        b.classList.toggle('is-puesto', dentro);
+        b.setAttribute('aria-pressed', String(dentro));
+      });
+      lista.innerHTML = sel.length
+        ? sel.map((n) => `
+            <div class="carrito-it">
+              <span>${esc(n)}</span>
+              <button class="carrito-quita" type="button" data-quita="${esc(n)}" aria-label="Quitar ${esc(n)}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+              </button>
+            </div>`).join('')
+        : `<p class="carrito-vacio">${esc(cfg.vacio || '')}</p>`;
+      pie.innerHTML = sel.length
+        ? `<a class="btn btn-pill btn-primary carrito-cta" href="${esc(cfg.url || '#')}" target="_blank" rel="noopener">${esc(cfg.cta || 'Enviar')}</a>`
+        : '';
+    }
+
+    /* Aviso breve: confirma la accion sin robar el foco */
+    const cajaAviso = $('#aviso');
+    let relojAviso = null;
+    function avisa(txt) {
+      if (!cajaAviso) return;
+      cajaAviso.textContent = txt;
+      cajaAviso.classList.add('is-on');
+      clearTimeout(relojAviso);
+      relojAviso = setTimeout(() => cajaAviso.classList.remove('is-on'), 2200);
+    }
+
+    function setCarrito(open) {
+      carrito.classList.toggle('is-open', open);
+      carrito.setAttribute('aria-hidden', String(!open));
+      abre.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) cierra.focus();
+    }
+
+    document.addEventListener('click', (e) => {
+      const add = e.target.closest('.curso-add');
+      if (add) {
+        const n = add.dataset.curso;
+        const i = sel.indexOf(n);
+        if (i === -1) sel.push(n); else sel.splice(i, 1);
+        guarda(); pinta();
+        avisa(i === -1 ? 'A\u00f1adido a tu selecci\u00f3n' : 'Quitado de tu selecci\u00f3n');
+        return;
+      }
+      const compra = e.target.closest('[data-comprar]');
+      if (compra) {
+        const n = compra.dataset.comprar;
+        if (sel.indexOf(n) === -1) { sel.push(n); guarda(); pinta(); }
+        setCarrito(true);
+        return;
+      }
+      const quita = e.target.closest('[data-quita]');
+      if (quita) {
+        sel = sel.filter((n) => n !== quita.dataset.quita);
+        guarda(); pinta();
+      }
+    });
+
+    abre.addEventListener('click', () => setCarrito(true));
+    cierra.addEventListener('click', () => setCarrito(false));
+    carrito.addEventListener('click', (e) => { if (e.target === carrito) setCarrito(false); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && carrito.classList.contains('is-open')) setCarrito(false);
+    });
+
+    /* La grilla se repinta al cambiar de area: hay que volver a marcar
+       los botones de lo ya apartado. */
+    window.__pintaCarrito = pinta;
+    pinta();
   }
 
   /* ============================================================
@@ -1762,11 +2010,12 @@
     });
   }
 
-  const egr = $('#egrVideo');
-  if (egr) {
-    const play = $('.egr-play', egr);
-    if (play) play.addEventListener('click', () => abreVideo(egr));
-  }
+  /* Todos los videos con portada de la ficha: el de la carrera y el del
+     testimonio comparten marcado y reproductor. */
+  $$('.egr-video').forEach((caja) => {
+    const play = $('.egr-play', caja);
+    if (play) play.addEventListener('click', () => abreVideo(caja));
+  });
 
   /* ============================================================
      7c. CONVENIOS - dos columnas verticales
