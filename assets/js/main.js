@@ -1428,9 +1428,11 @@
                 stroke-linejoin="round"/></svg>
          </button>`;
       whyNav.innerHTML =
+        '<span class="why-cuenta" aria-hidden="true"></span>' +
         flecha(-1, 'Motivo anterior', 'M15 5l-7 7 7 7') +
         flecha(1,  'Motivo siguiente', 'M9 5l7 7-7 7');
       const botones = $$('.labs-flecha', whyNav);
+      const marcador = $('.why-cuenta', whyNav);
 
       let actual = 0, aLaVista = false;
 
@@ -1446,15 +1448,28 @@
         });
       }
 
+      /* El mazo da la vuelta: llegar a la ultima y seguir devuelve a la
+         primera. Con las fichas apiladas, apagar la flecha en el extremo
+         daria a entender que el mazo se acaba, cuando lo que se ve es
+         justo lo contrario. */
       function muestra(i) {
-        actual = Math.max(0, Math.min(i, motivos.length - 1));
-        motivos.forEach((m, k) => m.classList.toggle('is-activa', k === actual));
-        // Como en laboratorios: en los extremos la flecha se apaga pero
-        // se queda en su sitio, para que la pareja no baile.
-        botones[0].disabled = actual <= 0;
-        botones[1].disabled = actual >= motivos.length - 1;
+        actual = (i + motivos.length) % motivos.length;
+        motivos.forEach((m, k) => {
+          const d = (k - actual + motivos.length) % motivos.length;
+          m.style.setProperty('--d', d);
+          m.classList.toggle('is-activa', d === 0);
+          if (d > 2) m.setAttribute('data-fuera', '');
+          else m.removeAttribute('data-fuera');
+          m.setAttribute('aria-hidden', d === 0 ? 'false' : 'true');
+        });
+        if (marcador) marcador.textContent = (actual + 1) + ' / ' + motivos.length;
         cuenta(actual);
       }
+
+      // Tocar una ficha de atras la trae al frente
+      motivos.forEach((m, k) => {
+        m.addEventListener('click', () => { if (k !== actual) muestra(k); });
+      });
 
       botones.forEach((b) => b.addEventListener('click', () => {
         muestra(actual + Number(b.dataset.dir));
@@ -2015,6 +2030,85 @@
   $$('.egr-video').forEach((caja) => {
     const play = $('.egr-play', caja);
     if (play) play.addEventListener('click', () => abreVideo(caja));
+  });
+
+  /* Adelanto en la portada (data-previo): al pasar el raton, el video
+     corre sin sonido dentro de la tarjeta.
+
+     El iframe no se pide hasta que el raton lleva medio segundo encima,
+     para no cargar YouTube -que son varios cientos de kilobytes- cada
+     vez que alguien pasa de largo, y se quita al salir, para no dejar
+     un reproductor corriendo de fondo. Va sin sucesos de raton, asi que
+     el clic sigue siendo de la tarjeta y abre el video grande con
+     sonido; y solo entra donde hay raton de verdad, que en un movil no
+     hay forma de pasar por encima y no se le va a gastar el dato. */
+  const RATON = window.matchMedia('(hover:hover) and (pointer:fine)');
+  const QUIETO = window.matchMedia('(prefers-reduced-motion:reduce)');
+
+  $$('.egr-video[data-previo]').forEach((caja) => {
+    const id = caja.dataset.yt;
+    if (!id) return;
+    let reloj = null;
+    let espera = null;
+    let marco = null;
+
+    /* El reproductor avisa de su estado por postMessage, pero solo
+       despues de que le pidamos escucha. Se descubre asi porque el
+       adelanto no debe verse hasta que el video corre: si el navegador
+       no deja arrancar sin permiso, lo que asomaria es el armazon de
+       YouTube -titulo, boton y "Mas videos"- encima de la portada. */
+    function oye(e) {
+      if (!marco || !e.data || e.source !== marco.contentWindow) return;
+      let d = e.data;
+      if (typeof d === 'string') { try { d = JSON.parse(d); } catch (_) { return; } }
+      if (d.event === 'onReady') return;
+      const estado = d.info && typeof d.info === 'object' ? d.info.playerState : null;
+      if (estado === 1) {            // 1 = reproduciendo
+        clearTimeout(espera);
+        caja.classList.add('is-previo');
+      }
+    }
+
+    function pon() {
+      if (marco) return;
+      marco = document.createElement('iframe');
+      marco.className = 'egr-previo';
+      marco.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) +
+                  '?autoplay=1&mute=1&controls=0&rel=0&playsinline=1' +
+                  '&modestbranding=1&disablekb=1&loop=1&playlist=' + encodeURIComponent(id) +
+                  '&enablejsapi=1&origin=' + encodeURIComponent(location.origin);
+      marco.title = '';
+      marco.tabIndex = -1;
+      marco.setAttribute('aria-hidden', 'true');
+      marco.allow = 'autoplay; encrypted-media';
+      marco.addEventListener('load', () => {
+        if (!marco || !marco.contentWindow) return;
+        marco.contentWindow.postMessage(
+          '{"event":"listening","id":1,"channel":"widget"}', '*');
+      });
+      window.addEventListener('message', oye);
+      caja.appendChild(marco);
+      // Si en tres segundos no ha arrancado, no va a arrancar: fuera
+      espera = setTimeout(() => { if (!caja.classList.contains('is-previo')) quita(); }, 3000);
+    }
+
+    function quita() {
+      clearTimeout(reloj);
+      clearTimeout(espera);
+      reloj = null;
+      espera = null;
+      caja.classList.remove('is-previo');
+      window.removeEventListener('message', oye);
+      if (marco) { marco.remove(); marco = null; }
+    }
+
+    caja.addEventListener('mouseenter', () => {
+      if (!RATON.matches || QUIETO.matches) return;
+      reloj = setTimeout(pon, 500);
+    });
+    caja.addEventListener('mouseleave', quita);
+    // al abrir el video grande, el adelanto sobra
+    caja.addEventListener('click', quita);
   });
 
   /* ============================================================
