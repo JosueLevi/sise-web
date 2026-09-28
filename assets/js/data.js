@@ -797,3 +797,117 @@ const MENU = [
   },
   { label: '¿Por qué SISE?', url: '#porque' }
 ];
+/* ============================================================
+   10. CRM — envio del formulario de informes
+   ============================================================
+   El formulario manda a Smart Sales, que no entiende los nombres
+   que se ven en pantalla sino sus codigos. Aqui viven las
+   equivalencias y los datos fijos de la campaña; el guion
+   (crm.js) solo traduce y envia.
+   ------------------------------------------------------------ */
+const CRM = {
+  /* A donde va el lead */
+  url: 'https://smartsalessise.sise.edu.pe/rest_api/add_informe2',
+  origen: 'https://smartsalessise.sise.edu.pe/',
+  plantilla: 'sise_lead_bridge_from_origin',
+
+  /* Datos fijos de campaña. Los rellena marketing segun el
+     periodo; en blanco viajan vacios y el CRM los da por
+     ausentes, que es lo que hacia la plantilla anterior. */
+  evento: '',
+  fuente: '',
+  periodo: '',
+  detalleFuente: '',
+  motivo: '01',
+
+  /* Cuanto se espera al servidor antes de dar el envio por
+     fallido, en milisegundos. */
+  espera: 12000,
+
+  /* Lo que se ve en el panel de confirmacion */
+  cargando: 'Enviando tu solicitud...',
+  gracias: {
+    titulo: '¡Gracias por registrarte!',
+    texto: 'Un asistente se pondrá en contacto contigo.'
+  },
+  error: {
+    titulo: 'No pudimos enviar tu solicitud',
+    texto: 'Revisa tu conexión e inténtalo otra vez, o escríbenos por WhatsApp.',
+    boton: 'Intentar de nuevo'
+  }
+};
+
+/* Carrera de la web -> codigo de producto del CRM.
+   prgs = semipresencial, cpex = virtual. Vacio quiere decir que
+   esa carrera no se ofrece en esa modalidad.
+
+   PENDIENTE DE CONFIRMAR con Smart Sales: las tres que van con
+   codigo vacio en las dos columnas no aparecen en las tablas que
+   nos pasaron. Mientras no esten, el lead se envia igual pero sin
+   producto, para no perderlo. */
+const CRM_CARRERAS = {
+  'Administración de Empresas (Gestión Administrativa)': { prgs: 'ADMNE', cpex: 'CPEAD' },
+  'Gestión Logística':                                   { prgs: 'ADMLO', cpex: 'CPEAL' },
+  'Marketing':                                           { prgs: 'MARKT', cpex: 'CPEMK' },
+  'Administración de Negocios Internacionales':          { prgs: 'ADMNI', cpex: 'CPENI' },
+  'Asistencia Administrativa':                           { prgs: 'SECRE', cpex: 'CPAAD' },
+  'Administración y Dirección de Negocios':              { prgs: '',      cpex: '' },
+  'Recursos Humanos':                                    { prgs: '',      cpex: 'GEHUM' },
+  'Administración de Negocios Bancarios y Financieros':  { prgs: 'ADMBF', cpex: 'CPEAB' },
+  'Contabilidad':                                        { prgs: 'CONTA', cpex: 'CPECO' },
+  'Gestión y Dirección Financiera':                      { prgs: '',      cpex: '' },
+  'Enfermería Técnica':                                  { prgs: 'SALUD', cpex: '' },
+  'Fisioterapia y Rehabilitación':                       { prgs: 'FISIO', cpex: '' },
+  'Farmacia Técnica':                                    { prgs: 'TECFA', cpex: '' },
+  'Ciberseguridad':                                      { prgs: 'CIBER', cpex: 'CPCIB' },
+  'Desarrollo de Sistemas de Información':               { prgs: 'SWSIS', cpex: 'CPSYS' },
+  'Redes y Seguridad Informática':                       { prgs: 'REDES', cpex: 'CPRYS' },
+  'Comunicación Audiovisual':                            { prgs: 'COMAU', cpex: 'CPCOA' },
+  'Diseño Gráfico':                                      { prgs: 'DG',    cpex: 'CPDG'  },
+  'Publicidad y Medios Digitales':                       { prgs: 'PUMD',  cpex: 'CPPMD' },
+  'Dirección de Diseño Gráfico Publicitario':            { prgs: '',      cpex: '' },
+  'Diseño de Interiores':                                { prgs: 'DISIN', cpex: '' },
+  'Diseño de Modas':                                     { prgs: 'DYGMO', cpex: '' },
+  'Gastronomía':                                         { prgs: 'GASTR', cpex: '' },
+  'Administración de Hoteles y Restaurantes':            { prgs: 'ADHYR', cpex: '' },
+  'Administración Industrial':                           { prgs: 'PRIND', cpex: '' },
+  'Seguridad y Prevención de Riesgos':                   { prgs: 'SSTMA', cpex: '' }
+};
+
+/* Sede de la web -> codigo del CRM. Se busca sin tildes y en
+   mayusculas, asi que "Ate" encuentra "SEDE ATE". */
+const CRM_SEDES = {
+  'SEDE ATE': 'ATE',
+  'SEDE INDEPENDENCIA': 'INDEP',
+  'SEDE MIRAFLORES': 'CANTU',
+  'SEDE SAN JUAN DE LURIGANCHO': 'SJL',
+  'SEDE SAN JUAN DE MIRAFLORES': 'SJM',
+  'SEDE SANTA BEATRIZ': 'STABE',
+  'SEDE SURCO': 'SURCO',
+  'SEDE VENTANILLA': 'VENTN',
+  'SEDE VILLA EL SALVADOR': 'VILLA',
+  'SEDE COMAS': 'COM',
+  'SEDE PUENTE PIEDRA': 'PTP',
+  'SEDE SAN MIGUEL': 'SM',
+  'VIRTUAL': 'VIRTU'
+};
+
+/* Distrito -> codigo de ubicacion geografica. El formulario aun no
+   pregunta el distrito; la tabla queda lista para cuando lo haga. */
+const CRM_DISTRITOS = {
+  'ANCON': '1283', 'ATE VITARTE': '1284', 'BARRANCO': '1285', 'BRENA': '1286',
+  'CARABAYLLO': '1287', 'CERCADO DE LIMA': '1282', 'CHACLACAYO': '1288',
+  'CHORRILLOS': '1289', 'CIENEGUILLA': '1290', 'COMAS': '1291',
+  'EL AGUSTINO': '1292', 'INDEPENDENCIA': '1293', 'JESUS MARIA': '1294',
+  'LA MOLINA': '1295', 'LA VICTORIA': '1296', 'LINCE': '1297',
+  'LOS OLIVOS': '1298', 'LURIGANCHO': '1299', 'LURIN': '1300',
+  'MAGDALENA': '1301', 'PUEBLO LIBRE': '1302', 'MIRAFLORES': '1303',
+  'PACHACAMAC': '1304', 'PUCUSANA': '1305', 'PUENTE PIEDRA': '1306',
+  'PUNTA HERMOSA': '1307', 'PUNTA NEGRA': '1308', 'RIMAC': '1309',
+  'SAN BARTOLO': '1310', 'SAN BORJA': '1311', 'SAN ISIDRO': '1312',
+  'SAN JUAN DE LURIGANCHO': '1313', 'SAN JUAN DE MIRAFLORES': '1314',
+  'SAN LUIS': '1315', 'SAN MARTIN DE PORRES': '1316', 'SAN MIGUEL': '1317',
+  'SANTA ANITA': '1318', 'SANTA ROSA': '1320', 'SANTIAGO DE SURCO': '1321',
+  'SURQUILLO': '1322', 'VILLA EL SALVADOR': '1323',
+  'VILLA MARIA DEL TRIUNFO': '1324', 'CALLAO': '691'
+};

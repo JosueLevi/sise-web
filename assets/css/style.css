@@ -1081,6 +1081,50 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .floater-form.is-abierto .floater-txt{max-width:var(--wtxt,240px)}
 .floater-form:hover{transform:translateY(-2px)}
 
+/* ---------- Envio del formulario ----------
+   El envio pasa dentro de la propia tarjeta: primero la espera y
+   despues el agradecimiento. Saltar a otra pagina obliga a volver y
+   pierde el sitio donde estaba el visitante. */
+.lead-estado{
+  position:absolute;inset:0;z-index:6;
+  border-radius:inherit;
+  background:var(--red);color:#fff;
+  display:grid;place-content:center;text-align:center;
+  padding:clamp(24px,4vw,40px);
+}
+.lead-estado[hidden]{display:none}
+.lead-estado-in{display:grid;justify-items:center;gap:6px;max-width:32ch}
+.lead-estado-logo{display:block;width:clamp(128px,46%,176px);color:#fff;margin-bottom:16px}
+.lead-estado-logo svg{width:100%;height:auto;display:block}
+/* El logo trae la flecha en rojo: sobre el panel rojo desaparecia */
+.lead-estado-logo svg *{fill:currentColor}
+.lead-estado-t{
+  font-family:'Barlow',sans-serif;font-weight:700;
+  font-size:clamp(19px,2.2vw,23px);line-height:1.2;
+}
+.lead-estado-p{font-size:15px;line-height:1.5;color:rgba(255,255,255,.88)}
+.lead-estado-btn{
+  margin-top:16px;padding:11px 22px;border:0;border-radius:999px;cursor:pointer;
+  background:#fff;color:var(--red);font-size:15px;font-weight:700;
+}
+.lead-estado-btn[hidden]{display:none}
+/* Aro que gira mientras se espera respuesta. Con "reducir movimiento"
+   se queda quieto: el aviso de texto ya dice lo que esta pasando. */
+.lead-spinner{
+  display:none;width:40px;height:40px;border-radius:50%;
+  border:3px solid rgba(255,255,255,.35);border-top-color:#fff;
+  margin-bottom:14px;
+  animation:leadGira .8s linear infinite;
+}
+@keyframes leadGira{to{transform:rotate(360deg)}}
+.lead-estado.is-cargando .lead-spinner{display:block}
+.lead-estado.is-cargando .lead-estado-logo{display:none}
+
+/* La sede que fija la modalidad virtual: se lee, pero no se toca.
+   En virtual no hay sede que elegir y el CRM espera "VIRTU". */
+.field.is-fijo .sel-btn{pointer-events:none;opacity:.72}
+.field.is-fijo .sel-btn::after{opacity:.4}
+
 /* ---------- Menu de WhatsApp ---------- */
 .wa-caja{position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
 .wa-menu{

@@ -2549,6 +2549,9 @@
       btn.addEventListener('blur', () => { if (!field.matches(':hover')) cierra(false); });
 
       field._cerrarSelect = () => cierra(false);
+      /* El conmutador de modalidad cambia el valor por su cuenta y
+         necesita que la pastilla se entere. */
+      field._pintaSelect = pinta;
       pinta();
     }
 
@@ -2580,6 +2583,13 @@
         o.textContent = s.nombre;
         selSede.appendChild(o);
       });
+      /* "Virtual" se añade aqui, antes de montar el desplegable a
+         medida: ese se construye una sola vez con las opciones que
+         encuentre, asi que una opcion añadida despues no apareceria
+         en la lista. Se oculta mientras la modalidad no sea virtual. */
+      const oVirtual = document.createElement('option');
+      oVirtual.textContent = 'Virtual';
+      selSede.appendChild(oVirtual);
     }
 
     const selCarrera = $('#f-carrera');
@@ -2599,6 +2609,111 @@
       if (el) el.addEventListener('input', () => { el.value = el.value.replace(/\D/g, ''); });
     });
 
+    /* ---- Reglas de modalidad ----
+       En virtual la sede es siempre Virtual -asi lo espera el CRM- y
+       la lista de carreras se queda solo con las que esa modalidad
+       ofrece, para no recoger un lead que luego no se puede
+       registrar. */
+    const sinTilde = (t) => String(t || '').trim().toUpperCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    function filtraOpciones(sel, sePuede) {
+      if (!sel) return;
+      const campo = sel.closest('.field');
+      Array.from(sel.options).forEach((o) => {
+        if (!o.value) return;
+        const ok = sePuede(o.value);
+        o.hidden = !ok;
+        o.disabled = !ok;
+      });
+      if (campo) {
+        $$('.sel-opt', campo).forEach((it) => {
+          it.style.display = sePuede(it.dataset.val) ? '' : 'none';
+        });
+      }
+      if (sel.value && !sePuede(sel.value)) sel.value = '';
+    }
+
+    function aplicaModalidad() {
+      const virtual = sinTilde(modInput ? modInput.value : '') === 'VIRTUAL';
+
+      // Carreras: solo las que tienen codigo en esa modalidad
+      if (selCarrera && window.CRM_SISE) {
+        const permitidas = CRM_SISE.carrerasDe(virtual ? 'Virtual' : 'Semipresencial')
+          .map(sinTilde);
+        filtraOpciones(selCarrera, (v) => permitidas.indexOf(sinTilde(v)) !== -1);
+        const campo = selCarrera.closest('.field');
+        if (campo && campo._pintaSelect) campo._pintaSelect();
+      }
+
+      // Sede: "Virtual" solo existe en virtual, y ahi es la unica
+      if (selSede) {
+        filtraOpciones(selSede, (v) => (sinTilde(v) === 'VIRTUAL') === virtual);
+        if (virtual) selSede.value = 'Virtual';
+        const campo = selSede.closest('.field');
+        if (campo) {
+          campo.classList.toggle('is-fijo', virtual);
+          if (campo._pintaSelect) campo._pintaSelect();
+        }
+      }
+    }
+
+    $$('.mod-opt', form).forEach((o) => o.addEventListener('click', aplicaModalidad));
+    /* En la ficha de carrera el conmutador vive fuera del formulario */
+    $$('.car-modos .mod-opt').forEach((o) => o.addEventListener('click', () => setTimeout(aplicaModalidad, 0)));
+    aplicaModalidad();
+
+    /* ---- Panel de estado ----
+       El envio pasa dentro de la propia tarjeta: primero la espera y
+       despues el agradecimiento. Antes se saltaba a otra pagina, que
+       obliga a volver y pierde el sitio donde estaba el visitante. */
+    const tarjeta = form.closest('.lead-card') || form.parentElement;
+    const panel = document.createElement('div');
+    panel.className = 'lead-estado';
+    panel.hidden = true;
+    panel.setAttribute('role', 'status');
+    panel.setAttribute('aria-live', 'polite');
+    panel.innerHTML =
+      '<div class="lead-estado-in">' +
+        '<span class="lead-estado-logo" aria-hidden="true">' + ico('logo') + '</span>' +
+        '<span class="lead-spinner" aria-hidden="true"></span>' +
+        '<p class="lead-estado-t"></p>' +
+        '<p class="lead-estado-p"></p>' +
+        '<button class="lead-estado-btn" type="button" hidden></button>' +
+      '</div>';
+    if (tarjeta) tarjeta.appendChild(panel);
+
+    const cfgCrm = (typeof CRM !== 'undefined') ? CRM : {};
+    const panelT = $('.lead-estado-t', panel);
+    const panelP = $('.lead-estado-p', panel);
+    const panelB = $('.lead-estado-btn', panel);
+
+    function muestraEstado(estado) {
+      panel.hidden = false;
+      panel.classList.toggle('is-cargando', estado === 'cargando');
+      panelB.hidden = estado !== 'error';
+      if (estado === 'cargando') {
+        panelT.textContent = cfgCrm.cargando || 'Enviando tu solicitud...';
+        panelP.textContent = '';
+      } else if (estado === 'gracias') {
+        const g = cfgCrm.gracias || {};
+        panelT.textContent = g.titulo || '¡Gracias por registrarte!';
+        panelP.textContent = g.texto || 'Un asistente se pondrá en contacto contigo.';
+      } else {
+        const x = cfgCrm.error || {};
+        panelT.textContent = x.titulo || 'No pudimos enviar tu solicitud';
+        panelP.textContent = x.texto || 'Inténtalo otra vez en un momento.';
+        panelB.textContent = x.boton || 'Intentar de nuevo';
+      }
+    }
+
+    panelB.addEventListener('click', () => {
+      panel.hidden = true;
+      panel.classList.remove('is-cargando');
+      const primero = $('input, select', form);
+      if (primero) primero.focus();
+    });
+
     const msg = $('#formMsg');
 
     // Reglas propias por campo
@@ -2615,7 +2730,7 @@
        que llega al formulario no sabía si el problema era suyo. Al
        enviar se señalan los campos que falten. */
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       let firstBad = null;
       let firstMsg = '';
@@ -2634,12 +2749,43 @@
         return;
       }
 
-      // TODO: conectar aquí con el CRM / endpoint real.
-      // fetch('/api/leads', { method:'POST', body: new FormData(form) })
-      msg.textContent = '¡Gracias! Un asesor se comunicará contigo muy pronto.';
-      msg.className = 'form-msg ok';
+      msg.textContent = '';
+      msg.className = 'form-msg';
+
+      if (!window.CRM_SISE) {
+        msg.textContent = 'No se pudo cargar el env\u00edo. Recarga la p\u00e1gina, por favor.';
+        msg.className = 'form-msg err';
+        return;
+      }
+
+      muestraEstado('cargando');
+
+      const enviado = await CRM_SISE.enviar({
+        modalidad: modInput ? modInput.value : '',
+        /* En la ficha de carrera no hay desplegable: la carrera la
+           declara el formulario con data-carrera. */
+        carrera: (selCarrera && selCarrera.value) || form.dataset.carrera || '',
+        sede: selSede ? selSede.value : '',
+        nombres: $('#f-nombres', form) ? $('#f-nombres', form).value.trim() : '',
+        apellidos: $('#f-apellidos', form) ? $('#f-apellidos', form).value.trim() : '',
+        dni: $('#f-dni', form) ? $('#f-dni', form).value.trim() : '',
+        celular: $('#f-celular', form) ? $('#f-celular', form).value.trim() : '',
+        comerciales: !!$('input[name="comerciales"]', form) && $('input[name="comerciales"]', form).checked
+      });
+
+      if (!enviado.ok) {
+        muestraEstado('error');
+        return;
+      }
+
+      muestraEstado('gracias');
+      limpiaFormulario();
+    });
+
+    /* Se vacia por detras del panel: si el visitante vuelve a abrirlo
+       -por ejemplo desde el flotante- no encuentra sus datos puestos. */
+    function limpiaFormulario() {
       form.reset();
-      setTimeout(actualizaBoton, 0);
       // En la ficha de carrera el conmutador vive fuera del formulario:
       // si no hay ninguno dentro, el valor actual ya es el bueno.
       const modActiva = $('.mod-opt.is-on', form);
@@ -2650,7 +2796,8 @@
         f.querySelector('.sel-val').textContent = '';
         $$('.sel-opt', f).forEach((o) => o.setAttribute('aria-selected', 'false'));
       });
-    });
+      aplicaModalidad();
+    }
 
     ['input', 'change'].forEach((ev) => {
       form.addEventListener(ev, (e) => {
