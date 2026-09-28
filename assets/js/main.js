@@ -2688,7 +2688,16 @@
     const panelP = $('.lead-estado-p', panel);
     const panelB = $('.lead-estado-btn', panel);
 
+    let relojGracias = null;
+
+    function ocultaEstado() {
+      clearTimeout(relojGracias);
+      panel.hidden = true;
+      panel.classList.remove('is-cargando');
+    }
+
     function muestraEstado(estado) {
+      clearTimeout(relojGracias);
       panel.hidden = false;
       panel.classList.toggle('is-cargando', estado === 'cargando');
       panelB.hidden = estado !== 'error';
@@ -2699,6 +2708,10 @@
         const g = cfgCrm.gracias || {};
         panelT.textContent = g.titulo || '¡Gracias por registrarte!';
         panelP.textContent = g.texto || 'Un asistente se pondrá en contacto contigo.';
+        /* Se recoge solo: detras el formulario ya quedo limpio, asi que
+           quien quiera preguntar por otra carrera lo encuentra listo sin
+           tener que recargar la pagina. */
+        if (cfgCrm.graciasDura) relojGracias = setTimeout(ocultaEstado, cfgCrm.graciasDura);
       } else {
         const x = cfgCrm.error || {};
         panelT.textContent = x.titulo || 'No pudimos enviar tu solicitud';
@@ -2708,8 +2721,7 @@
     }
 
     panelB.addEventListener('click', () => {
-      panel.hidden = true;
-      panel.classList.remove('is-cargando');
+      ocultaEstado();
       const primero = $('input, select', form);
       if (primero) primero.focus();
     });

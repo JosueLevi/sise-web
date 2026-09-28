@@ -826,6 +826,9 @@ const CRM = {
 
   /* Lo que se ve en el panel de confirmacion */
   cargando: 'Enviando tu solicitud...',
+  /* Cuanto se queda el agradecimiento antes de recogerse y dejar el
+     formulario listo otra vez, en milisegundos. En 0 se queda puesto. */
+  graciasDura: 10000,
   gracias: {
     titulo: '¡Gracias por registrarte!',
     texto: 'Un asistente se pondrá en contacto contigo.'
