@@ -666,6 +666,22 @@
            saltara ninguno de los avisos de arriba. */
         btnReg.addEventListener('pointerenter', mide);
         btnReg.addEventListener('focus', mide);
+
+        /* En tactil no hay con que abrirla, asi que se presenta sola: la
+           primera vez que el visitante baja de verdad se abre cuatro
+           segundos y se cierra. Antes se quedaba abierta todo el rato y
+           tapaba la esquina de la pagina -en el catalogo, justo encima
+           del selector de orden-. */
+        if (window.matchMedia('(hover:none)').matches) {
+          const saluda = () => {
+            if (window.scrollY < 500) return;
+            window.removeEventListener('scroll', saluda);
+            mide();
+            btnReg.classList.add('is-abierto');
+            setTimeout(() => btnReg.classList.remove('is-abierto'), 4000);
+          };
+          window.addEventListener('scroll', saluda, { passive: true });
+        }
       }
     }
 
@@ -970,13 +986,6 @@
     return '';
   }
 
-  /* Nombre visible del area de un curso */
-  function nombreArea(slug) {
-    const l = (typeof AREAS_CURSOS !== 'undefined') ? AREAS_CURSOS : [];
-    const a = l.find((x) => x.slug === slug);
-    return a ? a.label : '';
-  }
-
   /* Resumen de la tarjeta: el propio del curso o, si no lo trae, el de
      su area. */
   function resumenDe(c) {
@@ -992,7 +1001,9 @@
         <path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 2-1.6L20 7H6"/>
         <circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>
       </svg>`;
-  const soles = (n) => 'S/ ' + Number(n).toLocaleString('es-PE');
+  /* Duracion por defecto del catalogo. Un curso puede traer la suya en
+     data.js con "horas" y entonces manda la del curso. */
+  const HORAS_CURSO = 72;
 
   function cursoHTML(c, i) {
     const resumen = resumenDe(c);
@@ -1009,23 +1020,14 @@
           <h3 class="curso-nombre">${esc(c.nombre)}</h3>
           <!-- Solo se pinta el texto propio del curso. El generico por
                area se repetia igual en todas las tarjetas de un area y
-               se leia como relleno; en su lugar van dos etiquetas, que
-               dicen algo distinto en cada una. -->
-          ${c.resumen ? `<p class="curso-desc">${esc(c.resumen)}</p>` : ''}
-          <div class="curso-tags">
-            <span class="curso-tag">${esc(nombreArea(c.cat))}</span>
-            ${c.horas ? `<span class="curso-tag">${esc(c.horas)} horas</span>` : ''}
-          </div>
+               se leia como relleno. -->
+          ${resumen ? `<p class="curso-desc">${esc(resumen)}</p>` : ''}
 
-          <!-- Duracion. Si el curso aun no la trae, la fila no se pinta
-               y la tarjeta no queda con un hueco. El precio se vera
-               dentro de la ficha del curso. -->
-          ${c.horas ? `<div class="curso-datos">
-            <span class="curso-horas">${ico('duracion')}${esc(c.horas)} horas</span>
-            ${c.precio ? `<span class="curso-precio">
-              ${c.antes ? `<s>${esc(soles(c.antes))}</s>` : ''}<b>${esc(soles(c.precio))}</b>
-            </span>` : ''}
-          </div>` : ''}
+          <!-- Duracion. Todos los cursos son de 72 horas academicas; el
+               que algun dia sea distinto solo tiene que traer su propio
+               "horas" en data.js. El area no se pinta: ya la eligio el
+               visitante en el filtro de arriba. -->
+          <p class="curso-dato">${ico('duracion')}${esc(c.horas || HORAS_CURSO)} horas acad&eacute;micas</p>
 
           <div class="curso-acciones">
             <a class="btn btn-pill curso-ver" href="${esc(c.url || '#')}">Ver curso</a>
@@ -1075,10 +1077,16 @@
     }
     const cajaChips = $('#areaChips');
 
+    /* filter admite una sola area (las paginas de carreras, con sus
+       pastillas) o una lista de areas (el catalogo, con sus casillas).
+       Lista vacia o 'todas' es no filtrar. */
     function render(filter) {
-      let list = (!filter || filter === 'todas')
-        ? D.items
-        : D.items.filter((c) => c.cat === filter);
+      const areas = Array.isArray(filter)
+        ? filter
+        : (!filter || filter === 'todas') ? [] : [filter];
+      let list = areas.length
+        ? D.items.filter((c) => areas.includes(c.cat))
+        : D.items;
       if (typeof window.__filtraCatalogo === 'function') list = window.__filtraCatalogo(list);
       const plantilla = TIPO === 'cursos' ? cursoHTML : cardHTML;
       grid.innerHTML = list.length
@@ -1088,9 +1096,15 @@
       grid.classList.toggle('is-corta', list.length > 0 && list.length < 3);
       const cuenta = $('#tiendaCuenta');
       if (cuenta) {
-        const area = D.areas.find((a) => a.slug === filter);
+        let donde = '';
+        if (areas.length === 1) {
+          const area = D.areas.find((a) => a.slug === areas[0]);
+          if (area) donde = ` en ${area.label}`;
+        } else if (areas.length > 1) {
+          donde = ` en ${areas.length} categor\u00edas`;
+        }
         cuenta.textContent = list.length
-          ? `${list.length} ${list.length === 1 ? 'curso' : 'cursos'}` + (area ? ` en ${area.label}` : '')
+          ? `${list.length} ${list.length === 1 ? 'curso' : 'cursos'}` + donde
           : 'Ning\u00fan curso con ese nombre';
       }
       observarNuevos(grid);
@@ -1098,6 +1112,58 @@
     }
     // Se expone para el repintado al cruzar el punto de corte movil
     window.__render = render;
+
+    /* ---- Barra lateral del catalogo ----
+       Nueve categorias en una fila de pastillas se salian de pantalla y
+       habia que arrastrarla para ver las ultimas. En columna se ven
+       todas de golpe y, al ser casillas, se pueden combinar. */
+    const cajaFiltros = $('#areaFiltros');
+    let areasActivas = [];
+
+    if (cajaFiltros) {
+      const conItems = D.areas.filter((a) => D.items.some((c) => c.cat === a.slug));
+      const cuantos = (slug) => D.items.filter((c) => c.cat === slug).length;
+      cajaFiltros.innerHTML = `
+        <details class="filtros-caja" open>
+          <summary class="filtros-t">Categor&iacute;as<span class="filtros-n" hidden></span></summary>
+          <ul class="filtros-lista">
+            ${conItems.map((a) => `
+              <li>
+                <label class="filtro">
+                  <input type="checkbox" value="${esc(a.slug)}">
+                  <span class="filtro-txt">${esc(a.label)}</span>
+                  <span class="filtro-n">${cuantos(a.slug)}</span>
+                </label>
+              </li>`).join('')}
+          </ul>
+          <button class="filtros-limpia" type="button" hidden>Quitar filtros</button>
+        </details>`;
+
+      function marca() {
+        const casillas = $$('input[type="checkbox"]', cajaFiltros);
+        areasActivas = casillas.filter((i) => i.checked).map((i) => i.value);
+        casillas.forEach((i) => i.closest('.filtro').classList.toggle('is-on', i.checked));
+        const limpia = $('.filtros-limpia', cajaFiltros);
+        if (limpia) limpia.hidden = areasActivas.length === 0;
+        const n = $('.filtros-n', cajaFiltros);
+        if (n) { n.hidden = areasActivas.length === 0; n.textContent = areasActivas.length; }
+        render(areasActivas);
+      }
+
+      cajaFiltros.addEventListener('change', (e) => {
+        if (e.target.matches('input[type="checkbox"]')) marca();
+      });
+      cajaFiltros.addEventListener('click', (e) => {
+        if (!e.target.closest('.filtros-limpia')) return;
+        $$('input[type="checkbox"]', cajaFiltros).forEach((i) => { i.checked = false; });
+        marca();
+      });
+
+      /* En movil la lista arranca plegada: nueve categorias se comen
+         media pantalla antes de ver el primer curso. */
+      const caja = $('.filtros-caja', cajaFiltros);
+      if (caja && window.matchMedia('(max-width:900px)').matches) caja.open = false;
+    }
 
     // Chips: un area por cada categoria con contenido
     if (cajaChips) {
@@ -1148,6 +1214,7 @@
         return out;
       };
       const repinta = () => {
+        if (cajaFiltros) return render(areasActivas);
         const activo = cajaChips ? $('.chip.is-active', cajaChips) : null;
         render(activo ? activo.dataset.filter : 'todas');
       };
@@ -1158,6 +1225,16 @@
     /* ?area=gestion en la direccion abre esa area marcada: es lo que
        usan los accesos por area del menu desplegado. */
     const areaPedida = new URLSearchParams(location.search).get('area');
+    if (areaPedida && cajaFiltros) {
+      const casilla = $(`input[value="${CSS.escape(areaPedida)}"]`, cajaFiltros);
+      if (casilla) {
+        casilla.checked = true;
+        areasActivas = [areaPedida];
+        casilla.closest('.filtro').classList.add('is-on');
+        const limpia = $('.filtros-limpia', cajaFiltros);
+        if (limpia) limpia.hidden = false;
+      }
+    }
     if (areaPedida && cajaChips) {
       const chip = $(`[data-filter="${CSS.escape(areaPedida)}"]`, cajaChips);
       if (chip) {
@@ -1167,8 +1244,12 @@
         chip.classList.add('is-active'); chip.setAttribute('aria-selected', 'true');
       }
     }
-    const chipInicial = cajaChips ? $('.chip.is-active', cajaChips) : null;
-    render(chipInicial ? chipInicial.dataset.filter : 'todas');
+    if (cajaFiltros) {
+      render(areasActivas);
+    } else {
+      const chipInicial = cajaChips ? $('.chip.is-active', cajaChips) : null;
+      render(chipInicial ? chipInicial.dataset.filter : 'todas');
+    }
   }
 
   /* ============================================================
