@@ -46,9 +46,32 @@ const FLOTANTES = {
     opciones: [
       { label: 'Matricularme a Carreras', url: 'https://wa.link/g16qrt' },
       { label: 'Adquirir un Curso',       url: 'https://wa.link/zgq8zu' },
-      { label: 'Soy Alumno SISE',         url: 'https://wa.link/8kjxf0' }
+      { label: 'Soy Alumno SISE',         url: 'https://wa.link/8kjxf0' },
+      /* Sin wa.link propio todavia: arma el enlace con el numero y el
+         mensaje. Si se crea uno, basta con poner url y borrar lo demas. */
+      { label: 'Retomar mi carrera',      numero: '51924298424', texto: 'Hola, quiero retomar mi carrera en SISE.' }
     ]
   }
+};
+
+/* ============================================================
+   POPUP PROMOCIONAL (abajo a la izquierda)
+   ============================================================
+   No se cierra, solo se minimiza a una pestaña. Para quitarlo basta
+   con borrar el bloque o dejar PROMO = null; pasada la fecha "hasta"
+   deja de salir solo.
+
+   "Conoce mas" lleva a url si la hay. Sin url abre el formulario con
+   la carrera ya elegida (el nombre tiene que existir en CRM_CARRERAS). */
+const PROMO = {
+  imagen: 'assets/img/popup-interiores.webp',
+  alt: 'Carrera Diseño de Interiores. Diseña proyectos reales desde tu primer año en SISE DECO. Inicio de clases: 5 de octubre. Conoce más aquí.',
+  titulo: 'Diseño de Interiores',          // lo que se lee en la pestaña minimizada
+  detalle: 'Inicio de clases',
+  dato: '5 de octubre',
+  carrera: 'Diseño de Interiores',
+  url: '',
+  hasta: '2026-10-05'                       // AAAA-MM-DD, ultimo dia que se muestra
 };
 
 /* ============================================================
@@ -913,4 +936,64 @@ const CRM_DISTRITOS = {
   'SANTA ANITA': '1318', 'SANTA ROSA': '1320', 'SANTIAGO DE SURCO': '1321',
   'SURQUILLO': '1322', 'VILLA EL SALVADOR': '1323',
   'VILLA MARIA DEL TRIUNFO': '1324', 'CALLAO': '691'
+};
+/* ============================================================
+   11. PORTAL DE TRANSPARENCIA
+   ============================================================
+   Los documentos de informacion publica, agrupados por tipo.
+   Para publicar uno nuevo basta con añadir su linea aqui y subir
+   el archivo a assets/docs/.
+
+   tipo: pdf, doc o xls. Decide el color y el rotulo de la hoja.
+
+   fecha: en formato de maquina -AAAA, AAAA-MM o AAAA-MM-DD-, que es
+   lo que permite ordenar por mas reciente. La pagina la escribe en
+   castellano sola: 2026-03 sale como "Marzo 2026".
+
+   peso es opcional; si falta, la tarjeta no lo pinta.
+
+   OJO: los documentos de abajo son de ejemplo, para ver la pagina
+   funcionando. Hay que reemplazarlos por los de verdad.
+   ------------------------------------------------------------ */
+const TRANSPARENCIA = {
+  categorias: [
+    { slug: 'comunicados',    label: 'Comunicados' },
+    { slug: 'licenciamiento', label: 'Licenciamiento' },
+    { slug: 'politicas',      label: 'Pol\u00edticas y reglamento' },
+    { slug: 'manuales',       label: 'Manuales' },
+    { slug: 'tarifarios',     label: 'Tarifarios' }
+  ],
+
+  documentos: [
+    { nombre: 'Comunicado de inicio de ciclo', cat: 'comunicados', tipo: 'pdf', url: '#', fecha: '2026-03' },
+    { nombre: 'Comunicado de matr\u00edcula',       cat: 'comunicados', tipo: 'pdf', url: '#', fecha: '2026-01' },
+
+    { nombre: 'Resoluci\u00f3n de licenciamiento',  cat: 'licenciamiento', tipo: 'pdf', url: '#', fecha: '2024' },
+    { nombre: 'Condiciones b\u00e1sicas de calidad', cat: 'licenciamiento', tipo: 'pdf', url: '#', fecha: '2024' },
+
+    { nombre: 'Reglamento institucional',      cat: 'politicas', tipo: 'pdf', url: '#', fecha: '2025' },
+    { nombre: 'Reglamento del estudiante',     cat: 'politicas', tipo: 'pdf', url: '#', fecha: '2025' },
+    { nombre: 'Pol\u00edtica de protecci\u00f3n de datos', cat: 'politicas', tipo: 'pdf', url: 'politica-de-privacidad.html', fecha: '2025-11' },
+
+    { nombre: 'Manual de organizaci\u00f3n y funciones', cat: 'manuales', tipo: 'pdf', url: '#', fecha: '2025' },
+    { nombre: 'Manual del aula virtual',       cat: 'manuales', tipo: 'pdf', url: '#', fecha: '2025' },
+
+    { nombre: 'Tarifario de servicios educativos', cat: 'tarifarios', tipo: 'pdf', url: '#', fecha: '2026' },
+    { nombre: 'Tarifario de tr\u00e1mites',          cat: 'tarifarios', tipo: 'pdf', url: '#', fecha: '2026' }
+  ],
+
+  /* Salida para quien no encuentra lo que busca. La ley reconoce el
+     derecho a pedir informacion que no este publicada, asi que la
+     pagina no puede terminar en un callejon sin salida.
+     OJO: cambiar por el canal que corresponda. */
+  ayuda: {
+    titulo: '\u00bfNo encuentras el documento que buscas?',
+    texto: 'Puedes solicitar informaci\u00f3n p\u00fablica que no est\u00e9 publicada en este portal. Escr\u00edbenos y te la hacemos llegar.',
+    cta: 'Solicitar informaci\u00f3n',
+    url: 'https://wa.me/51924298424'
+  },
+
+  /* Fecha de actualizacion del portal. En blanco la calcula sola a
+     partir del documento mas reciente, que es lo que no se olvida. */
+  actualizado: ''
 };

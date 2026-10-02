@@ -1253,6 +1253,217 @@
   }
 
   /* ============================================================
+     4d. PORTAL DE TRANSPARENCIA — tablero de documentos
+     ============================================================
+     Misma mecanica que el catalogo de cursos: los tipos al costado
+     en casillas que se combinan, el buscador arriba y las fichas a
+     la derecha. Aqui cada ficha es un enlace al archivo. */
+  const docsGrid = $('#docsGrid');
+
+  if (docsGrid && typeof TRANSPARENCIA !== 'undefined') {
+    const D = TRANSPARENCIA;
+    const cajaDocs = $('#docsFiltros');
+    const buscaDocs = $('#docsBuscar');
+    const ordenDocs = $('#docsOrden');
+    const cuentaDocs = $('#docsCuenta');
+    let tiposActivos = [];
+
+    const sinTilde = (t) => String(t || '').trim().toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    /* Hoja de papel con la esquina doblada. El rotulo va dentro, como
+       en los iconos de archivo de toda la vida. */
+    function hoja(tipo) {
+      return `
+        <span class="doc-hoja doc-hoja--${esc(tipo)}" aria-hidden="true">
+          <svg viewBox="0 0 48 60" fill="none">
+            <path d="M4 4a3 3 0 0 1 3-3h22l15 15v40a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V4Z"
+                  fill="currentColor" fill-opacity=".1" stroke="currentColor" stroke-width="2"/>
+            <path d="M29 1v12a3 3 0 0 0 3 3h12" stroke="currentColor" stroke-width="2"
+                  stroke-linejoin="round"/>
+          </svg>
+          <span class="doc-ext">${esc(tipo)}</span>
+        </span>`;
+    }
+
+    const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+    /* La fecha se guarda ordenable -2026-03- y se enseña en castellano.
+       Asi se puede ordenar por mas reciente sin pedirle a nadie que
+       escriba las fechas de una manera rara. */
+    function fechaTexto(f) {
+      const t = String(f || '').trim();
+      const m = t.match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/);
+      if (!m) return t;
+      const anio = m[1];
+      if (!m[2]) return anio;
+      const mes = MESES[Number(m[2]) - 1] || '';
+      const dia = m[3];
+      if (!mes) return anio;
+      if (dia) return Number(dia) + ' de ' + mes + ' de ' + anio;
+      return mes.charAt(0).toUpperCase() + mes.slice(1) + ' ' + anio;
+    }
+
+    /* Para ordenar: el año-mes-dia rellenado, de modo que "2024" caiga
+       antes que "2024-05" y no al reves. */
+    function fechaClave(f) {
+      const t = String(f || '').trim();
+      const m = t.match(/^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/);
+      if (!m) return '0000-00-00';
+      return m[1] + '-' + (m[2] || '00') + '-' + (m[3] || '00');
+    }
+
+    function nombreTipo(slug) {
+      const c = D.categorias.find((x) => x.slug === slug);
+      return c ? c.label : '';
+    }
+
+    function docHTML(d, i) {
+      const tipo = (d.tipo || 'pdf').toLowerCase();
+      const pie = [nombreTipo(d.cat), fechaTexto(d.fecha), d.peso].filter(Boolean).join(' · ');
+      return `
+        <a class="doc-card" href="${esc(d.url || '#')}" target="_blank" rel="noopener"
+           aria-label="${esc(d.nombre)} (${esc(tipo.toUpperCase())}, se abre en una pesta&ntilde;a nueva)"
+           style="animation-delay:${i * 40}ms">
+          ${hoja(tipo)}
+          <span class="doc-nombre">${esc(d.nombre)}</span>
+          <span class="doc-meta">${esc(pie)}</span>
+          <span class="doc-baja" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14"/></svg>
+          </span>
+        </a>`;
+    }
+
+    function ordena(lista) {
+      const modo = ordenDocs ? ordenDocs.value : 'recientes';
+      if (modo === 'az') return lista.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+      // Mas recientes primero; a igualdad de fecha, por nombre
+      return lista.sort((a, b) => {
+        const d = fechaClave(b.fecha).localeCompare(fechaClave(a.fecha));
+        return d !== 0 ? d : a.nombre.localeCompare(b.nombre, 'es');
+      });
+    }
+
+    function pintaDocs() {
+      const q = buscaDocs ? sinTilde(buscaDocs.value) : '';
+      const buscando = q.length > 1;
+      const filtrando = tiposActivos.length > 0;
+
+      let lista = filtrando
+        ? D.documentos.filter((d) => tiposActivos.indexOf(d.cat) !== -1)
+        : D.documentos.slice();
+      if (buscando) lista = lista.filter((d) => sinTilde(d.nombre).includes(q));
+      ordena(lista);
+
+      /* Sin filtro ni busqueda, los documentos se agrupan por tipo: una
+         lista corrida de cuarenta hojas no se recorre, y asi el propio
+         tablero hace de indice. En cuanto hay filtro o busqueda manda
+         el resultado, que ya viene acotado. */
+      const agrupar = !filtrando && !buscando && lista.length > 0;
+      docsGrid.classList.toggle('docs-grid', !agrupar);
+      docsGrid.classList.toggle('docs-grupos', agrupar);
+
+      if (!lista.length) {
+        docsGrid.innerHTML = '<p class="grid-empty">No hay documentos con ese nombre.</p>';
+      } else if (agrupar) {
+        docsGrid.innerHTML = D.categorias.map((c) => {
+          const dentro = lista.filter((d) => d.cat === c.slug);
+          if (!dentro.length) return '';
+          return `
+            <section class="docs-grupo">
+              <h3 class="docs-grupo-t">${esc(c.label)}</h3>
+              <div class="docs-grid">${dentro.map(docHTML).join('')}</div>
+            </section>`;
+        }).join('');
+      } else {
+        docsGrid.innerHTML = lista.map(docHTML).join('');
+      }
+
+      if (cuentaDocs) {
+        cuentaDocs.textContent = lista.length
+          ? lista.length + (lista.length === 1 ? ' documento' : ' documentos')
+          : 'Sin resultados';
+      }
+      observarNuevos(docsGrid);
+    }
+
+    if (cajaDocs) {
+      const cuantos = (slug) => D.documentos.filter((d) => d.cat === slug).length;
+      cajaDocs.innerHTML = `
+        <details class="filtros-caja" open>
+          <summary class="filtros-t">Tipo de documento<span class="filtros-n" hidden></span></summary>
+          <ul class="filtros-lista">
+            ${D.categorias.map((c) => `
+              <li>
+                <label class="filtro">
+                  <input type="checkbox" value="${esc(c.slug)}">
+                  <span class="filtro-txt">${esc(c.label)}</span>
+                  <span class="filtro-n">${cuantos(c.slug)}</span>
+                </label>
+              </li>`).join('')}
+          </ul>
+          <button class="filtros-limpia" type="button" hidden>Quitar filtros</button>
+        </details>`;
+
+      function marcaDocs() {
+        const casillas = $$('input[type="checkbox"]', cajaDocs);
+        tiposActivos = casillas.filter((i) => i.checked).map((i) => i.value);
+        casillas.forEach((i) => i.closest('.filtro').classList.toggle('is-on', i.checked));
+        const limpia = $('.filtros-limpia', cajaDocs);
+        if (limpia) limpia.hidden = tiposActivos.length === 0;
+        const n = $('.filtros-n', cajaDocs);
+        if (n) { n.hidden = tiposActivos.length === 0; n.textContent = tiposActivos.length; }
+        pintaDocs();
+      }
+
+      cajaDocs.addEventListener('change', (e) => {
+        if (e.target.matches('input[type="checkbox"]')) marcaDocs();
+      });
+      cajaDocs.addEventListener('click', (e) => {
+        if (!e.target.closest('.filtros-limpia')) return;
+        $$('input[type="checkbox"]', cajaDocs).forEach((i) => { i.checked = false; });
+        marcaDocs();
+      });
+
+      const caja = $('.filtros-caja', cajaDocs);
+      if (caja && window.matchMedia('(max-width:900px)').matches) caja.open = false;
+    }
+
+    if (buscaDocs) buscaDocs.addEventListener('input', pintaDocs);
+    if (ordenDocs) ordenDocs.addEventListener('change', pintaDocs);
+
+    /* Cuando se actualizo el portal: la fecha del documento mas nuevo,
+       para que no haya que acordarse de cambiarla a mano. */
+    const cajaAct = $('#docsActualizado');
+    if (cajaAct) {
+      const masNueva = D.actualizado ||
+        D.documentos.map((d) => d.fecha).sort((a, b) => fechaClave(b).localeCompare(fechaClave(a)))[0];
+      /* "marzo de 2026", no "marzo 2026": en la tarjeta es un rotulo y
+         aqui es una frase. */
+      if (masNueva) {
+        const t = fechaTexto(masNueva).toLowerCase();
+        cajaAct.textContent = 'Actualizado en ' + (/^[a-zá-ú]+ \d{4}$/.test(t) ? t.replace(' ', ' de ') : t);
+      }
+    }
+
+    const cajaAyuda = $('#docsAyuda');
+    if (cajaAyuda && D.ayuda) {
+      cajaAyuda.hidden = false;
+      cajaAyuda.innerHTML = `
+        <h3 class="docs-ayuda-t">${esc(D.ayuda.titulo || '')}</h3>
+        <p class="docs-ayuda-p">${esc(D.ayuda.texto || '')}</p>
+        <a class="btn btn-pill btn-primary" href="${esc(D.ayuda.url || '#')}" target="_blank" rel="noopener">
+          ${esc(D.ayuda.cta || 'Escríbenos')}
+          <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7m0 0H9m8 0v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>`;
+    }
+
+    pintaDocs();
+  }
+
+  /* ============================================================
      4b. PILARES — la foto y la pestana se relevan solas
      ============================================================
      Cada pilar dura --pil-paso (CSS): cambia la foto, se abre su texto
@@ -2601,6 +2812,19 @@
       });
     }
 
+    /* Año de fin de colegio: del próximo año (quien aún está en el
+       colegio) hacia atrás. Se arma antes de montar los desplegables,
+       que copian las opciones al crearse. */
+    const selAnio = $('#f-anio', form);
+    if (selAnio) {
+      const hasta = new Date().getFullYear() + 1;
+      for (let a = hasta; a >= 1970; a--) {
+        const o = document.createElement('option');
+        o.value = o.textContent = String(a);
+        selAnio.appendChild(o);
+      }
+    }
+
     $$('.field select', form).forEach(montarSelect);
 
     // Solo dígitos en DNI y celular
@@ -2735,6 +2959,7 @@
       if (!v) return 'Completa este campo.';
       if (el.id === 'f-dni' && v.length !== 8) return 'El DNI debe tener 8 dígitos.';
       if (el.id === 'f-celular' && v.length !== 9) return 'El celular debe tener 9 dígitos.';
+      if (el.id === 'f-correo' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Revisa tu correo, parece incompleto.';
       return '';
     }
 
@@ -2782,6 +3007,8 @@
         apellidos: $('#f-apellidos', form) ? $('#f-apellidos', form).value.trim() : '',
         dni: $('#f-dni', form) ? $('#f-dni', form).value.trim() : '',
         celular: $('#f-celular', form) ? $('#f-celular', form).value.trim() : '',
+        correo: $('#f-correo', form) ? $('#f-correo', form).value.trim() : '',
+        anio: selAnio ? selAnio.value : '',
         comerciales: !!$('input[name="comerciales"]', form) && $('input[name="comerciales"]', form).checked
       });
 
@@ -2883,6 +3110,114 @@
     const tab = $('.chips [data-news].is-active');
     if (newsGrid && typeof renderNews === 'function') renderNews(tab ? tab.dataset.news : 'blog');
   };
+
+  /* ---------- Popup promocional (PROMO en data.js) ----------
+     Abajo a la izquierda: a la derecha ya estan WhatsApp y el registro.
+     No se cierra, solo se minimiza; si se minimiza, sigue asi el resto
+     de la visita para no insistir en cada pagina. */
+
+  // Elige una carrera en el desplegable del formulario como si la
+  // pulsara el visitante, para que el desplegable a medida se entere.
+  function eligeCarrera(nombre) {
+    const opt = $$('#f-carrera-list .sel-opt').find((o) => o.dataset.val === nombre);
+    if (opt) opt.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+    return !!opt;
+  }
+  // Llegada desde el popup de otra pagina: index.html?carrera=...#form
+  const carreraPedida = new URLSearchParams(location.search).get('carrera');
+  if (carreraPedida) eligeCarrera(carreraPedida);
+
+  const promoDatos = (typeof PROMO !== 'undefined') ? PROMO : null;
+  const promoVence = promoDatos && promoDatos.hasta && new Date(promoDatos.hasta + 'T23:59:59') < new Date();
+  if (promoDatos && promoDatos.imagen && !promoVence) {
+    const p = promoDatos;
+    const flecha = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+    const promo = document.createElement('aside');
+    promo.className = 'promo';
+    promo.hidden = true;
+    promo.setAttribute('aria-label', p.titulo + (p.dato ? ': ' + p.detalle + ' ' + p.dato : ''));
+    promo.innerHTML = `
+      <div class="promo-tarjeta" id="promoTarjeta">
+        <a class="promo-enlace" href="${esc(p.url || 'index.html#form')}">
+          <img src="${esc(p.imagen)}" width="720" height="480" alt="${esc(p.alt || p.titulo)}">
+        </a>
+      </div>
+      <button class="promo-min" type="button" aria-label="Minimizar anuncio" aria-controls="promoTarjeta" aria-expanded="true">
+        ${flecha}<path d="M6 12h12"/></svg>
+      </button>
+      <button class="promo-pestana" type="button" aria-label="Ver anuncio: ${esc(p.titulo)}" aria-controls="promoTarjeta" aria-expanded="false">
+        <img class="promo-mini" src="${esc(p.imagen)}" alt="">
+        <span class="promo-pt"><b>${esc(p.titulo)}</b>${p.dato ? `<span>${esc(p.detalle || '')} <em>${esc(p.dato)}</em></span>` : ''}</span>
+        ${flecha}<path d="M6 15l6-6 6 6"/></svg>
+      </button>`;
+    document.body.appendChild(promo);
+
+    const btnMin = $('.promo-min', promo);
+    const btnAbrir = $('.promo-pestana', promo);
+    const enlace = $('.promo-enlace', promo);
+    const CLAVE = 'sise-promo-min';
+
+    function minimiza(si, guardar) {
+      promo.classList.toggle('is-min', si);
+      btnMin.setAttribute('aria-expanded', String(!si));
+      btnAbrir.setAttribute('aria-expanded', String(!si));
+      if (guardar) { try { sessionStorage.setItem(CLAVE, si ? '1' : '0'); } catch (e) {} }
+    }
+    let estaba = false;
+    try { estaba = sessionStorage.getItem(CLAVE) === '1'; } catch (e) {}
+    minimiza(estaba, false);
+
+    /* Entrada: a los 4,5 s o con el primer scroll, lo que llegue antes.
+       Al cargar ya compiten el banner y el formulario. Si en esta visita
+       ya se minimizo, la pestaña es pequeña y sale de una vez. */
+    let reloj = 0;
+    function muestra() {
+      if (!promo.hidden) return;
+      clearTimeout(reloj);
+      window.removeEventListener('scroll', muestra);
+      promo.hidden = false;
+    }
+    if (estaba) muestra();
+    else {
+      reloj = setTimeout(muestra, 4500);
+      window.addEventListener('scroll', muestra, { passive: true, once: true });
+    }
+
+    /* En movil, abierto tapa buena parte de la pantalla: al pasar el
+       banner se minimiza solo. No se guarda -en la siguiente pagina
+       vuelve a salir abierto- y solo ocurre una vez: si la persona lo
+       reabre, se respeta. */
+    let autoHecho = estaba;
+    function autoMinimiza() {
+      if (autoHecho || !window.matchMedia('(max-width:640px)').matches) return;
+      const banner = $('.hero, .car-hero, .tienda-hero');
+      const limite = banner ? banner.getBoundingClientRect().bottom + window.scrollY : window.innerHeight * 0.8;
+      if (window.scrollY + window.innerHeight * 0.35 > limite) {
+        autoHecho = true;
+        minimiza(true, false);
+        window.removeEventListener('scroll', autoMinimiza);
+      }
+    }
+    if (!estaba) window.addEventListener('scroll', autoMinimiza, { passive: true });
+
+    btnMin.addEventListener('click', () => { autoHecho = true; minimiza(true, true); btnAbrir.focus(); });
+    btnAbrir.addEventListener('click', () => { autoHecho = true; minimiza(false, true); enlace.focus(); });
+
+    // Sin pagina propia: abre el formulario con la carrera elegida. Si la
+    // pagina no tiene ese formulario (el de Logistica trae su carrera
+    // fija), lleva al del inicio con la carrera en la direccion.
+    if (!p.url && p.carrera) {
+      enlace.addEventListener('click', (e) => {
+        const abrir = $('#abrirForm');
+        if (abrir && eligeCarrera(p.carrera)) {
+          e.preventDefault();
+          abrir.click();
+        } else {
+          enlace.href = 'index.html?carrera=' + encodeURIComponent(p.carrera) + '#form';
+        }
+      });
+    }
+  }
 
   /* ---------- Año del footer ---------- */
   const y = $('#year');

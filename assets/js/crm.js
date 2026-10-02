@@ -163,7 +163,10 @@
       Informe_ApellidoPaterno: d.apellidos || '',
       Informe_NumDocumento: d.dni || '',
       Informe_TelefonoPrincipal: d.celular || '',
-      Informe_AnnoEgreso: '',
+      Informe_AnnoEgreso: d.anio || '',
+      /* PENDIENTE DE CONFIRMAR con Smart Sales: el nombre exacto del
+         campo de correo. Si es otro, solo hay que cambiar esta clave. */
+      Informe_Email: d.correo || '',
       Informe_RecibeInf: d.comerciales ? '1' : '0',
       comentario: d.comentario || '',
       evento_cod: cfg.evento || '',

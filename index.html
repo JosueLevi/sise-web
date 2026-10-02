@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=551">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=581">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-400.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-condensed-800.woff2">
 <link rel="preload" as="image" href="assets/img/hero-01.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=551">
+<link rel="stylesheet" href="assets/css/style.css?v=581">
 </head>
 <body class="inicio">
 
@@ -28,8 +28,8 @@
 <header class="site-header" id="siteHeader">
   <div class="header-shell">
     <div class="nav-pill">
-      <a class="brand" href="#inicio" aria-label="SISE — Instituto Superior">
-        <span class="brand-logo" data-ico="logo" aria-hidden="true"></span>
+      <a class="brand" href="#inicio" aria-label="SISE — Instituto Superior, avalado por la Universidad Científica del Sur">
+        <span class="brand-logo" data-ico="logo-respaldo" aria-hidden="true"></span>
       </a>
 
       <nav class="main-nav" id="mainNav" aria-label="Navegación principal"></nav>
@@ -102,8 +102,7 @@
       <h2 class="lead-title">¡Más Información <em>Aquí!</em></h2>
 
       <form class="lead-form" id="leadForm" novalidate>
-        <p class="mod-q" id="modLabel">¿Qué modalidad te gustaría estudiar?</p>
-        <div class="mod-switch" role="radiogroup" aria-labelledby="modLabel">
+        <div class="mod-switch" role="radiogroup" aria-label="¿Qué modalidad te gustaría estudiar?">
           <button type="button" class="mod-opt is-on" role="radio" aria-checked="true" data-mod="Semipresencial">
             <span>Semipresencial</span><span data-ico="semipresencial" aria-hidden="true"></span>
           </button>
@@ -144,16 +143,28 @@
           <label for="f-celular">Celular<i>*</i></label>
         </div>
 
+        <div class="field">
+          <input id="f-correo" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="Ej. josue@gmail.com" required>
+          <label for="f-correo">Correo<i>*</i></label>
+        </div>
+        <div class="field">
+          <!-- Los años los pone main.js: siempre llegan hasta el actual -->
+          <select id="f-anio" name="anio" required>
+            <option value=""></option>
+          </select>
+          <label for="f-anio">Año de egreso<i>*</i></label>
+        </div>
+
         <label class="check">
-          <input type="checkbox" name="privacidad" required checked>
+          <input type="checkbox" name="privacidad" required>
           <span class="box" aria-hidden="true"></span>
-          <span class="txt">Acepto la <a href="#" target="_blank" rel="noopener">política de privacidad del instituto SISE</a>.</span>
+          <span class="txt">Acepto la <a href="politica-de-privacidad.html" target="_blank" rel="noopener">política de privacidad del instituto SISE</a>.</span>
         </label>
 
-        <label class="check check-just">
+        <label class="check">
           <input type="checkbox" name="comerciales">
           <span class="box" aria-hidden="true"></span>
-          <span class="txt">Opcionalmente, autorizo el tratamiento de mis datos personales para las <a href="#" target="_blank" rel="noopener">Finalidades Comerciales Adicionales</a> descritas en el enlace</span>
+          <span class="txt">Acepto recibir información por las <a href="#" target="_blank" rel="noopener">Finalidades Comerciales Adicionales</a> (opcional).</span>
         </label>
 
         <button class="submit-btn" type="submit">
@@ -503,10 +514,11 @@
   <div class="footer-bar">
     <div class="shell footer-bar-inner">
       <p>Copyright SISE - Instituto de Educación Superior</p>
+      <p class="footer-educad">Somos parte de <img src="assets/img/logo-grupo-educad.webp" alt="Grupo Educa_d" width="118" height="32" loading="lazy"></p>
       <nav aria-label="Enlaces legales">
-        <a href="#">Políticas de Privacidad</a>
+        <a href="politica-de-privacidad.html">Políticas de Privacidad</a>
         <a href="#">Términos y Condiciones</a>
-        <a href="#">Portal de Transparencia</a>
+        <a href="portal-de-transparencia.html">Portal de Transparencia</a>
       </nav>
     </div>
   </div>
@@ -528,9 +540,9 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=551"></script>
-<script src="assets/js/data.js?v=551"></script>
-<script src="assets/js/crm.js?v=551"></script>
-<script src="assets/js/main.js?v=551"></script>
+<script src="assets/js/icons.js?v=581"></script>
+<script src="assets/js/data.js?v=581"></script>
+<script src="assets/js/crm.js?v=581"></script>
+<script src="assets/js/main.js?v=581"></script>
 </body>
 </html>
