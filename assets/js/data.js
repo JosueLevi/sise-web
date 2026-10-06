@@ -89,6 +89,7 @@ const MENU_PANEL = {
     {
       titulo: 'Estudia en SISE',
       areas: true,
+      admision: true,   // anade el subgrupo "Admision" (ADMISION_TIPOS)
       items: [
         { label: 'Carreras semipresenciales',  url: 'carreras-semipresenciales.html' },
         { label: 'Carreras virtuales',         url: 'carreras-virtuales.html' },
@@ -798,6 +799,19 @@ const ESCUELA = [
   { nombre: 'Gestión y Dirección Financiera',           cat: 'escuela', url: '#' }
 ];
 
+/* ---------- ADMISION ----------
+   Mismo formato que Escuela: alimenta el panel "Admision" del menu y el
+   subgrupo del mismo nombre en la hamburguesa, asi que se edita aqui. */
+const AREAS_ADMISION = [
+  { slug: 'admision', label: 'Admisión', icon: 'matricula' }
+];
+
+const ADMISION_TIPOS = [
+  { nombre: 'Admisión Regular', cat: 'admision', url: '#' },
+  { nombre: 'Traslados',        cat: 'admision', url: '#' },
+  { nombre: 'Reingresantes',    cat: 'admision', url: '#' }
+];
+
 const MENU = [
   {
     label: 'Carreras',
@@ -817,6 +831,11 @@ const MENU = [
     label: 'Escuela',
     url: '#',
     auto: 'escuela'
+  },
+  {
+    label: 'Admisión',
+    url: '#',
+    auto: 'admision'
   },
   { label: '¿Por qué SISE?', url: '#porque' }
 ];

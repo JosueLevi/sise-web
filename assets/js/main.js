@@ -414,7 +414,9 @@
       idiomas:  { areas: (typeof AREAS_IDIOMAS !== 'undefined') ? AREAS_IDIOMAS : [],
                   items: (typeof IDIOMAS_CURSO !== 'undefined') ? IDIOMAS_CURSO : [] },
       escuela:  { areas: (typeof AREAS_ESCUELA !== 'undefined') ? AREAS_ESCUELA : [],
-                  items: (typeof ESCUELA !== 'undefined') ? ESCUELA : [] }
+                  items: (typeof ESCUELA !== 'undefined') ? ESCUELA : [] },
+      admision: { areas: (typeof AREAS_ADMISION !== 'undefined') ? AREAS_ADMISION : [],
+                  items: (typeof ADMISION_TIPOS !== 'undefined') ? ADMISION_TIPOS : [] }
     }[tipo] || { areas: [], items: [] };
     return cfg.areas
       .map((a) => ({ label: a.label, icon: a.icon, items: cfg.items.filter((c) => c.cat === a.slug) }))
@@ -522,6 +524,9 @@
           const nueva = hayNueva && archivo === 'carreras-semipresenciales.html';
           return `<a href="${esc(it.url)}"${aqui ? ' aria-current="page"' : ''}>${esc(it.label)}${nueva ? ' <span class="tag-nuevo">Nuevo</span>' : ''}</a>`;
         }).join('')}
+        ${c.admision && typeof ADMISION_TIPOS !== 'undefined' && ADMISION_TIPOS.length ? `
+          <p class="sm-sub-t">Admisión</p>
+          ${ADMISION_TIPOS.map((it) => `<a href="${esc(it.url)}">${esc(it.nombre)}</a>`).join('')}` : ''}
         ${c.areas && areasMenu.length ? `
           <p class="sm-sub-t">Por área</p>
           <div class="sm-areas">

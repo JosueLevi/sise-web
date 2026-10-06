@@ -262,7 +262,10 @@ p{margin:0}
   opacity:0;pointer-events:none;
 }
 .site-header.is-stuck{inset:10px 0 auto 0}
-.header-shell{width:100%;max-width:1288px;margin-inline:auto;padding-inline:var(--gut)}
+/* 1400 y no 1288: con cinco entradas (Admision) la pildora de 1240px
+   quedaba apretada. Es una barra flotante, no tiene que cuadrar con la
+   columna del contenido. */
+.header-shell{width:100%;max-width:1400px;margin-inline:auto;padding-inline:var(--gut)}
 
 /* Sobre el banner no hay panel: ni borde, ni fondo, ni desenfoque.
    Lo que sostiene el texto es el degradado del borde superior de la
@@ -320,7 +323,23 @@ p{margin:0}
 .brand-logo[data-ico="logo-respaldo"]{width:246px;height:32px}
 .brand-logo > svg{width:100%;height:100%;display:block}
 
-.main-nav{display:flex;align-items:center;gap:clamp(12px,1.8vw,30px);margin-inline:auto}
+/* El hueco entre entradas: 16px a 1300 (la pildora aun es estrecha y en
+   Cursos no cabia mas), ~28px a 1366 y 32px desde ~1390, cuando la
+   pildora ya tiene su ancho maximo. Sube rapido a proposito: el sitio que
+   gana la pildora se reparte entre las entradas y no en los extremos. */
+.main-nav{display:flex;align-items:center;gap:clamp(11px,calc(18vw - 218px),32px);margin-inline:auto}
+/* Laptops chicas (1181-1299): a 1200 la hamburguesa se salia 45px de la
+   pantalla. Solo en este tramo se juntan las entradas, el logo baja un
+   poco y Empleabilidad se estrecha; desde 1300 la pildora ya tiene sitio
+   y por debajo de 1181 el menu va entero en la hamburguesa. */
+@media (min-width:1181px) and (max-width:1299px){
+  .main-nav{gap:10px}
+  .brand-logo[data-ico="logo-respaldo"]{width:200px;height:26px}
+  .site-header .btn-empleo{padding:12px 18px;font-size:15px;margin-left:12px}
+  /* La barra pintada (al bajar, y siempre en las paginas internas como
+     Cursos) lleva mas relleno lateral: aqui se recorta para que quepa. */
+  .site-header.is-stuck .nav-pill{padding:8px 10px 8px 18px}
+}
 .nav-link{
   display:inline-flex;align-items:center;gap:6px;
   font-family:inherit;font-size:16px;font-weight:500;color:#fff;
@@ -1577,34 +1596,28 @@ body:not(.form-abierto) .form-velo{opacity:0}
 @media (prefers-reduced-motion:reduce){
   .pil-capa,.pil-capa.is-activa{animation:none;transform:none}
 }
-/* Un velo mas suave que antes: ahora el que sostiene el texto es el
-   panel de vidrio de abajo, asi que la foto puede verse mas. */
+/* Base oscura que sostiene el texto: el tercio de abajo de la foto se
+   cierra hasta casi negro. Antes habia un panel de vidrio al 34%, y
+   sobre fotos claras (piso y ventanas iluminadas) quedaba un gris
+   lavado que dejaba ver las piernas desenfocadas y apagaba el texto.
+   Es el mismo recurso que el banner y las tarjetas de carreras. */
 .pil-escena::before{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:linear-gradient(180deg,
-    rgba(7,8,12,0) 0,rgba(7,8,12,0) 52%,
-    rgba(7,8,12,.24) 72%,rgba(7,8,12,.52) 100%);
+    rgba(7,8,12,0) 0,rgba(7,8,12,0) 38%,
+    rgba(7,8,12,.5) 62%,rgba(7,8,12,.88) 100%);
 }
 .pil-frente{
   position:relative;z-index:1;width:100%;
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding:clamp(26px,3.4vw,46px);
+  padding:clamp(26px,3.4vw,46px) clamp(26px,3.6vw,52px);
 }
-/* ---- Pestanas ---- */
-/* Las tres pestanas viven en una franja de vidrio. Antes iban sueltas
-   sobre la foto y su legibilidad dependia de que foto estuviera
-   pasando; ahora el panel las sostiene siempre igual. */
+/* ---- Pestanas ----
+   Directas sobre la foto, sin caja: el degradado de arriba les da el
+   contraste. */
 .pil-tabs{
   display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,34px);
   align-items:end;
-  padding:clamp(18px,2vw,26px) clamp(18px,2.2vw,28px);
-  border-radius:clamp(16px,1.6vw,22px);
-  background:var(--vidrio-oscuro);
-  -webkit-backdrop-filter:var(--vidrio-blur);backdrop-filter:var(--vidrio-blur);
-  border:1px solid var(--vidrio-filete-oscuro);
-}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  .pil-tabs{background:rgba(7,8,12,.62)}
 }
 .pil-tab{
   display:flex;flex-direction:column;gap:10px;
@@ -1655,7 +1668,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
       rgba(7,8,12,0) 0,rgba(7,8,12,0) 32%,
       rgba(7,8,12,.55) 52%,rgba(7,8,12,.88) 70%,rgba(7,8,12,.92) 100%);
   }
-  .pil-tabs{grid-template-columns:1fr;gap:0;padding:6px 16px 12px}
+  .pil-tabs{grid-template-columns:1fr;gap:0}
   .pil-tab{gap:8px;padding-block:14px}
   .pil-tab .pil-title{font-size:16px}
   .pil-ico{width:26px;height:26px}
