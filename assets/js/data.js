@@ -194,8 +194,8 @@ const HERO_SLIDES = [
   {
     // ?v=2: foto nueva con el mismo nombre; sin esto el navegador
     // seguiria mostrando la anterior que tiene guardada.
-    img: 'assets/img/hero-01.webp?v=2',
-    imgMovil: 'assets/img/hero-01-movil.webp?v=2',
+    img: 'assets/img/hero-01.webp?v=3',
+    imgMovil: 'assets/img/hero-01-movil.webp?v=3',
     l1: 'Se estudia',
     l2: 'Como se vive',
     sub: 'Aquí no se ensaya, no se practica. Se vive.'
