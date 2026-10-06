@@ -527,6 +527,13 @@ p{margin:0}
 .sm-brand{display:inline-flex;flex-direction:column;gap:5px}
 .sm-brand-logo{display:block;width:clamp(112px,12vw,142px);color:var(--red)}
 .sm-brand-logo svg{width:100%;height:auto;display:block}
+/* Logo con el aval (469x70): mas ancho que el anterior para que el texto
+   de la Cientifica se lea. Tamaño explicito por Safari, como en el header. */
+.sm-brand-logo[data-ico="logo-respaldo"]{width:234px;height:35px}
+.sm-brand-logo[data-ico="logo-respaldo"] svg{height:100%}
+@media (max-width:640px){
+  .sm-brand-logo[data-ico="logo-respaldo"]{width:188px;height:28px}
+}
 .sm-brand-sub{
   font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;
   letter-spacing:.3em;text-transform:uppercase;color:var(--ink);
