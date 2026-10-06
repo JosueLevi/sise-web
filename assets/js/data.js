@@ -71,7 +71,7 @@ const PROMO = {
   dato: '5 de octubre',
   carrera: 'Diseño de Interiores',
   url: '',
-  hasta: '2026-10-05'                       // AAAA-MM-DD, ultimo dia que se muestra
+  hasta: '2026-12-31'                       // AAAA-MM-DD, ultimo dia que se muestra
 };
 
 /* ============================================================
