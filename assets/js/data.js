@@ -834,7 +834,12 @@ const MENU = [
   {
     label: 'Escuela',
     url: '#',
-    auto: 'escuela'
+    auto: 'escuela',
+    // Nota al pie del panel: muchos no saben que es "Escuela"
+    nota: {
+      icono: 'info',
+      texto: 'El bachiller equivalente al universitario es un grado académico reconocido por SUNEDU que acredita el mismo nivel de formación que un bachiller universitario.'
+    }
   },
   {
     label: 'Admisión',

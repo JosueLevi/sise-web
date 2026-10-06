@@ -439,7 +439,8 @@
                     <span class="mega-ico" aria-hidden="true">${ico(a.icon)}</span>${esc(a.label)}
                   </p>
                   ${a.items.map((c) => `<a role="menuitem" href="${esc(c.url || '#')}">${esc(c.nombre)}${c.nuevo ? ' <span class="tag-nuevo">Nuevo</span>' : ''}</a>`).join('')}
-                </div>`).join('')}`
+                </div>`).join('')}
+             ${m.nota ? `<p class="mega-nota">${m.nota.icono ? `<span class="mega-nota-ico" aria-hidden="true">${ico(m.nota.icono)}</span>` : ''}<span>${esc(m.nota.texto)}</span></p>` : ''}`
           : m.items.map((it) => `<a role="menuitem" href="${esc(it.url)}"${it.destacado ? ' class="is-cta"' : ''}>${esc(it.label)}</a>`).join('');
 
         return `

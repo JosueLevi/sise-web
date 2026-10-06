@@ -432,6 +432,17 @@ p{margin:0}
   gap:0;padding:20px 22px 16px;
 }
 .drop-mega.is-compact .mega-col a{white-space:nowrap}
+/* Nota al pie del panel (MENU[].nota): separada por una linea fina, con
+   el icono en rojo y el texto mas chico que las opciones. Ocupa todas
+   las columnas en el panel ancho. */
+.mega-nota{
+  grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;
+  margin:10px 0 2px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:12.5px;line-height:1.5;color:var(--body);text-shadow:none;
+  font-style:italic;text-align:justify;hyphens:auto;
+}
+.mega-nota-ico{flex:none;width:20px;height:20px;color:var(--red);margin-top:1px}
+.mega-nota-ico svg{width:100%;height:100%;display:block}
 
 .drop-mega .mega-col a:hover{
   background:transparent;color:var(--red);padding-left:5px;
