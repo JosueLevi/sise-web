@@ -57,9 +57,10 @@ const FLOTANTES = {
 /* ============================================================
    POPUP PROMOCIONAL (abajo a la izquierda)
    ============================================================
-   No se cierra, solo se minimiza a una pestaña. Para quitarlo basta
-   con borrar el bloque o dejar PROMO = null; pasada la fecha "hasta"
-   deja de salir solo.
+   Se minimiza a una pestaña y, con cerrable: true, tambien se puede
+   cerrar (no vuelve en esa visita). Para quitarlo basta con borrar el
+   bloque o dejar PROMO = null; pasada la fecha "hasta" deja de salir
+   solo.
 
    "Conoce mas" lleva a url si la hay. Sin url abre el formulario con
    la carrera ya elegida (el nombre tiene que existir en CRM_CARRERAS). */
@@ -71,7 +72,8 @@ const PROMO = {
   dato: '5 de octubre',
   carrera: 'Diseño de Interiores',
   url: '',
-  hasta: '2026-12-31'                       // AAAA-MM-DD, ultimo dia que se muestra
+  hasta: '2026-12-31',                      // AAAA-MM-DD, ultimo dia que se muestra
+  cerrable: true                            // true = lleva X para cerrarlo; false = solo se minimiza
 };
 
 /* ============================================================
@@ -190,8 +192,10 @@ const MENU_PANEL = {
 */
 const HERO_SLIDES = [
   {
-    img: 'assets/img/hero-01.webp',
-    imgMovil: 'assets/img/hero-01-movil.webp',
+    // ?v=2: foto nueva con el mismo nombre; sin esto el navegador
+    // seguiria mostrando la anterior que tiene guardada.
+    img: 'assets/img/hero-01.webp?v=2',
+    imgMovil: 'assets/img/hero-01-movil.webp?v=2',
     l1: 'Se estudia',
     l2: 'Como se vive',
     sub: 'Aquí no se ensaya, no se practica. Se vive.'

@@ -3134,11 +3134,15 @@
 
   const promoDatos = (typeof PROMO !== 'undefined') ? PROMO : null;
   const promoVence = promoDatos && promoDatos.hasta && new Date(promoDatos.hasta + 'T23:59:59') < new Date();
-  if (promoDatos && promoDatos.imagen && !promoVence) {
+  // Cerrado en esta visita (solo si se permite cerrar): no vuelve a salir
+  const CLAVE_CERRADO = 'sise-promo-cerrado';
+  let promoCerrado = false;
+  try { promoCerrado = !!(promoDatos && promoDatos.cerrable) && sessionStorage.getItem(CLAVE_CERRADO) === '1'; } catch (e) {}
+  if (promoDatos && promoDatos.imagen && !promoVence && !promoCerrado) {
     const p = promoDatos;
     const flecha = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
     const promo = document.createElement('aside');
-    promo.className = 'promo';
+    promo.className = 'promo' + (p.cerrable ? ' con-cerrar' : '');
     promo.hidden = true;
     promo.setAttribute('aria-label', p.titulo + (p.dato ? ': ' + p.detalle + ' ' + p.dato : ''));
     promo.innerHTML = `
@@ -3154,7 +3158,10 @@
         <img class="promo-mini" src="${esc(p.imagen)}" alt="">
         <span class="promo-pt"><b>${esc(p.titulo)}</b>${p.dato ? `<span>${esc(p.detalle || '')} <em>${esc(p.dato)}</em></span>` : ''}</span>
         ${flecha}<path d="M6 15l6-6 6 6"/></svg>
-      </button>`;
+      </button>
+      ${p.cerrable ? `<button class="promo-cerrar" type="button" aria-label="Cerrar anuncio">
+        ${flecha}<path d="M7 7l10 10M17 7L7 17"/></svg>
+      </button>` : ''}`;
     document.body.appendChild(promo);
 
     const btnMin = $('.promo-min', promo);
@@ -3207,6 +3214,16 @@
 
     btnMin.addEventListener('click', () => { autoHecho = true; minimiza(true, true); btnAbrir.focus(); });
     btnAbrir.addEventListener('click', () => { autoHecho = true; minimiza(false, true); enlace.focus(); });
+
+    // Cerrar: lo quita del todo y no vuelve en el resto de la visita
+    const btnCerrar = $('.promo-cerrar', promo);
+    if (btnCerrar) btnCerrar.addEventListener('click', () => {
+      clearTimeout(reloj);
+      window.removeEventListener('scroll', muestra);
+      window.removeEventListener('scroll', autoMinimiza);
+      promo.remove();
+      try { sessionStorage.setItem(CLAVE_CERRADO, '1'); } catch (e) {}
+    });
 
     // Sin pagina propia: abre el formulario con la carrera elegida. Si la
     // pagina no tiene ese formulario (el de Logistica trae su carrera

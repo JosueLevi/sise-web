@@ -318,9 +318,10 @@ p{margin:0}
    hamburguesa fuera de la pantalla. Chrome no tiene ese fallo. */
 .brand-logo{display:block;width:108px;height:27px}
 /* Logo con el aval de la Universidad Cientifica del Sur: proporcion
-   600x78 (7,7:1). Mas alto que el anterior para que "SISE" no encoja;
-   el ancho va explicito por el mismo motivo de Safari. */
-.brand-logo[data-ico="logo-respaldo"]{width:246px;height:32px}
+   469x70 (6,7:1). A 29px de alto "SISE" mide lo mismo que con la version
+   anterior del logo (600x78 a 32px); el ancho va explicito por el mismo
+   motivo de Safari. */
+.brand-logo[data-ico="logo-respaldo"]{width:194px;height:29px}
 .brand-logo > svg{width:100%;height:100%;display:block}
 
 /* El hueco entre entradas: 16px a 1300 (la pildora aun es estrecha y en
@@ -334,7 +335,7 @@ p{margin:0}
    y por debajo de 1181 el menu va entero en la hamburguesa. */
 @media (min-width:1181px) and (max-width:1299px){
   .main-nav{gap:10px}
-  .brand-logo[data-ico="logo-respaldo"]{width:200px;height:26px}
+  .brand-logo[data-ico="logo-respaldo"]{width:154px;height:23px}
   .site-header .btn-empleo{padding:12px 18px;font-size:15px;margin-left:12px}
   /* La barra pintada (al bajar, y siempre en las paginas internas como
      Cursos) lleva mas relleno lateral: aqui se recorta para que quepa. */
@@ -3106,6 +3107,20 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .promo-min:hover{background:var(--red);color:#fff;transform:scale(1.08)}
 .promo-min:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .promo-min svg{width:12px;height:12px}
+/* Cerrar (PROMO.cerrable): el mismo circulo blanco, en la esquina; el de
+   minimizar se corre a su izquierda. Minimizado, queda sobre la pestaña. */
+.promo-cerrar{
+  position:absolute;top:-8px;right:-8px;z-index:3;
+  width:22px;height:22px;border-radius:50%;border:0;cursor:pointer;
+  background:#fff;color:var(--ink);box-shadow:0 3px 10px rgba(7,8,12,.28);
+  display:grid;place-items:center;
+  transition:background .2s var(--ease),color .2s var(--ease),transform .2s var(--ease);
+}
+.promo-cerrar::before{content:'';position:absolute;inset:-5px;border-radius:50%}
+.promo-cerrar:hover{background:var(--red);color:#fff;transform:scale(1.08)}
+.promo-cerrar:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.promo-cerrar svg{width:12px;height:12px}
+.promo.con-cerrar .promo-min{right:22px}
 .promo-pestana > svg{width:16px;height:16px;flex:none}
 .promo-pestana{
   display:none;align-items:center;gap:10px;
@@ -3295,10 +3310,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
   /* En movil comparte fila con Empleabilidad y la hamburguesa y al logo
      le quedan ~108px: el aval de la Cientifica saldria de 4px, ilegible.
      Se muestra solo "SISE >>", recortando el mismo SVG: la caja deja ver
-     los primeros 256 de sus 600 de ancho. A 28px de alto las letras
-     miden lo mismo que el logo anterior (92x23). */
-  .brand-logo[data-ico="logo-respaldo"]{width:92px;height:28px;overflow:hidden}
-  .brand-logo[data-ico="logo-respaldo"] > svg{width:215px;max-width:none}
+     los primeros ~257 de sus 469 de ancho (los chevrones acaban en 254).
+     A 26px de alto las letras miden lo mismo que antes. */
+  .brand-logo[data-ico="logo-respaldo"]{width:96px;height:26px;overflow:hidden}
+  .brand-logo[data-ico="logo-respaldo"] > svg{width:174px;max-width:none}
   .career-grid{grid-template-columns:repeat(2,1fr);gap:16px}
   .career-card{min-height:330px}
   .exp-grid{
