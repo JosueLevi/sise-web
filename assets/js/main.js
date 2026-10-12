@@ -762,6 +762,20 @@
 
   if (abrirForm && !tarjetaForm) abrirForm.addEventListener('click', vaAlForm);
 
+  /* Los demas "pedir informacion" -boton de la cabecera, el del menu,
+     el del cierre- abren el formulario de la propia pagina si lo tiene,
+     igual que el flotante. Asi en Logistica no se sale de la carrera.
+     Sin formulario en la pagina, el enlace sigue a index.html#form.
+     El enlace del popup ya lo resuelve el mismo (defaultPrevented). */
+  if (abrirForm && tarjetaForm) {
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[data-abre-form], a[href="#form"], a[href="index.html#form"]');
+      if (!a || e.defaultPrevented) return;
+      e.preventDefault();
+      abrirForm.click();
+    });
+  }
+
   if (abrirForm && formVelo && tarjetaForm) {
     let formDesde = null;
 
@@ -1178,6 +1192,11 @@
          entonces es la que abre: en cursos, empezar por la primera area
          mostraba 2 de 33. */
       const todas = cajaChips.dataset.todas;
+      /* Con data-todas-final la opcion va la ultima y no abre: en las
+         carreras se empieza por la primera area, y "Todas" queda para
+         quien no sabe en cual esta la suya. */
+      const todasFinal = cajaChips.dataset.todasFinal !== undefined;
+      const todasAbre = todas && !todasFinal;
       /* data-rico: la pastilla lleva ademas el icono del area y cuantos
          cursos tiene. Es el menu del catalogo. */
       const rico = cajaChips.dataset.rico !== undefined;
@@ -1190,8 +1209,9 @@
           ${rico ? `<span class="chip-n">${n}</span>` : ''}
         </button>`;
       cajaChips.innerHTML =
-        (todas ? pastilla('todas', todas, true, 'menu', D.items.length) : '') +
-        conItems.map((a, n) => pastilla(a.slug, a.label, !todas && n === 0, a.icon, cuantos(a.slug))).join('');
+        (todasAbre ? pastilla('todas', todas, true, 'menu', D.items.length) : '') +
+        conItems.map((a, n) => pastilla(a.slug, a.label, !todasAbre && n === 0, a.icon, cuantos(a.slug))).join('') +
+        (todas && todasFinal ? pastilla('todas', todas, false, 'menu', D.items.length) : '');
       cajaChips.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-filter]');
         if (!btn) return;
@@ -1473,15 +1493,15 @@
      4b. PILARES — la foto y la pestana se relevan solas
      ============================================================
      Cada pilar dura --pil-paso (CSS): cambia la foto, se abre su texto
-     y su linea avanza. El raton no lo detiene -solo sirve para elegir
-     pestana-; si lo pausa el foco del teclado dentro, para quien navega
-     asi, y al reanudar la linea sigue desde donde iba. */
+     y su linea avanza. Se pausa con el raton encima -para leer con
+     calma- y con el foco del teclado dentro; al reanudar, la linea
+     sigue desde donde iba. */
   const pilEscena = $('#pilEscena');
   if (pilEscena && !reduceMotion) {
     const capas = $$('.pil-capa', pilEscena);
     const tabs  = $$('.pil-tab', pilEscena);
     const PASO = (parseFloat(getComputedStyle(pilEscena).getPropertyValue('--pil-paso')) || 4) * 1000;
-    const estado = { visible: false, teclado: false };
+    const estado = { visible: false, teclado: false, raton: false };
     let actualPil = 0, reloj = null, restante = PASO, inicio = 0;
 
     function reiniciaLinea(t) {
@@ -1494,7 +1514,7 @@
 
     /* Corre solo si se ve y nadie lo esta mirando de cerca */
     function evalua() {
-      const corre = estado.visible && !estado.teclado;
+      const corre = estado.visible && !estado.teclado && !estado.raton;
       if (corre && !reloj) {
         inicio = performance.now();
         reloj = setTimeout(siguiente, restante);
@@ -1531,6 +1551,15 @@
     });
     pilEscena.addEventListener('focusout', (e) => {
       if (!pilEscena.contains(e.relatedTarget)) { estado.teclado = false; evalua(); }
+    });
+
+    /* Solo raton: en tactil no hay "salir", y un toque lo dejaria
+       pausado para siempre */
+    pilEscena.addEventListener('pointerenter', (e) => {
+      if (e.pointerType === 'mouse') { estado.raton = true; evalua(); }
+    });
+    pilEscena.addEventListener('pointerleave', (e) => {
+      if (e.pointerType === 'mouse') { estado.raton = false; evalua(); }
     });
 
     /* Solo corre mientras se ve. Al entrar por primera vez la linea del
@@ -3119,8 +3148,9 @@
 
   /* ---------- Popup promocional (PROMO en data.js) ----------
      Abajo a la izquierda: a la derecha ya estan WhatsApp y el registro.
-     No se cierra, solo se minimiza; si se minimiza, sigue asi el resto
-     de la visita para no insistir en cada pagina. */
+     Segun PROMO se cierra (X), se minimiza a una pestaña, o ambas; lo
+     que se cierre o minimice sigue asi el resto de la visita para no
+     insistir en cada pagina. */
 
   // Elige una carrera en el desplegable del formulario como si la
   // pulsara el visitante, para que el desplegable a medida se entere.
@@ -3141,6 +3171,8 @@
   try { promoCerrado = !!(promoDatos && promoDatos.cerrable) && sessionStorage.getItem(CLAVE_CERRADO) === '1'; } catch (e) {}
   if (promoDatos && promoDatos.imagen && !promoVence && !promoCerrado) {
     const p = promoDatos;
+    // Sin "minimizable" (o en false) no hay pestaña: solo la X, si es cerrable
+    const puedeMin = !!p.minimizable;
     const flecha = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
     const promo = document.createElement('aside');
     promo.className = 'promo' + (p.cerrable ? ' con-cerrar' : '');
@@ -3152,14 +3184,14 @@
           <img src="${esc(p.imagen)}" width="720" height="480" alt="${esc(p.alt || p.titulo)}">
         </a>
       </div>
-      <button class="promo-min" type="button" aria-label="Minimizar anuncio" aria-controls="promoTarjeta" aria-expanded="true">
+      ${puedeMin ? `<button class="promo-min" type="button" aria-label="Minimizar anuncio" aria-controls="promoTarjeta" aria-expanded="true">
         ${flecha}<path d="M6 12h12"/></svg>
       </button>
       <button class="promo-pestana" type="button" aria-label="Ver anuncio: ${esc(p.titulo)}" aria-controls="promoTarjeta" aria-expanded="false">
         <img class="promo-mini" src="${esc(p.imagen)}" alt="">
         <span class="promo-pt"><b>${esc(p.titulo)}</b>${p.dato ? `<span>${esc(p.detalle || '')} <em>${esc(p.dato)}</em></span>` : ''}</span>
         ${flecha}<path d="M6 15l6-6 6 6"/></svg>
-      </button>
+      </button>` : ''}
       ${p.cerrable ? `<button class="promo-cerrar" type="button" aria-label="Cerrar anuncio">
         ${flecha}<path d="M7 7l10 10M17 7L7 17"/></svg>
       </button>` : ''}`;
@@ -3171,13 +3203,14 @@
     const CLAVE = 'sise-promo-min';
 
     function minimiza(si, guardar) {
+      if (!puedeMin) return;
       promo.classList.toggle('is-min', si);
       btnMin.setAttribute('aria-expanded', String(!si));
       btnAbrir.setAttribute('aria-expanded', String(!si));
       if (guardar) { try { sessionStorage.setItem(CLAVE, si ? '1' : '0'); } catch (e) {} }
     }
     let estaba = false;
-    try { estaba = sessionStorage.getItem(CLAVE) === '1'; } catch (e) {}
+    try { estaba = puedeMin && sessionStorage.getItem(CLAVE) === '1'; } catch (e) {}
     minimiza(estaba, false);
 
     /* Entrada: a los 4,5 s o con el primer scroll, lo que llegue antes.
@@ -3211,10 +3244,12 @@
         window.removeEventListener('scroll', autoMinimiza);
       }
     }
-    if (!estaba) window.addEventListener('scroll', autoMinimiza, { passive: true });
+    if (puedeMin && !estaba) window.addEventListener('scroll', autoMinimiza, { passive: true });
 
-    btnMin.addEventListener('click', () => { autoHecho = true; minimiza(true, true); btnAbrir.focus(); });
-    btnAbrir.addEventListener('click', () => { autoHecho = true; minimiza(false, true); enlace.focus(); });
+    if (puedeMin) {
+      btnMin.addEventListener('click', () => { autoHecho = true; minimiza(true, true); btnAbrir.focus(); });
+      btnAbrir.addEventListener('click', () => { autoHecho = true; minimiza(false, true); enlace.focus(); });
+    }
 
     // Cerrar: lo quita del todo y no vuelve en el resto de la visita
     const btnCerrar = $('.promo-cerrar', promo);

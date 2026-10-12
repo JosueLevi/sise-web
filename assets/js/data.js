@@ -57,8 +57,8 @@ const FLOTANTES = {
 /* ============================================================
    POPUP PROMOCIONAL (abajo a la izquierda)
    ============================================================
-   Se minimiza a una pestaña y, con cerrable: true, tambien se puede
-   cerrar (no vuelve en esa visita). Para quitarlo basta con borrar el
+   Con cerrable: true lleva X (no vuelve en esa visita); con
+   minimizable: true se reduce a una pestaña. Puede llevar uno o los dos. Para quitarlo basta con borrar el
    bloque o dejar PROMO = null; pasada la fecha "hasta" deja de salir
    solo.
 
@@ -73,7 +73,8 @@ const PROMO = {
   carrera: 'Diseño de Interiores',
   url: '',
   hasta: '2026-12-31',                      // AAAA-MM-DD, ultimo dia que se muestra
-  cerrable: true                            // true = lleva X para cerrarlo; false = solo se minimiza
+  cerrable: true,                           // true = lleva X para cerrarlo
+  minimizable: false                        // true = lleva "-" para dejarlo como pestaña
 };
 
 /* ============================================================
@@ -105,6 +106,8 @@ const MENU_PANEL = {
         { label: 'Home',      url: 'index.html' },
         { label: 'Nosotros',  url: '#' },
         { label: 'Sedes',     url: 'index.html#sedes' },
+        // Antes era el boton de la cabecera, que ahora lleva al formulario
+        { label: 'Empleabilidad', url: '#' },
         { label: 'Blog',      url: 'index.html#novedades' },
         { label: 'Eventos',   url: '#' }
       ]
@@ -627,7 +630,7 @@ const EXPERIENCIAS = [
 const NOVEDADES = {
   blog: [
     { img: 'assets/img/blog-card.webp', titulo: '¡SISE ahora es Escuela!', extracto: 'Ya puedes obtener tu grado de bachiller equivalente al universitario.', tag: 'Marketing', url: '#' },
-    { img: 'assets/img/blog-card.webp', titulo: '¡SISE ahora es Escuela!', extracto: 'Ya puedes obtener tu grado de bachiller equivalente al universitario.', tag: 'Administración Logística', url: '#' },
+    { img: 'assets/img/blog-card.webp', titulo: '¡SISE ahora es Escuela!', extracto: 'Ya puedes obtener tu grado de bachiller equivalente al universitario.', tag: 'Gestión Logística', url: '#' },
     { img: 'assets/img/blog-card.webp', titulo: '¡SISE ahora es Escuela!', extracto: 'Ya puedes obtener tu grado de bachiller equivalente al universitario.', tag: 'Enfermería', url: '#' },
     { img: 'assets/img/blog-card.webp', titulo: '¡SISE ahora es Escuela!', extracto: 'Ya puedes obtener tu grado de bachiller equivalente al universitario.', tag: 'Recursos Humanos', url: '#' }
   ],
