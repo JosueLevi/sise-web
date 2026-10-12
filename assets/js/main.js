@@ -672,22 +672,6 @@
            saltara ninguno de los avisos de arriba. */
         btnReg.addEventListener('pointerenter', mide);
         btnReg.addEventListener('focus', mide);
-
-        /* En tactil no hay con que abrirla, asi que se presenta sola: la
-           primera vez que el visitante baja de verdad se abre cuatro
-           segundos y se cierra. Antes se quedaba abierta todo el rato y
-           tapaba la esquina de la pagina -en el catalogo, justo encima
-           del selector de orden-. */
-        if (window.matchMedia('(hover:none)').matches) {
-          const saluda = () => {
-            if (window.scrollY < 500) return;
-            window.removeEventListener('scroll', saluda);
-            mide();
-            btnReg.classList.add('is-abierto');
-            setTimeout(() => btnReg.classList.remove('is-abierto'), 4000);
-          };
-          window.addEventListener('scroll', saluda, { passive: true });
-        }
       }
     }
 
