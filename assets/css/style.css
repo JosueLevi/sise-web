@@ -3162,6 +3162,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .promo.is-min .promo-pestana{display:inline-flex;animation:promoEntra .3s var(--ease)}
 @media (max-width:640px){
   .promo{left:12px;bottom:14px;width:min(240px,calc(100vw - 96px))}
+  /* El anuncio y la pastilla del formulario no caben en la misma fila:
+     mientras el anuncio esta abierto la pastilla queda en icono, y al
+     cerrarlo vuelve a abrirse con su texto. */
+  body.con-promo .floater-form .floater-txt{max-width:0}
   .promo-tarjeta{border-radius:13px}
   .promo-pt span{display:none}
 }

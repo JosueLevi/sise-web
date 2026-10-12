@@ -3206,6 +3206,9 @@
       clearTimeout(reloj);
       window.removeEventListener('scroll', muestra);
       promo.hidden = false;
+      // En movil no caben juntos: el flotante del formulario se queda
+      // en icono mientras el anuncio esta abierto (ver .con-promo en CSS)
+      document.body.classList.add('con-promo');
     }
     if (estaba) muestra();
     else {
@@ -3242,6 +3245,7 @@
       window.removeEventListener('scroll', muestra);
       window.removeEventListener('scroll', autoMinimiza);
       promo.remove();
+      document.body.classList.remove('con-promo');
       try { sessionStorage.setItem(CLAVE_CERRADO, '1'); } catch (e) {}
     });
 
