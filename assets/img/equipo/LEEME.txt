@@ -1,0 +1,20 @@
+Retratos de la plana directiva.
+
+Los nombres de archivo los fija assets/js/data.js (const DIRECTIVOS).
+Hoy se esperan estos ocho:
+
+  luis-melgarejo.webp
+  henry-quinteros.webp
+  juneth-valverde.webp
+  mirko-bayetto.webp
+  veruska-mori.webp
+  geraldine-guzman.webp
+  stewart-aguinaga.webp
+  jannet-llanovarced.webp
+
+Formato: .webp, vertical 4:5 (por ejemplo 800 x 1000), encuadre de
+medio cuerpo y con aire sobre la cabeza. La tarjeta recorta desde
+arriba, asi que la cara tiene que quedar en el tercio superior.
+
+Mientras falte una foto, la ficha muestra las iniciales sobre rosa.
+No hay que tocar nada mas: basta con dejar el archivo aqui.

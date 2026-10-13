@@ -3015,6 +3015,341 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .doc-nombre{font-size:14px}
 }
 
+/* ---------- ¿Por que SISE? ----------
+   La pagina alterna superficies a proposito: foto a sangre, papel
+   sobre el gris, una franja oscura, otra vez papel y un carril de
+   fotos. Sin esa alternancia, siete bloques de tarjetas blancas se
+   leen como uno solo muy largo. */
+
+/* --- Banner: las fotos se relevan --- */
+/* Las capas las crea main.js. Van detras del velo, que es quien
+   sostiene el texto. */
+.car-hero.nos-hero{min-height:660px}
+.nos-hero-capa{
+  position:absolute;inset:0;
+  background-size:cover;background-position:50% 62%;
+  opacity:0;transition:opacity 1.6s var(--ease);
+}
+.nos-hero-capa.is-activa{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .nos-hero-capa{transition:none}
+}
+
+/* --- Subtitulos a todo el ancho --- */
+/* El resto de la web corta los subtitulos a 640px: a 1240 una linea
+   son unos 150 caracteres y el ojo se pierde al cambiar de renglon.
+   Aqui se sueltan a peticion expresa, y solo aqui. */
+.pagina-nosotros .section-head--left .section-sub{max-width:none}
+
+/* --- Historia: descripcion fija y hitos al costado --- */
+.nos-historia-grid{
+  display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1fr);
+  gap:clamp(34px,4vw,72px);align-items:start;
+}
+/* La descripcion se queda quieta mientras pasan los hitos: es el
+   contexto de todo lo que hay a la derecha y no deberia irse. */
+.nos-historia-txt{position:sticky;top:calc(var(--header-h) + 28px)}
+.nos-historia-txt .section-head{margin-bottom:22px}
+.nos-lead{font-size:18px;line-height:1.6;color:var(--ink-2);font-weight:500;margin:0 0 16px}
+.nos-p{font-size:15px;line-height:1.75;color:var(--body);margin:0 0 14px}
+.nos-p:last-child{margin-bottom:0}
+
+/* --- Linea de tiempo --- */
+/* Cada hito es una fila: foto a un lado y texto al otro, cambiando de
+   lado en cada paso. El eje corre por el borde izquierdo de la
+   columna, fuera de ese baile, y cada tramo se pone rojo cuando su
+   hito aparece: la linea se rellena de arriba abajo sola. */
+.tl{
+  --tl-eje:34px;
+  list-style:none;margin:0;padding:0 0 0 var(--tl-eje);
+  display:grid;gap:clamp(22px,2.4vw,34px);
+}
+.tl-hito{
+  position:relative;
+  display:grid;grid-template-columns:220px minmax(0,1fr);
+  gap:clamp(18px,1.8vw,26px);align-items:center;
+}
+.tl-hito:nth-child(odd) .tl-foto{grid-column:1;grid-row:1}
+.tl-hito:nth-child(odd) .tl-caja{grid-column:2;grid-row:1}
+/* Los pares, al reves: la foto pasa a la derecha */
+.tl-hito:nth-child(even) .tl-foto{grid-column:2;grid-row:1}
+.tl-hito:nth-child(even) .tl-caja{grid-column:1;grid-row:1}
+.tl-hito:nth-child(even){grid-template-columns:minmax(0,1fr) 220px}
+
+.tl-foto{
+  margin:0;border-radius:var(--r-md);overflow:hidden;
+  aspect-ratio:4/3;background:var(--gris-100);
+  box-shadow:var(--papel-sombra);
+}
+.tl-foto img{width:100%;height:100%;object-fit:cover;display:block}
+/* Sin foto, la fila se queda a una sola columna */
+.tl-foto--vacia{display:none}
+
+/* El eje: un tramo por hito, pegados entre si por el hueco */
+.tl-eje{
+  position:absolute;left:calc(var(--tl-eje) * -1);top:0;
+  height:calc(100% + clamp(22px,2.4vw,34px));width:0;
+}
+.tl-hito:last-child .tl-eje{height:50%}
+.tl-eje::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:2px;margin-left:-1px;background:var(--line);
+  transition:background .55s var(--ease);
+}
+.tl-hito.is-in .tl-eje::before{background:var(--red)}
+/* El ultimo tramo se desvanece: la historia sigue */
+.tl-hito:last-child.is-in .tl-eje::before{
+  background:linear-gradient(180deg,var(--red) 20%,rgba(255,14,73,0));
+}
+.tl-punto{
+  position:absolute;left:0;top:50%;
+  width:13px;height:13px;border-radius:999px;
+  transform:translate(-50%,-50%);
+  background:#fff;border:3px solid var(--gris-300);
+  box-shadow:0 0 0 5px var(--bg);
+  transition:border-color .55s var(--ease);
+}
+.tl-hito.is-in .tl-punto{border-color:var(--red)}
+
+.tl-rotulo{
+  display:block;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:14px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--red-700);margin-bottom:5px;
+}
+.tl-t{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:22px;color:var(--ink);margin:0 0 8px;line-height:1.18;
+}
+.tl-p{font-size:15px;line-height:1.65;color:var(--body);margin:0}
+.tl-caja{max-width:62ch}
+.nos-historia .pil-cifras{
+  margin-top:clamp(44px,4.6vw,64px);
+  padding-top:clamp(28px,3vw,36px);
+  border-top:1px solid var(--line);
+}
+
+/* --- Franja de mision y vision --- */
+/* La unica superficie oscura de la pagina. La frase de marca es lo
+   mas grande que hay en ella: es el unico sitio donde el texto manda
+   sobre la caja. */
+.nos-franja{
+  position:relative;overflow:hidden;
+  background:var(--negro);color:#fff;
+  padding:clamp(66px,7vw,104px) 0;
+}
+.nos-franja-deco{
+  position:absolute;right:-30px;top:50%;transform:translateY(-50%);
+  width:clamp(220px,26vw,380px);color:rgba(255,255,255,.045);
+  pointer-events:none;
+}
+.nos-franja-deco svg{width:100%;height:auto;display:block}
+.nos-franja-grid{
+  position:relative;
+  display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
+  gap:clamp(30px,4vw,64px);align-items:center;
+}
+.nos-franja-rot{
+  display:block;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:14px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--red);margin-bottom:16px;
+}
+.nos-frase{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:clamp(34px,4.6vw,58px);line-height:1.04;letter-spacing:.005em;
+  margin:0;
+}
+.nos-frase em{font-style:normal;color:var(--red)}
+.nos-franja-p{
+  font-size:clamp(16px,1.3vw,18px);line-height:1.7;
+  color:var(--blanco-2);margin:0;
+}
+/* Un filete que separa la vision de la frase sin meter una caja */
+@media (min-width:901px){
+  .nos-franja-vision{padding-left:clamp(30px,3.4vw,54px);border-left:1px solid rgba(255,255,255,.16)}
+}
+
+/* --- Valores: uno cada vez --- */
+.val{
+  display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+  gap:clamp(22px,2.6vw,40px);align-items:start;
+}
+.val-lista{display:grid;gap:4px}
+.val-tab{
+  position:relative;
+  display:grid;grid-template-columns:auto 1fr;align-items:center;gap:14px;
+  text-align:left;padding:16px 16px 18px;
+  background:none;border:0;border-radius:var(--r-md);
+  cursor:pointer;color:var(--body);
+  transition:background .25s var(--ease),color .25s var(--ease);
+}
+.val-tab:hover{background:rgba(18,19,26,.035)}
+.val-tab.is-activa{background:#fff;box-shadow:var(--papel-sombra);color:var(--ink)}
+.val-n{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:18px;color:var(--muted);transition:color .25s var(--ease);
+}
+.val-tab.is-activa .val-n{color:var(--red)}
+.val-nombre{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:21px;line-height:1.15;letter-spacing:.01em;color:inherit;
+}
+/* La linea de progreso: dura lo que dura el valor en pantalla */
+.val-linea{
+  position:absolute;left:16px;right:16px;bottom:8px;height:2px;
+  border-radius:2px;background:var(--gris-300);
+  opacity:0;transition:opacity .25s var(--ease);
+}
+.val-tab.is-activa .val-linea{opacity:1}
+.val-linea > span{
+  display:block;height:100%;border-radius:2px;background:var(--red);
+  transform-origin:left;transform:scaleX(0);
+}
+.val-tab.is-activa .val-linea > span{animation:valAvanza 7s linear forwards}
+.val.is-pausada .val-linea > span{animation-play-state:paused}
+@keyframes valAvanza{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.val-panel{
+  background:#fff;border-radius:var(--r-lg);
+  box-shadow:var(--papel-sombra);
+  padding:clamp(28px,3vw,44px);
+  min-height:280px;display:grid;align-content:center;
+}
+.val-slide{animation:valEntra .45s var(--ease) both}
+@keyframes valEntra{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.val-t{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:clamp(25px,2.4vw,31px);color:var(--ink);margin:0 0 12px;line-height:1.15;
+}
+.val-p{font-size:16px;line-height:1.75;color:var(--body);margin:0;max-width:58ch}
+
+/* El icono en su pastilla rosa, compartido por los valores */
+.nos-ico{
+  display:grid;place-content:center;
+  width:58px;height:58px;border-radius:999px;
+  background:var(--red-soft);color:var(--red);
+  margin-bottom:20px;
+}
+.nos-ico svg{width:28px;height:28px;display:block}
+
+/* --- Video institucional --- */
+/* Va nada mas entrar y a todo el ancho de la caja: es la pieza que
+   mejor cuenta el instituto, y partirla en dos columnas la dejaba del
+   tamaño de una tarjeta. */
+/* La caja es mas ancha que 16:9 a proposito. El video institucional
+   es panoramico y YouTube le cuece dos bandas negras a la portada; con
+   esta proporcion el "cover" se las come en vez de pintarlas, y de paso
+   el bloque no se come una pantalla entera nada mas entrar. */
+.egr-video.nos-video{aspect-ratio:2.25/1;width:100%}
+@media (max-width:700px){
+  /* En movil, tan panoramico se queda en una franja: vuelve a 16:9 y
+     se acepta la banda, que ahi mide unos pocos pixeles. */
+  .egr-video.nos-video{aspect-ratio:16/9}
+}
+.nos-video-sec{padding-bottom:clamp(56px,6vw,80px)}
+
+/* --- Plana directiva --- */
+.nos-equipo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.eq-card{
+  background:#fff;border-radius:var(--r-lg);overflow:hidden;
+  box-shadow:var(--papel-sombra);
+  display:flex;flex-direction:column;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.eq-card:hover{transform:translateY(-4px);box-shadow:var(--papel-sombra-alta)}
+/* El monograma esta siempre pintado debajo; la foto, cuando existe, lo
+   tapa. Si la foto falla, el guion la quita y vuelve a verse, sin que
+   la tarjeta cambie de alto. */
+.eq-foto{
+  position:relative;aspect-ratio:4/5;
+  background:var(--gris-100);
+  display:grid;place-content:center;overflow:hidden;
+}
+.eq-mono{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:46px;letter-spacing:.02em;color:var(--gris-400);
+}
+/* En reposo el retrato va desaturado y se pone en color al pasar por
+   encima: la rejilla descansa y la ficha que miras destaca. */
+.eq-foto img{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;object-position:top center;display:block;
+  filter:grayscale(1) contrast(1.04);
+  transform:scale(1.02);
+  transition:filter .45s var(--ease),transform .6s var(--ease);
+}
+.eq-card:hover .eq-foto img{filter:none;transform:scale(1.06)}
+.eq-txt{display:block;padding:18px 18px 20px}
+.eq-nombre{font-size:16px;font-weight:700;line-height:1.3;color:var(--ink);margin:0 0 6px}
+.eq-cargo{font-size:14px;line-height:1.45;color:var(--muted);margin:0}
+/* La cabeza del organigrama, a doble ancho y en horizontal */
+.eq-card--jefe{grid-column:span 2;flex-direction:row}
+.eq-card--jefe .eq-foto{aspect-ratio:auto;width:46%;flex:none}
+.eq-card--jefe .eq-txt{align-self:center;padding:clamp(20px,2vw,30px)}
+.eq-card--jefe .eq-nombre{font-size:22px;margin-bottom:8px}
+.eq-card--jefe .eq-cargo{font-size:15px}
+
+/* --- Carril de sedes --- */
+.nos-sedes .lab-slide{min-height:300px}
+
+@media (prefers-reduced-motion:reduce){
+  .val-slide{animation:none}
+}
+
+@media (max-width:1100px){
+  .val{grid-template-columns:1fr;gap:18px}
+  .val-panel{min-height:0}
+}
+@media (max-width:900px){
+  .car-hero.nos-hero{min-height:560px}
+  .nos-franja-grid{grid-template-columns:1fr;gap:34px}
+}
+
+/* En movil, en vertical: cinco columnas de 70px no son nada. El eje
+   se va al borde izquierdo y la foto se pone encima de su texto. */
+/* Por debajo de 1100 la descripcion deja de ir al costado: a dos
+   columnas estrechas no le queda sitio ni a una ni a otra. */
+@media (max-width:1100px){
+  .nos-historia-grid{grid-template-columns:1fr;gap:34px}
+  .nos-historia-txt{position:static}
+  .nos-lead{max-width:70ch}
+  .nos-p{max-width:72ch}
+}
+/* En movil la foto se pone encima de su texto y se acaba el baile de
+   lados: a 320px de ancho una foto al costado no es una foto. */
+@media (max-width:700px){
+  .tl{--tl-eje:26px;gap:26px}
+  .tl-hito,
+  .tl-hito:nth-child(even){grid-template-columns:1fr;gap:14px}
+  .tl-hito:nth-child(odd) .tl-foto,
+  .tl-hito:nth-child(even) .tl-foto{grid-column:1;grid-row:1}
+  .tl-hito:nth-child(odd) .tl-caja,
+  .tl-hito:nth-child(even) .tl-caja{grid-column:1;grid-row:2}
+  .tl-hito{align-items:start}
+  .tl-foto{aspect-ratio:16/10}
+  .tl-eje{height:calc(100% + 26px)}
+  .tl-punto{top:18px;transform:translate(-50%,0)}
+  .tl-t{font-size:21px}
+}
+@media (max-width:700px){
+  .nos-equipo{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .eq-card--jefe{grid-column:span 2;flex-direction:column}
+  .eq-card--jefe .eq-foto{width:100%;aspect-ratio:4/5}
+  .eq-card--jefe .eq-nombre{font-size:18px}
+  .eq-card--jefe .eq-cargo{font-size:14px}
+  .eq-mono{font-size:36px}
+  .eq-txt{padding:14px 14px 16px}
+  .eq-nombre{font-size:15px}
+  .eq-cargo{font-size:13px}
+  .val-tab{padding:14px 14px 16px;gap:11px}
+  .val-nombre{font-size:19px}
+  .val-linea{left:14px;right:14px}
+  .nos-ico{width:50px;height:50px;margin-bottom:16px}
+  .nos-ico svg{width:24px;height:24px}
+  .nos-sedes .lab-slide{min-height:240px}
+}
+
 /* ============================================================
    FOOTER
    ============================================================ */
@@ -3088,7 +3423,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .rec-book{width:76px;height:auto;color:#1668C4}
 
 /* Barra inferior */
-.footer-bar{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.35);padding:24px 0 28px}
+/* El hueco de abajo es para los flotantes: ocupan los ultimos 76px de
+   la pantalla y al llegar al final del todo tapaban los enlaces
+   legales, que ya no se pueden bajar mas. */
+.footer-bar{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.35);padding:24px 0 92px}
 .footer-bar-inner{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;font-size:14px}
 .footer-bar p{color:var(--blanco-2)}
 /* ---------- Popup promocional (abajo a la izquierda) ----------

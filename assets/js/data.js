@@ -847,7 +847,7 @@ const MENU = [
     url: '#',
     auto: 'admision'
   },
-  { label: '¿Por qué SISE?', url: '#porque' }
+  { label: '¿Por qué SISE?', url: 'por-que-sise.html' }
 ];
 /* ============================================================
    10. CRM — envio del formulario de informes
@@ -1026,3 +1026,130 @@ const TRANSPARENCIA = {
      partir del documento mas reciente, que es lo que no se olvida. */
   actualizado: ''
 };
+/* ============================================================
+   12. ¿POR QUÉ SISE? — plana directiva
+   ============================================================
+   Las fotos van en assets/img/equipo/ con el nombre que indica
+   cada ficha. Si la foto no esta, la tarjeta pinta las iniciales
+   en su lugar: asi se puede publicar a alguien el mismo dia que
+   entra y añadir el retrato despues, sin que quede un hueco.
+
+   El orden de esta lista es el orden en que salen.
+   ------------------------------------------------------------ */
+/* Las tres fotos del banner. Se relevan con fundido cada 6 segundos;
+   con una sola, la pagina no las mueve. */
+const NOSOTROS_FOTOS = [
+  'assets/img/pilares-fondo.webp',
+  'assets/img/hero-01.webp',
+  'assets/img/cierre.webp'
+];
+
+/* Linea de tiempo. El texto institucional ya venia en orden
+   cronologico, asi que aqui solo esta partido en hitos.
+
+   OJO: "rotulo" es lo que sale en grande sobre cada hito. Hoy son
+   etapas porque no tengo los años exactos; en cuanto los tengas,
+   cambia cada rotulo por su año ('1983', '1995'...) y la linea se
+   lee sola, sin tocar nada mas.
+
+   OJO: las "foto" de abajo son PROVISIONALES. Estan cogidas de las
+   que ya habia en la web, solo para ver el formato; hay que
+   cambiarlas por las de verdad (una por hito, horizontal, 1200x800).
+   Si una entrada se queda sin "foto", el hito se pinta solo con su
+   texto y la linea sigue funcionando. */
+const HITOS = [
+  { rotulo: 'Los inicios',
+    foto: 'assets/img/sede_SANTA-BEATRIZ.webp',
+    titulo: 'Nacemos de una necesidad concreta',
+    texto: 'Nuestra organizaci\u00f3n inici\u00f3 sus actividades en respuesta a las necesidades de ' +
+           'capacitaci\u00f3n percibidas en \u00e1reas estrat\u00e9gicas de las empresas del Per\u00fa.' },
+
+  { rotulo: 'Primeros a\u00f1os',
+    foto: 'assets/img/porque-sise-02.webp',
+    titulo: 'Pioneros en Computaci\u00f3n e Inform\u00e1tica',
+    texto: 'Fuimos los primeros en desarrollar carreras t\u00e9cnicas de Computaci\u00f3n e ' +
+           'Inform\u00e1tica en el pa\u00eds, cuando casi nadie ense\u00f1aba todav\u00eda estas materias.' },
+
+  { rotulo: 'Crecimiento',
+    foto: 'assets/img/porque-sise-03.webp',
+    titulo: 'La oferta se ampl\u00eda',
+    texto: 'A las carreras de tecnolog\u00eda se sumaron Administraci\u00f3n, Contabilidad, Dise\u00f1o ' +
+           'Gr\u00e1fico, Comunicaciones, Gastronom\u00eda y Administraci\u00f3n Bancaria, entre otras.' },
+
+  { rotulo: 'Alianzas',
+    foto: 'assets/img/porque-sise-04.webp',
+    titulo: 'Tecnolog\u00eda de primer nivel',
+    texto: 'Cisco, Google, Oracle, IBM, Amazon y Microsoft respaldan nuestra infraestructura y ' +
+           'nuestros planes de estudio a trav\u00e9s de los convenios que mantenemos con ellos.' },
+
+  { rotulo: 'Hoy',
+    foto: 'assets/img/sede-sjm.webp',
+    titulo: 'El instituto de mayor cobertura en Lima',
+    texto: 'Seguimos creciendo gracias a la preferencia de nuestros alumnos, formando ' +
+           'profesionales que contribuyen al desarrollo econ\u00f3mico del pa\u00eds.' }
+];
+
+/* Valores. El "icono" es la clave del dibujo, que vive en main.js
+   junto al resto del marcado de esta pagina. */
+const VALORES_ORG = [
+  { icono: 'resultados', nombre: 'Compromiso con los resultados',
+    texto: 'Es comprometerse con el logro de resultados. Organizando y planificando por ' +
+           'resultados, cerrando los proyectos en la fecha y de esta forma servir al logro de ' +
+           'los objetivos de nuestros estudiantes, los clientes internos y el grupo.' },
+
+  { icono: 'trofeo', nombre: 'Lograr nuevos retos con calidad',
+    texto: 'Vivimos plante\u00e1ndonos retos que nos mantengan competitivos en el tiempo. Actuamos ' +
+           'con proactividad y esmero para ser cada vez mejores, desterrando el error y ' +
+           'aprendiendo del mismo.' },
+
+  { icono: 'persona', nombre: 'Integridad personal',
+    texto: 'Respetamos las normas, los valores y el inter\u00e9s de la instituci\u00f3n comprometida ' +
+           'con la verdad, la \u00e9tica y la legalidad en un marco de dignidad y respeto mutuo. ' +
+           'Premiamos la meritocracia y rechazamos la corrupci\u00f3n.' },
+
+  { icono: 'balanza', nombre: 'Justicia y sensibilidad social',
+    texto: 'Buscamos ser y formar mejores personas que valoren la diversidad \u00e9tnica, cultural ' +
+           'y natural, orientando nuestros esfuerzos a lograr el bienestar social y ambiental.' },
+
+  { icono: 'escudo', nombre: 'Libertad con responsabilidad',
+    texto: 'Es tener apertura de pensamiento y sentir aut\u00f3nomo, innovar y buscar nuevas ' +
+           'oportunidades. Implica criticar las verdades formales para facilitar la mejora ' +
+           'continua y la b\u00fasqueda de consensos.' }
+];
+
+/* Video institucional. Es el mismo del inicio. */
+const VIDEO_INSTITUCIONAL = 'E2R48vT67i8';
+
+const DIRECTIVOS = [
+  { nombre: 'Luis Melgarejo',
+    cargo: 'Gerente general',
+    foto: 'assets/img/equipo/luis-melgarejo.webp' },
+
+  { nombre: 'Ing. Henry Emiliano Quinteros Hijar',
+    cargo: 'Jefe de la escuela de Tecnologías de la Información',
+    foto: 'assets/img/equipo/henry-quinteros.webp' },
+
+  { nombre: 'Chef. Juneth Valverde Gómez',
+    cargo: 'Jefa de la escuela de Hotelería y Arte Culinario',
+    foto: 'assets/img/equipo/juneth-valverde.webp' },
+
+  { nombre: 'Lic. Mirko Luis Bayetto Vasquez',
+    cargo: 'Jefe de la escuela de Diseño, Comunicaciones y Modas',
+    foto: 'assets/img/equipo/mirko-bayetto.webp' },
+
+  { nombre: 'Lic. Veruska Micaela Mori Insapillo',
+    cargo: 'Jefa de la escuela de Gestión y Negocios',
+    foto: 'assets/img/equipo/veruska-mori.webp' },
+
+  { nombre: 'Lic. Geraldine Araceli Guzmán Castillo',
+    cargo: 'Jefa de la escuela de Salud',
+    foto: 'assets/img/equipo/geraldine-guzman.webp' },
+
+  { nombre: 'Lic. Stewart Edilberto Aguinaga Valle',
+    cargo: 'Jefe de la escuela de Banca y Finanzas',
+    foto: 'assets/img/equipo/stewart-aguinaga.webp' },
+
+  { nombre: 'Dra. Jannet Margot Llanovarced Tupia',
+    cargo: 'Jefa de Acreditación y Calidad Académica',
+    foto: 'assets/img/equipo/jannet-llanovarced.webp' }
+];

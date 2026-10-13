@@ -815,100 +815,114 @@
     });
   }
 
+  /* El carril de sedes de "Por que SISE" usa este mismo componente,
+     asi que se llena antes de montarlo. */
+  const sedesRail = $('.nos-sedes');
+  if (sedesRail && typeof SEDES !== 'undefined') {
+    sedesRail.innerHTML = SEDES.map((x) => `
+      <div class="lab-slide" style="background-image:url('${esc(x.img)}')">
+        <span class="lab-nombre">${esc(x.nombre)}</span>
+      </div>`).join('');
+  }
+
   /* ============================================================
-     2d. CARRIL DE LABORATORIOS
+     2d. CARRILES HORIZONTALES
      ============================================================
      El carril se desplazaba solo con gesto tactil: con raton la rueda
      mueve la pagina en vertical y no habia ni puntos ni arrastre, asi
-     que en escritorio parecia roto. Se le anaden las dos cosas. */
-  const labsRail = $('#labsRail');
-  const labsNav  = $('#labsNav');
+     que en escritorio parecia roto. Se le anaden las dos cosas.
 
-  if (labsRail && labsNav) {
-    const slides = $$('.lab-slide', labsRail);
+     Lo usan los laboratorios, las sedes y la linea de tiempo de "Por
+     que SISE", asi que recibe por parametro el carril, su barra de
+     flechas y de que son sus hijos. */
+  function montaCarril(rail, nav, selHijo, etqAnt, etqSig) {
+    if (!rail || !nav) return;
+    const slides = $$(selHijo, rail);
+    if (slides.length < 2) return;
 
-    if (slides.length > 1) {
-      const flecha = (dir, etiqueta, d) =>
-        `<button class="labs-flecha" type="button" data-dir="${dir}" aria-label="${etiqueta}">
-           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none"
-                stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-                stroke-linejoin="round"/></svg>
-         </button>`;
-      labsNav.innerHTML =
-        flecha(-1, 'Foto anterior', 'M15 5l-7 7 7 7') +
-        flecha(1,  'Foto siguiente', 'M9 5l7 7-7 7');
-      const botones = $$('.labs-flecha', labsNav);
+    const flecha = (dir, etiqueta, d) =>
+      `<button class="labs-flecha" type="button" data-dir="${dir}" aria-label="${etiqueta}">
+         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none"
+              stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+              stroke-linejoin="round"/></svg>
+       </button>`;
+    nav.innerHTML =
+      flecha(-1, etqAnt, 'M15 5l-7 7 7 7') +
+      flecha(1,  etqSig, 'M9 5l7 7-7 7');
+    const botones = $$('.labs-flecha', nav);
 
-      const paso = () => slides[1].offsetLeft - slides[0].offsetLeft;
+    const paso = () => slides[1].offsetLeft - slides[0].offsetLeft;
 
-      function marca(i) {
-        // La primera flecha se apaga en la primera foto y la otra en la ultima
-        botones[0].disabled = i <= 0;
-        botones[1].disabled = i >= slides.length - 1;
-      }
-
-      botones.forEach((b) => b.addEventListener('click', () => {
-        labsRail.scrollBy({ left: paso() * Number(b.dataset.dir), behavior: 'smooth' });
-      }));
-
-      marca(0);   // de salida no hay foto anterior
-
-      /* En que foto estamos se deduce de la posicion real y no de la
-         ultima pulsacion: asi tambien acierta cuando se arrastra o se
-         desliza con el dedo. */
-      labsRail.addEventListener('scroll', () => {
-        const x = labsRail.scrollLeft;
-        let cerca = 0, dist = Infinity;
-        slides.forEach((sl, i) => {
-          const d = Math.abs((sl.offsetLeft - slides[0].offsetLeft) - x);
-          if (d < dist) { dist = d; cerca = i; }
-        });
-        marca(cerca);
-      }, { passive: true });
-
-      /* Arrastre con el raton. El umbral de 4px evita que un clic
-         normal se interprete como arrastre. */
-      let baja = false, x0 = 0, s0 = 0, movido = false;
-      labsRail.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'touch') return;   // el tactil ya lo hace el navegador
-        baja = true; movido = false;
-        x0 = e.clientX; s0 = labsRail.scrollLeft;
-        /* Capturar el puntero puede fallar si para cuando llega aqui ya
-           se solto: no es motivo para tirar el resto del gesto. */
-        try { labsRail.setPointerCapture(e.pointerId); } catch (_) {}
-      });
-      labsRail.addEventListener('pointermove', (e) => {
-        if (!baja) return;
-        const d = e.clientX - x0;
-        if (!movido && Math.abs(d) > 4) { movido = true; labsRail.classList.add('is-dragging'); }
-        if (movido) labsRail.scrollLeft = s0 - d;
-      });
-      /* Al soltar, el carril se coloca en la foto mas cercana.
-
-         Sin esto se quedaba a medio camino: el enganche esta en
-         "proximity" -que solo ajusta si ya estas cerca- y ademas se
-         desactiva durante el arrastre para que la foto siga al raton.
-         Asi que al soltar no habia nada que terminara el gesto. */
-      const encaja = () => {
-        const x = labsRail.scrollLeft;
-        let cerca = slides[0], dist = Infinity;
-        slides.forEach((sl) => {
-          const d = Math.abs((sl.offsetLeft - slides[0].offsetLeft) - x);
-          if (d < dist) { dist = d; cerca = sl; }
-        });
-        labsRail.scrollTo({ left: cerca.offsetLeft - slides[0].offsetLeft, behavior: 'smooth' });
-      };
-
-      const suelta = () => {
-        if (!baja) return;
-        baja = false;
-        labsRail.classList.remove('is-dragging');
-        if (movido) encaja();
-      };
-      labsRail.addEventListener('pointerup', suelta);
-      labsRail.addEventListener('pointercancel', suelta);
+    /* Las flechas se apagan en los extremos. El final no es "el ultimo
+       hijo" sino "ya no queda nada por desplazar": con hijos estrechos
+       caben varios a la vez y el carril llega al tope antes. */
+    function marca() {
+      const resto = rail.scrollWidth - rail.clientWidth;
+      botones[0].disabled = rail.scrollLeft <= 2;
+      botones[1].disabled = rail.scrollLeft >= resto - 2;
     }
+
+    botones.forEach((b) => b.addEventListener('click', () => {
+      rail.scrollBy({ left: paso() * Number(b.dataset.dir), behavior: 'smooth' });
+    }));
+
+    marca();
+    rail.addEventListener('scroll', marca, { passive: true });
+    addEventListener('resize', marca);
+    /* La primera medida se toma antes de que el navegador haya
+       terminado de colocar el carril, y entonces scrollWidth es igual
+       al ancho visible: las dos flechas nacian apagadas. Se vuelve a
+       medir en el siguiente fotograma y al acabar de cargar, cuando
+       las fotos y las tipografias ya han movido lo que tenian que
+       mover. */
+    requestAnimationFrame(marca);
+    addEventListener('load', marca);
+
+    /* Arrastre con el raton. El umbral de 4px evita que un clic
+       normal se interprete como arrastre. */
+    let baja = false, x0 = 0, s0 = 0, movido = false;
+    rail.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch') return;   // el tactil ya lo hace el navegador
+      baja = true; movido = false;
+      x0 = e.clientX; s0 = rail.scrollLeft;
+      /* Capturar el puntero puede fallar si para cuando llega aqui ya
+         se solto: no es motivo para tirar el resto del gesto. */
+      try { rail.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    rail.addEventListener('pointermove', (e) => {
+      if (!baja) return;
+      const d = e.clientX - x0;
+      if (!movido && Math.abs(d) > 4) { movido = true; rail.classList.add('is-dragging'); }
+      if (movido) rail.scrollLeft = s0 - d;
+    });
+    /* Al soltar, el carril se coloca en el hijo mas cercano.
+
+       Sin esto se quedaba a medio camino: el enganche esta en
+       "proximity" -que solo ajusta si ya estas cerca- y ademas se
+       desactiva durante el arrastre para que siga al raton. Asi que al
+       soltar no habia nada que terminara el gesto. */
+    const encaja = () => {
+      const x = rail.scrollLeft;
+      let cerca = slides[0], dist = Infinity;
+      slides.forEach((sl) => {
+        const d = Math.abs((sl.offsetLeft - slides[0].offsetLeft) - x);
+        if (d < dist) { dist = d; cerca = sl; }
+      });
+      rail.scrollTo({ left: cerca.offsetLeft - slides[0].offsetLeft, behavior: 'smooth' });
+    };
+
+    const suelta = () => {
+      if (!baja) return;
+      baja = false;
+      rail.classList.remove('is-dragging');
+      if (movido) encaja();
+    };
+    rail.addEventListener('pointerup', suelta);
+    rail.addEventListener('pointercancel', suelta);
   }
+
+  montaCarril($('#labsRail'), $('#labsNav'), '.lab-slide',
+              'Foto anterior', 'Foto siguiente');
 
   /* ============================================================
      3. REVEAL AL HACER SCROLL
@@ -939,6 +953,18 @@
   sweepReveal();
   // Red de seguridad: al terminar de cargar puede haber cambiado el alto
   window.addEventListener('load', sweepReveal);
+
+  /* La lista de pendientes se arma una sola vez, aqui arriba. Lo que
+     el guion pinta despues -una rejilla, una linea de tiempo- nace
+     fuera de esa lista y se quedaria invisible para siempre, asi que
+     tiene que apuntarse a mano con esto. */
+  function revelarNuevos(ctx) {
+    const nuevos = $$('.reveal', ctx).filter((el) => !el.classList.contains('is-in'));
+    if (!nuevos.length) return;
+    pending = pending.concat(nuevos);
+    window.addEventListener('scroll', sweepReveal, { passive: true });
+    sweepReveal();
+  }
 
   /* ============================================================
      4. CARRERAS — grilla + filtros
@@ -1474,6 +1500,219 @@
   }
 
   /* ============================================================
+     4e. ¿POR QUE SISE? — la pagina de presentacion entera
+     ============================================================
+     Seis piezas que solo existen aqui. Cada una comprueba su propio
+     gancho en el DOM, asi que el bloque no estorba en el resto de la
+     web aunque main.js sea el mismo para todas las paginas. */
+
+  /* Dibujos de los valores y de la linea de tiempo. Van aqui y no en
+     icons.js porque no se usan en ninguna otra pagina. */
+  const NOS_ICONOS = {
+    resultados: '<rect x="3.4" y="4.6" width="17.2" height="14.8" rx="2.2"/><path d="m8.2 13.8 3.8-3.9 3.8 3.9M12 9.9v5.5"/>',
+    trofeo: '<path d="M7.4 4.2h9.2v4.3a4.6 4.6 0 0 1-9.2 0z"/><path d="M7.4 5.6H4.9v1.2a3.1 3.1 0 0 0 3.1 3.1M16.6 5.6h2.5v1.2a3.1 3.1 0 0 1-3.1 3.1"/><path d="M12 13.1v3.3M9 19.8h6l-.6-3.4H9.6z"/>',
+    persona: '<circle cx="12" cy="8.2" r="3.7"/><path d="M5.2 20.2a6.8 6.8 0 0 1 13.6 0"/>',
+    balanza: '<path d="M12 4.6v15.1M8.2 19.7h7.6M5.4 7.6h13.2"/><path d="m5.4 7.6-2.6 5.3a2.9 2.9 0 0 0 5.2 0zM18.6 7.6 16 12.9a2.9 2.9 0 0 0 5.2 0z"/>',
+    escudo: '<path d="M12 2.9 19.4 5.5v5.7c0 4.3-3 8.2-7.4 9.5-4.4-1.3-7.4-5.2-7.4-9.5V5.5z"/><path d="m9.1 11.9 2 2.1 3.8-4"/>'
+  };
+
+  const nosIco = (k) => NOS_ICONOS[k]
+    ? `<span class="nos-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+         stroke-linejoin="round">${NOS_ICONOS[k]}</svg></span>`
+    : '';
+
+  /* ---------- Banner: las fotos se relevan ----------
+     Las capas se crean aqui para no repetir tres divs identicos en el
+     marcado. Con una sola foto no se monta ningun reloj. */
+  const nosHero = $('#nosHero');
+  if (nosHero && typeof NOSOTROS_FOTOS !== 'undefined' && NOSOTROS_FOTOS.length) {
+    const capas = NOSOTROS_FOTOS.map((url, i) => {
+      const d = document.createElement('div');
+      d.className = 'nos-hero-capa' + (i === 0 ? ' is-activa' : '');
+      d.setAttribute('aria-hidden', 'true');
+      /* Solo la primera entra en la carga inicial; las demas esperan a
+         que la pagina este pintada para no competir con ella. */
+      if (i === 0) d.style.backgroundImage = `url('${NOSOTROS_FOTOS[0]}')`;
+      else setTimeout(() => { d.style.backgroundImage = `url('${url}')`; }, 1200);
+      nosHero.insertBefore(d, nosHero.firstChild);
+      return d;
+    });
+
+    if (capas.length > 1 && !reduceMotion) {
+      let n = 0;
+      setInterval(() => {
+        capas[n].classList.remove('is-activa');
+        n = (n + 1) % capas.length;
+        capas[n].classList.add('is-activa');
+      }, 6000);
+    }
+  }
+
+  /* ---------- Linea de tiempo ----------
+     La linea roja crece con el scroll: marca por donde vas y da algo
+     que seguir mientras se lee. El calculo es un porcentaje simple
+     entre el primer hito y el ultimo, medido contra la mitad de la
+     pantalla. */
+  const tlLista = $('#tlLista');
+  if (tlLista && typeof HITOS !== 'undefined') {
+    /* El orden importa: foto, eje y texto. Es el mismo de arriba
+       abajo en movil y de izquierda a derecha en escritorio, asi que
+       la maqueta no tiene que reordenar nada. */
+    tlLista.innerHTML = HITOS.map((h, i) => `
+        <li class="tl-hito reveal" style="transition-delay:${i * 90}ms">
+          ${h.foto ? `<figure class="tl-foto">
+            <img src="${esc(h.foto)}" alt="${esc(h.titulo)}" loading="lazy">
+          </figure>` : '<span class="tl-foto tl-foto--vacia" aria-hidden="true"></span>'}
+          <span class="tl-eje" aria-hidden="true"><span class="tl-punto"></span></span>
+          <div class="tl-caja">
+            <span class="tl-rotulo">${esc(h.rotulo)}</span>
+            <h3 class="tl-t">${esc(h.titulo)}</h3>
+            <p class="tl-p">${esc(h.texto)}</p>
+          </div>
+        </li>`).join('');
+
+    observarNuevos(tlLista);
+    revelarNuevos(tlLista);
+
+  }
+
+  /* ---------- Valores: uno cada vez ----------
+     Mismo trato que los Pilares del inicio: pasan solos, se paran si
+     alguien los esta leyendo -raton encima o foco dentro- y se puede
+     saltar a cualquiera con el raton o con las flechas. */
+  const valEscena = $('#valEscena');
+  if (valEscena && typeof VALORES_ORG !== 'undefined' && VALORES_ORG.length) {
+    const V = VALORES_ORG;
+    const PASO = 7000;
+
+    valEscena.innerHTML = `
+      <div class="val-lista" role="tablist" aria-label="Valores organizacionales">
+        ${V.map((v, i) => `
+          <button class="val-tab${i === 0 ? ' is-activa' : ''}" type="button" role="tab"
+                  id="valTab${i}" aria-controls="valPanel${i}"
+                  aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-i="${i}">
+            <span class="val-n">${String(i + 1).padStart(2, '0')}</span>
+            <span class="val-nombre">${esc(v.nombre)}</span>
+            <span class="val-linea" aria-hidden="true"><span></span></span>
+          </button>`).join('')}
+      </div>
+      <div class="val-panel">
+        ${V.map((v, i) => `
+          <div class="val-slide${i === 0 ? ' is-activa' : ''}" id="valPanel${i}"
+               role="tabpanel" aria-labelledby="valTab${i}"${i === 0 ? '' : ' hidden'}>
+            ${nosIco(v.icono)}
+            <h3 class="val-t">${esc(v.nombre)}</h3>
+            <p class="val-p">${esc(v.texto)}</p>
+          </div>`).join('')}
+      </div>`;
+
+    const tabs   = $$('.val-tab', valEscena);
+    const slides = $$('.val-slide', valEscena);
+    const estado = { visible: false, raton: false, teclado: false };
+    let actual = 0, reloj = null;
+
+    function evalua() {
+      const corre = estado.visible && !estado.raton && !estado.teclado && !reduceMotion;
+      valEscena.classList.toggle('is-pausada', !corre);
+      clearTimeout(reloj); reloj = null;
+      if (corre) reloj = setTimeout(() => muestra(actual + 1), PASO);
+    }
+
+    function muestra(i) {
+      actual = (i + V.length) % V.length;
+      tabs.forEach((t, n) => {
+        const on = n === actual;
+        t.classList.toggle('is-activa', on);
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (on) {   // relanzar la linea de progreso desde cero
+          const barra = $('.val-linea > span', t);
+          if (barra) { barra.style.animation = 'none'; void barra.offsetWidth; barra.style.animation = ''; }
+        }
+      });
+      slides.forEach((sl, n) => {
+        sl.classList.toggle('is-activa', n === actual);
+        sl.hidden = n !== actual;
+      });
+      evalua();
+    }
+
+    valEscena.addEventListener('click', (e) => {
+      const t = e.target.closest('.val-tab');
+      if (t) muestra(Number(t.dataset.i));
+    });
+    /* Flechas entre pestañas, que es lo que espera un role="tablist" */
+    valEscena.addEventListener('keydown', (e) => {
+      if (!e.target.closest('.val-tab')) return;
+      const d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1
+              : e.key === 'ArrowUp'   || e.key === 'ArrowLeft'  ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      muestra(actual + d);
+      tabs[actual].focus();
+    });
+    valEscena.addEventListener('mouseenter', () => { estado.raton = true; evalua(); });
+    valEscena.addEventListener('mouseleave', () => { estado.raton = false; evalua(); });
+    valEscena.addEventListener('focusin',  () => { estado.teclado = true; evalua(); });
+    valEscena.addEventListener('focusout', () => { estado.teclado = false; evalua(); });
+
+    new IntersectionObserver((en) => {
+      estado.visible = en[0].isIntersecting;
+      evalua();
+    }, { threshold: 0.25 }).observe(valEscena);
+  }
+
+  /* ---------- Video institucional ----------
+     La portada se pide a YouTube para no guardar una copia que se
+     quede vieja si cambian el video. */
+  const nosVideo = $('#nosVideo');
+  if (nosVideo && typeof VIDEO_INSTITUCIONAL !== 'undefined') {
+    nosVideo.dataset.yt = VIDEO_INSTITUCIONAL;
+    nosVideo.style.backgroundImage =
+      `url('https://i.ytimg.com/vi/${encodeURIComponent(VIDEO_INSTITUCIONAL)}/maxresdefault.jpg')`;
+  }
+
+  /* ---------- Plana directiva ----------
+     Si la foto no carga -o no existe todavia- se queda el monograma de
+     debajo, que ya esta pintado: por eso la imagen se quita en el
+     onerror en vez de dibujar el monograma cuando falla. Asi no hay
+     salto de maquetacion.
+
+     La primera ficha va a doble ancho: el organigrama tiene una
+     cabeza y la rejilla tiene que notarlo. */
+  const equipoGrid = $('#equipoGrid');
+
+  if (equipoGrid && typeof DIRECTIVOS !== 'undefined') {
+    /* Iniciales: primera letra del nombre y del apellido, saltandose
+       los tratamientos (Lic., Ing., Dra., Chef.). */
+    function iniciales(nombre) {
+      const palabras = String(nombre).split(/\s+/)
+        .filter((w) => w.length > 1 && !/\.$/.test(w));
+      if (!palabras.length) return '·';
+      const a = palabras[0][0];
+      const b = palabras.length > 1 ? palabras[1][0] : '';
+      return (a + b).toUpperCase();
+    }
+
+    equipoGrid.innerHTML = DIRECTIVOS.map((d, i) => `
+      <article class="eq-card${i === 0 ? ' eq-card--jefe' : ''}"
+               style="animation-delay:${i * 60}ms">
+        <span class="eq-foto">
+          <span class="eq-mono" aria-hidden="true">${esc(iniciales(d.nombre))}</span>
+          ${d.foto ? `<img src="${esc(d.foto)}" alt="${esc(d.nombre)}" loading="lazy"
+                 onerror="this.remove()">` : ''}
+        </span>
+        <span class="eq-txt">
+          <h3 class="eq-nombre">${esc(d.nombre)}</h3>
+          <p class="eq-cargo">${esc(d.cargo)}</p>
+        </span>
+      </article>`).join('');
+
+    observarNuevos(equipoGrid);
+  }
+
+  /* ============================================================
      4b. PILARES — la foto y la pestana se relevan solas
      ============================================================
      Cada pilar dura --pil-paso (CSS): cambia la foto, se abre su texto
@@ -1717,8 +1956,10 @@
     });
   }, { threshold: 0.35 });
 
-  const statsCard = $('#statsCard');
-  if (statsCard) statsIO.observe(statsCard);
+  /* La tira de cifras esta en el home y en "Por que SISE", asi que el
+     enganche es la clase y no un id: con el id solo contaba la primera
+     y en la segunda pagina los numeros se quedaban en cero. */
+  $$('.pil-cifras').forEach((el) => statsIO.observe(el));
   /* ============================================================
      5b. "POR QUE ESTUDIARLA": UN MOTIVO CADA VEZ
      ============================================================
