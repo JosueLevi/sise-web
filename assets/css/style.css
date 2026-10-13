@@ -736,6 +736,21 @@ p{margin:0}
 }
 .hero-copy{max-width:560px;animation:riseIn .8s var(--ease) .12s backwards;
   transition:opacity .2s var(--ease),transform .2s var(--ease)}
+/* El texto iba centrado contra el formulario, que es mucho mas alto, y
+   se plantaba justo encima de quienes salen en la foto. Apoyado abajo
+   deja ver el banner y ademas queda a la altura del pie del
+   formulario, que es una relacion mas estable que el centro: el
+   formulario cambia de alto al abrirse un desplegable o al mandar.
+
+   No se usa transform para bajarlo porque esa propiedad ya la llevan
+   la entrada del bloque y el cruce entre diapositivas.
+
+   Solo de 1025 para arriba, que es donde el texto y el formulario
+   comparten fila. Por debajo van uno encima del otro y apoyarlo abajo
+   no significa nada: lo unico que haria es separarlos. */
+@media (min-width:1025px){
+  .hero-copy{align-self:end;margin-bottom:clamp(16px,3.2vh,54px)}
+}
 /* Cruce del texto al cambiar de diapositiva */
 .hero-copy.is-swap{opacity:0;transform:translateY(8px)}
 /* Diapositiva sin texto: solo quedan los controles */
