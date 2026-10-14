@@ -1404,6 +1404,34 @@ body:not(.form-abierto) .form-velo{opacity:0}
   background:linear-gradient(to top,rgba(251,221,110,.9) 0,rgba(251,221,110,.55) 26%,rgba(251,221,110,.1) 52%,transparent 70%);
 }
 
+/* Boton circular con la flecha, abajo a la derecha. La tarjeta entera
+   es el enlace, pero sin nada que lo anuncie no se lee como tal: la
+   gente ve una foto con un rotulo. Va de pseudoelemento para no repetir
+   el mismo SVG tres veces en el marcado, y por eso mismo no lo ve el
+   lector de pantalla -que ya tiene el enlace y su texto-. */
+.hub-card::before{
+  content:'';position:absolute;z-index:1;
+  right:22px;bottom:22px;
+  width:46px;height:46px;border-radius:999px;
+  /* El mismo vidrio que la pastilla del sello. Con relleno blanco
+     solido la tarjeta acababa con dos materiales distintos -pastilla
+     de vidrio arriba, circulo opaco abajo- y el circulo pesaba mas que
+     el propio titulo. Se descarto tambien el contorno sin relleno: se
+     perdia justo donde mas falta hace, sobre las fotos cargadas. */
+  background:var(--vidrio-claro) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E00040' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7m0 0H9m8 0v8'/%3E%3C/svg%3E") center/20px no-repeat;
+  -webkit-backdrop-filter:var(--vidrio-blur);backdrop-filter:var(--vidrio-blur);
+  border:1px solid var(--vidrio-filete);
+  box-shadow:0 6px 18px rgba(0,0,0,.18);
+  transition:transform .3s var(--ease);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .hub-card::before{background-color:rgba(255,255,255,.94)}
+}
+/* Se aparta en la misma diagonal que la tarjeta */
+.hub-card:hover::before{transform:translate(3px,-3px)}
+/* Sitio para el boton: sin esto, "Semipresenciales" le pasa por debajo */
+.hub-body{max-width:calc(100% - 64px)}
+
 /* En la tarjeta solo queda el titulo: el antetitulo y la linea de
    abajo se quitaron para que la foto pese mas que el texto. */
 .hub-body{position:relative;display:flex;flex-direction:column;gap:3px}
@@ -1417,6 +1445,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .hub-grid{grid-template-columns:1fr;gap:16px;max-width:460px}
   .hub-card{aspect-ratio:16/10;padding:22px}
   .hub-sello{top:14px;right:14px;font-size:13px;padding:6px 13px}
+  .hub-card::before{right:16px;bottom:16px;width:40px;height:40px;background-size:18px}
+  .hub-body{max-width:calc(100% - 54px)}
   /* El titulo en una linea si cabe: el salto de escritorio sobra en la
      tarjeta apaisada. "Semipresenciales" igual baja solo si no entra. */
   .hub-title br{display:none}

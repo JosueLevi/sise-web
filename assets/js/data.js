@@ -45,7 +45,7 @@ const FLOTANTES = {
   whatsapp: {
     opciones: [
       { label: 'Matricularme a Carreras', url: 'https://wa.link/g16qrt' },
-      { label: 'Adquirir un Curso',       url: 'https://wa.link/zgq8zu' },
+      { label: 'Matricularme a un Curso', url: 'https://wa.link/zgq8zu' },
       { label: 'Soy Alumno SISE',         url: 'https://wa.link/8kjxf0' },
       /* Sin wa.link propio todavia: arma el enlace con el numero y el
          mensaje. Si se crea uno, basta con poner url y borrar lo demas. */
