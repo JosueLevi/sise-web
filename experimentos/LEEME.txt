@@ -1,0 +1,22 @@
+Version 2 del inicio, retirada el 13/10/2026.
+
+Que se probo aqui:
+  - Lettering de marcador (Permanent Marker) en el acento rojo de los
+    titulos de seccion, a 0.90em y con la inclinacion del banner. Solo
+    en los tres titulos que le hablan al lector, no en los que nombran
+    una categoria.
+  - Trazo de rotulador bajo el titulo en vez de la barra recta.
+  - Cabeceras a la izquierda (probado y descartado: volvieron al centro).
+  - Hub con marco de color y la foto embutida, al modo neobrutalista
+    pero sin filete negro ni sombra dura.
+
+Como volver a montarlo:
+  1. Mover home-v2.html a la raiz del proyecto.
+  2. Pegar el contenido de home-v2.css dentro de assets/css/style.css,
+     antes del bloque "Carrera nueva".
+  3. Subir el ?v= de todos los HTML.
+
+Todo cuelga de la clase "v2" del <body>, asi que no toca al resto del
+sitio mientras este aqui guardado.
+
+El video del banner NO esta aqui: se quedo en el inicio de verdad.

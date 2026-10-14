@@ -1,0 +1,308 @@
+/* Estilos de la version 2 del inicio, retirados de style.css.
+   Cuelgan todos de la clase "v2" del body. Para volver a probarlos:
+   pegar este bloque en style.css y mover home-v2.html a la raiz. */
+
+/* ---------- Inicio v2 (home-v2.html) ----------
+   Prueba de coherencia con el banner. El banner esta alineado a la
+   izquierda, inclinado y escrito a mano; el cuerpo iba centrado,
+   recto y geometrico, y por eso los dos no se parecian. Aqui se
+   igualan las tres cosas.
+
+   Todo cuelga de la clase "v2" del body: el inicio de verdad y el
+   resto de la web no se enteran. */
+
+/* 1. Probado a la izquierda y descartado: las cabeceras vuelven al
+      centro, como en el inicio original. */
+
+/* 4. La firma deja de ser una barra recta y pasa a ser un trazo. Lleva
+      la mano del banner a toda la pagina sin costarle legibilidad a
+      ninguna palabra. Se dibuja al aparecer la seccion, como la raya
+      de las paginas internas. */
+.v2 .section-head .section-title::after{
+  content:'';display:block;
+  width:104px;height:15px;margin-top:14px;
+  background:var(--red);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M2.4 9.8c13.6-3.3 32.4-5 54.6-4.8 18.2.2 38.4 1.7 60.6 4.4-1.4 3.4-4 5.2-7.8 5.4-10.8.8-27.8.4-51-1.1-17-1.1-32.4-1.4-46.2-.9-6.4.2-10.1-.8-10.2-3z'/%3E%3C/svg%3E") no-repeat left center;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 16'%3E%3Cpath d='M2.4 9.8c13.6-3.3 32.4-5 54.6-4.8 18.2.2 38.4 1.7 60.6 4.4-1.4 3.4-4 5.2-7.8 5.4-10.8.8-27.8.4-51-1.1-17-1.1-32.4-1.4-46.2-.9-6.4.2-10.1-.8-10.2-3z'/%3E%3C/svg%3E") no-repeat left center;
+  -webkit-mask-size:contain;mask-size:contain;
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .6s var(--ease) .15s;
+}
+/* Bajo una cabecera centrada el trazo tambien se centra, y crece desde
+   el medio: si arranca de un extremo se lee torcido. Convenios es la
+   unica cabecera del inicio que va a la izquierda, y ahi se queda
+   pegado al titulo. */
+.v2 .section-head:not(.section-head--left) .section-title::after{
+  margin-inline:auto;transform-origin:center;
+}
+
+/* 3 y 5. El rotulador solo donde el titulo habla -"¿Que quieres
+      ESTUDIAR?"- y no donde nombra una categoria -"Experiencias
+      reales"-. Marcado con la clase "rotulo" en el titulo, uno a uno.
+      Y con la misma inclinacion del banner: sin ella se lee como otra
+      tipografia en vez de como la misma voz.
+
+      Sobre el 0.86em: a la misma altura de mayuscula el marcador ocupa
+      un 31% mas de ancho por letra que la condensada, asi que la
+      palabra roja se comia la linea. Igualar las dos cosas a la vez no
+      se puede -o cuadra el alto o cuadra el ancho-, y entre las dos
+      manda el ancho, que es lo que se nota. A 0.90 la mayuscula queda
+      un 6% mas baja que la negra, pero el trazo del rotulador es tan
+      grueso que a la vista pesan igual. */
+.v2 .section-title em.rotulo{
+  display:inline-block;
+  font-family:'SISE Marker','Permanent Marker','Barlow Condensed',cursive;
+  font-weight:400;
+  font-size:.90em;
+  letter-spacing:0;
+  line-height:1;
+  transform:skewX(-7deg);
+}
+
+@media (max-width:820px){
+  .v2 .section-head .section-title::after{width:86px;height:13px;margin-top:11px}
+}
+@media (prefers-reduced-motion:reduce){
+  .v2 .section-head .section-title::after{transform:none;transition:none}
+}
+
+.section-sub{margin-top:14px;font-size:16px;color:var(--body)}
+.section-cta{text-align:center;margin-top:48px}
+
+/* Reveal on scroll */
+/* Mas corto y con un punto de escala: 700ms de subida se sentian
+   lentos y daban esa sensacion de pagina apagada. 480ms con un 2% de
+   escala entra con energia sin llegar a saltar. */
+.reveal{opacity:0;transform:translateY(22px) scale(.985);transition:opacity .48s var(--ease),transform .48s var(--ease)}
+.reveal.is-in{opacity:1;transform:none}
+.reveal.is-in .section-title::after{transform:scaleX(1)}
+/* Escalonado de los hijos de un bloque revelado */
+.reveal-stagger:not(.is-in) > *{opacity:0;transform:translateY(20px)}
+.reveal-stagger.is-in > *{animation:riseIn .65s var(--ease) backwards}
+.reveal-stagger.is-in > *:nth-child(1){animation-delay:.05s}
+.reveal-stagger.is-in > *:nth-child(2){animation-delay:.12s}
+.reveal-stagger.is-in > *:nth-child(3){animation-delay:.19s}
+.reveal-stagger.is-in > *:nth-child(4){animation-delay:.26s}
+.reveal-stagger.is-in > *:nth-child(n+5){animation-delay:.33s}
+
+/* Las tarjetas de carrera y de blog entran con su propia animación (la
+   misma más un pelín de escala) pero disparada por el reveal, no al
+   insertarse en el DOM. Antes se animaban nada más cargar la página,
+   con la rejilla aún fuera de pantalla, y al bajar ya había terminado:
+   el efecto existia pero no lo veía nadie. El retardo por tarjeta va
+   en línea desde el JS, así que la cascada no se corta en la quinta. */
+.career-grid.is-in > *,
+.news-grid.is-in > *{animation-name:cardIn}
+
+/* ============================================================
+   PAGINAS INTERNAS (carreras / cursos / idiomas)
+   ============================================================ */
+.pagina-interna{background:var(--bg)}
+/* La primera seccion arranca bajo el header fijo */
+.oferta-page{padding-top:150px}
+@media (max-width:600px){ .oferta-page{padding-top:120px} }
+
+.crumb{
+  display:flex;align-items:center;gap:9px;justify-content:center;
+  margin-bottom:16px;font-size:14px;color:var(--muted);
+}
+.crumb a{color:var(--red-700);font-weight:600}
+.crumb a:hover{text-decoration:underline}
+.crumb span:last-child{color:var(--body)}
+
+/* ============================================================
+   HUB DEL HOME — 3 tarjetas grandes que llevan a paginas internas
+   ============================================================ */
+/* Splatter de pincel (PNG real del usuario), recoloreado al rojo de marca
+   usando su transparencia como máscara. Solo uno, abajo a la izquierda. */
+.hub{position:relative;overflow:hidden}
+.hub .shell{position:relative;z-index:1}
+.hub::before{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  right:-40px;top:-30px;width:320px;height:320px;
+  background-color:var(--terciario);
+  -webkit-mask-image:url("../img/brush.webp");mask-image:url("../img/brush.webp");
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  transform:scaleX(-1);
+  opacity:.5;
+}
+.hub::after{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  left:-40px;bottom:-20px;width:340px;height:340px;
+  background-color:var(--red);
+  -webkit-mask-image:url("../img/brush.webp");mask-image:url("../img/brush.webp");
+  -webkit-mask-size:contain;mask-size:contain;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  -webkit-mask-position:center;mask-position:center;
+  opacity:.14;
+}
+
+.hub-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
+  max-width:1120px;margin-inline:auto;
+}
+/* Contorno de tinta y sombra solida, sin difuminar: es el recurso que
+   le quita el aire de folleto a la tarjeta. Al pasar por encima se
+   levanta hacia la sombra y se tuerce un pelin. */
+.hub-card{
+  position:relative;display:flex;flex-direction:column;justify-content:flex-end;
+  aspect-ratio:3/3.9;border-radius:26px;overflow:hidden;isolation:isolate;
+  color:#fff;padding:26px 24px;
+  box-shadow:var(--papel-sombra);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+/* Se aparta en diagonal, hacia arriba y a la izquierda: es el gesto que
+   tenia con la sombra solida y se queda, aunque la sombra ya sea suave. */
+.hub-card:hover{transform:translate(-4px,-6px);box-shadow:var(--papel-sombra-alta)}
+
+/* La misma pastilla que rotula los laboratorios y el carril del inicio:
+   blanca sobre la foto y con el dato en rojo de marca. Lleva el dato
+   fuerte de cada tarjeta, asi que el pie de abajo ya no lo repite.
+
+   En rojo de marca se queda en 3,9:1, por debajo de 4,5:1, pero el dato
+   tambien esta escrito en el cuerpo de la tarjeta: aqui solo se
+   refuerza. */
+.hub-sello{
+  position:absolute;top:18px;right:18px;z-index:1;
+  /* La misma pastilla de vidrio que rotula los laboratorios */
+  background:var(--vidrio-claro);color:var(--red);
+  -webkit-backdrop-filter:var(--vidrio-blur);backdrop-filter:var(--vidrio-blur);
+  border:1px solid var(--vidrio-filete);
+  border-radius:999px;padding:8px 16px;
+  font-size:15px;font-weight:600;line-height:1.25;
+  box-shadow:0 6px 18px rgba(0,0,0,.18);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .hub-sello{background:rgba(255,255,255,.94)}
+}
+
+.hub-photo{
+  position:absolute;inset:0;z-index:-2;
+  /* Un solo encuadre para las tres. Antes cada tarjeta llevaba el suyo
+     porque las fotos venian apaisadas y el sujeto caia donde caia; ahora
+     los archivos se recortan ya centrados en la persona, asi que basta
+     con bajar un poco el eje vertical para que la cara no quede pegada
+     al borde de arriba. */
+  background-size:cover;background-position:50% 28%;
+  transition:transform .6s var(--ease);
+}
+.hub-card:hover .hub-photo{transform:scale(1.06)}
+
+/* Velo de color de marca: transparente arriba (se ve la foto) y sólido
+   abajo (sostiene el titulo). Cada tema cambia el color. */
+.hub-card::after{
+  content:'';position:absolute;inset:0;z-index:-1;
+}
+/* Semipresenciales va en negro: la foto de la cocina ya es roja y
+   naranja, y el velo rojo la apagaba. */
+.hub--rojo::after{
+  background:linear-gradient(to top,rgba(7,8,12,.82) 0,rgba(7,8,12,.46) 30%,rgba(7,8,12,.07) 56%,transparent 74%);
+}
+.hub--azul{color:#fff}
+.hub--azul::after{
+  background:linear-gradient(to top,rgba(var(--indigo-rgb),.8) 0,rgba(var(--indigo-rgb),.42) 30%,rgba(var(--indigo-rgb),.06) 56%,transparent 74%);
+}
+.hub--amarillo{color:#272423}
+/* Tinta y no blanco: el blanco sobre el amarillo de marca no llega ni a
+   2:1. La irradiacion hace ver la tinta mas fina que el blanco sobre
+   rojo o azul, asi que el titulo sube a 900 para que pese igual. */
+.hub--amarillo .hub-title{font-weight:900}
+.hub--amarillo::after{
+  background:linear-gradient(to top,rgba(251,221,110,.9) 0,rgba(251,221,110,.55) 26%,rgba(251,221,110,.1) 52%,transparent 70%);
+}
+
+/* En la tarjeta solo queda el titulo: el antetitulo y la linea de
+   abajo se quitaron para que la foto pese mas que el texto. */
+.hub-body{position:relative;display:flex;flex-direction:column;gap:3px}
+.hub-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;line-height:.98;
+  font-size:clamp(28px,2.9vw,36px);text-transform:uppercase;letter-spacing:.01em;
+}
+
+
+@media (max-width:820px){
+  .hub-grid{grid-template-columns:1fr;gap:16px;max-width:460px}
+  .hub-card{aspect-ratio:16/10;padding:22px}
+  .hub-sello{top:14px;right:14px;font-size:13px;padding:6px 13px}
+  /* El titulo en una linea si cabe: el salto de escritorio sobra en la
+     tarjeta apaisada. "Semipresenciales" igual baja solo si no entra. */
+  .hub-title br{display:none}
+  /* Velo solo detras del texto, hasta poco mas de la mitad baja */
+  .hub--rojo::after{background:linear-gradient(to top,rgba(7,8,12,.84) 0,rgba(7,8,12,.52) 30%,rgba(7,8,12,.1) 48%,transparent 62%)}
+  .hub--azul::after{background:linear-gradient(to top,rgba(var(--indigo-rgb),.84) 0,rgba(var(--indigo-rgb),.52) 30%,rgba(var(--indigo-rgb),.1) 48%,transparent 62%)}
+  .hub--amarillo::after{background:linear-gradient(to top,rgba(251,221,110,.94) 0,rgba(251,221,110,.66) 26%,rgba(251,221,110,.14) 48%,transparent 62%)}
+}
+
+/* ---------- Hub del v2: marco de color con la foto dentro ----------
+   La referencia es neobrutalista: bloque de color plano, foto
+   embutida con su propio radio, pastilla, titulo grueso y boton
+   circular. De esa familia se toma la estructura y se dejan fuera
+   los dos rasgos que chocan con el resto del sitio: el filete negro
+   y la sombra solida sin difuminar. La sombra sigue siendo la del
+   papel, que es la que usan todas las tarjetas de la web.
+
+   Hecho entero con CSS: el marcado del v2 es el mismo del inicio. */
+
+/* El color deja de ser un velo sobre la foto y pasa a ser la tarjeta */
+.v2 .hub-card{
+  --hub-marco:14px;
+  background:var(--red-600);
+  padding:var(--hub-marco);
+  justify-content:flex-end;
+}
+/* El velo de abajo sobraba: la foto ya no llega al texto */
+.v2 .hub-card::after{display:none}
+
+/* La foto, embutida y con su propio radio. El hueco de abajo es la
+   franja donde viven el titulo y el boton. */
+.v2 .hub-photo{
+  inset:var(--hub-marco) var(--hub-marco) 96px;
+  z-index:0;
+  border-radius:var(--r-md);
+  background-position:50% 32%;
+}
+/* Al recortar la foto en su propia caja, el zoom del hover se sale */
+.v2 .hub-card{overflow:hidden}
+
+/* La pastilla entra dentro de la foto en vez de pegarse al borde */
+.v2 .hub-sello{top:calc(var(--hub-marco) + 12px);right:calc(var(--hub-marco) + 12px)}
+
+/* El titulo baja a la franja de color */
+.v2 .hub-body{padding:0 10px 8px;max-width:calc(100% - 62px)}
+.v2 .hub-title{font-size:clamp(24px,2.4vw,30px);line-height:1.02}
+
+/* Boton circular con la flecha, como en la referencia. Va de adorno:
+   la tarjeta entera ya es el enlace, asi que se esconde del lector de
+   pantalla por ser un pseudoelemento. */
+.v2 .hub-card::before{
+  content:'';position:absolute;z-index:2;
+  right:calc(var(--hub-marco) + 8px);bottom:calc(var(--hub-marco) + 8px);
+  width:44px;height:44px;border-radius:999px;
+  background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E00040' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7m0 0H9m8 0v8'/%3E%3C/svg%3E") center/19px no-repeat;
+  box-shadow:0 4px 14px rgba(0,0,0,.14);
+  transition:transform .3s var(--ease);
+}
+.v2 .hub-card:hover::before{transform:translate(3px,-3px)}
+
+/* Un color por tarjeta. El rojo va en el 600 y no en el vivo: de
+   superficie grande el vivo vibra, y ademas con letra blanca pasa de
+   3,9:1 a 4,95:1. La tercera va en blanco, como en la referencia:
+   tres bloques saturados seguidos eran demasiado. */
+.v2 .hub--rojo{background:var(--red-600)}
+.v2 .hub--azul{background:var(--indigo)}
+.v2 .hub--amarillo{background:#fff;color:var(--ink)}
+.v2 .hub--amarillo .hub-title{font-weight:800}
+.v2 .hub--amarillo::before{background:var(--red-600) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7m0 0H9m8 0v8'/%3E%3C/svg%3E") center/19px no-repeat}
+
+@media (max-width:820px){
+  /* La tarjeta apaisada de 16/10 era para una foto a sangre. Con la
+     foto embutida y una franja de titulo de 78px, a esa proporcion le
+     quedaban 138px de foto y las caras salian cortadas: sube de alto
+     para que la imagen vuelva a respirar. */
+  .v2 .hub-card{--hub-marco:10px;aspect-ratio:4/3.6}
+  .v2 .hub-photo{inset:var(--hub-marco) var(--hub-marco) 78px}
+  .v2 .hub-card::before{width:38px;height:38px;background-size:17px}
+  .v2 .hub-body{max-width:calc(100% - 52px)}
+}
+
