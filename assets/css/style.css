@@ -1760,6 +1760,122 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .pil-linea{margin-top:4px}
 }
 
+/* ---------- Pilares en baraja ----------
+   Las tres se quedan pegadas en EL MISMO sitio, asi que la que entra
+   cubre del todo a la anterior y nunca hay dos fichas abiertas a la
+   vez. La de debajo no desaparece: se encoge un poco y sube, de modo
+   que asoma su canto por arriba y por los lados, como las cartas de
+   una baraja.
+
+   El encogido y el apagado los lleva main.js con una variable --p de 0
+   a 1 por ficha, porque depende de cuanto la ha tapado la siguiente y
+   eso no se sabe sin medir. El CSS solo la traduce.
+
+   Alto corto a proposito -64vh, no una pantalla entera-. Justo encima
+   esta el panel de "Por que elegir SISE", que ya retiene al visitante;
+   con tres pantallas mas aqui, media pagina seria scroll dirigido. */
+/* El hueco entre fichas NO es decoracion: es el tiempo que cada una
+   se queda sola en pantalla antes de que la siguiente empiece a
+   taparla. Con 24px, la segunda se le echaba encima a la primera a los
+   24px de scroll y no daba tiempo ni a mirarla. Con 40vh cada ficha
+   tiene media pantalla de scroll para ella sola.
+   No se ve como hueco: cuando llega, la de arriba ya esta pegada. */
+.pil-stack{display:grid;gap:40vh}
+.pil-ficha{
+  position:sticky;
+  top:calc(var(--header-h) + 22px);
+  /* Que llene la pantalla por debajo de su punto de pegado: lo que
+     sobraba abajo dejaba ver la ficha siguiente esperando, y eso
+     rompia el efecto. El tope de 820 es para pantallas muy altas,
+     donde una ficha de 1.100px seria absurda. */
+  min-height:clamp(420px,calc(100svh - var(--header-h) - 46px),820px);
+  display:flex;align-items:flex-end;
+  padding:clamp(26px,3vw,44px);
+  border-radius:clamp(18px,2vw,28px);
+  overflow:hidden;isolation:isolate;
+  background:var(--negro);color:#fff;
+  box-shadow:0 18px 44px rgba(18,19,26,.22);
+  /* Se encoge desde arriba: asi el canto que asoma queda por encima */
+  transform-origin:50% 0;
+  /* --d es cuantas fichas lleva encima (0, 1, 2...): cada una la
+     sube un escalon mas y la encoge otro tanto, que es lo que forma
+     la baraja. --p es lo mismo pero tope 1, para lo que solo pasa una
+     vez: apagar la foto y el texto.
+
+     OJO: va en "translate" y "scale" sueltas y NO en "transform".
+     WebKit descarta la declaracion entera -se queda en none- cuando
+     un calc() con variable aparece dentro de una funcion de
+     transform; en las propiedades sueltas el mismo calculo lo acepta
+     sin problema. Comprobado con las dos formas. */
+  translate:0 calc(-22px * var(--d,0));
+  scale:calc(1 - var(--d,0) * .05);
+}
+/* La foto se apaga segun la va tapando la siguiente. Debajo queda el
+   fondo oscuro de la propia ficha, asi que el canto que asoma es una
+   franja limpia y no un trozo de cielo o de fachada. Es lo que antes
+   intentaba resolver un velo negro arriba, que se veia como una
+   sombra encima de la foto. */
+.pil-ficha-foto{
+  position:absolute;inset:0;z-index:-2;
+  background-size:cover;background-position:center;
+  opacity:calc(1 - var(--p,0) * .82);
+}
+/* Velo solo por abajo, donde vive el texto. Arriba no hay nada: ahi
+   la foto se ve limpia. */
+.pil-ficha::after{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(to top,
+    rgba(7,8,12,.92) 0%,rgba(7,8,12,.78) 20%,rgba(7,8,12,.40) 42%,transparent 66%);
+}
+/* El texto va abajo, que es justo por donde empieza a taparlo la
+   ficha siguiente. Se apaga deprisa -desaparecido en el primer
+   cuarto del recorrido- para que se desvanezca en vez de verse
+   cortado por la mitad, y para que nunca haya dos titulos legibles. */
+.pil-ficha-txt,.pil-ficha-n{
+  opacity:clamp(0,calc(1 - var(--p,0) * 4),1);
+}
+.pil-ficha-n{
+  position:absolute;bottom:clamp(12px,1.4vw,24px);right:clamp(24px,2.6vw,40px);
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  font-size:clamp(56px,6vw,96px);line-height:.82;
+  color:rgba(255,255,255,.26);
+}
+.pil-ficha-txt{position:relative;max-width:60ch}
+.pil-ficha .pil-ico{
+  display:grid;place-content:center;
+  width:50px;height:50px;border-radius:999px;
+  background:var(--vidrio-claro);color:var(--red);
+  -webkit-backdrop-filter:var(--vidrio-blur);backdrop-filter:var(--vidrio-blur);
+  border:1px solid var(--vidrio-filete);
+  margin-bottom:16px;
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .pil-ficha .pil-ico{background:rgba(255,255,255,.94)}
+}
+.pil-ficha .pil-svg{width:25px;height:25px;display:block}
+.pil-ficha-t{
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(24px,2.8vw,36px);line-height:1.02;letter-spacing:.01em;
+  margin:0 0 10px;
+  /* Explicito: h1-h4 llevan la tinta oscura del cuerpo y le ganaban al
+     blanco que hereda la ficha. */
+  color:#fff;
+}
+.pil-ficha-p{font-size:16px;line-height:1.6;color:var(--blanco-2);margin:0;max-width:52ch}
+.pil-ficha-p strong{color:#fff;font-weight:700}
+
+@media (max-width:700px){
+  .pil-ficha{min-height:calc(100svh - var(--header-h) - 34px);padding:22px 20px}
+  .pil-ficha-n{font-size:40px}
+  .pil-ficha .pil-ico{width:44px;height:44px;margin-bottom:12px}
+  .pil-ficha .pil-svg{width:22px;height:22px}
+}
+/* Sin movimiento: ni se pegan ni se encogen, una debajo de otra */
+@media (prefers-reduced-motion:reduce){
+  .pil-ficha{position:static;translate:none;scale:none}
+  .pil-ficha-txt,.pil-ficha-n{opacity:1}
+}
+
 /* ---------- Tira de cifras ----------
    Cuatro datos en una linea bajo la franja, sobre el fondo de pagina.
    Sin caja ni iconos: es la prueba de los pilares, no otra tarjeta. */
@@ -1993,9 +2109,15 @@ body:not(.form-abierto) .form-velo{opacity:0}
    La animacion va ligada al recorrido de .porque (--pq). Con
    "contain", el 0% es cuando la seccion toca el borde de arriba y el
    100% cuando su final toca el de abajo: exactamente el tramo en que
-   .pq-pin esta pegado. Ese tramo mide lo mismo que el viaje de la fila
-   (--pq-dist, lo calcula main.js), asi que un pixel de scroll mueve un
-   pixel la fila.
+   .pq-pin esta pegado.
+
+   Ese tramo NO mide lo mismo que el viaje de la fila, sino el 60%
+   (--pq-ritmo): la fila avanza 1,67px por cada pixel de scroll. A 1:1
+   el panel retenia 3.192px -tres pantallas y media- para enseñar un
+   video y cuatro laboratorios, y encadenado con los pilares dejaba la
+   mitad del inicio con el scroll dirigido. Comprobado que la fila
+   llega exactamente al mismo punto final con cualquier ritmo: esto no
+   recorta contenido, solo deja de cobrar el peaje.
    Solo con alto de pantalla suficiente: por debajo de 560px (un movil
    acostado) la fila quedaria muy baja; ahi sigue la rejilla. */
 @supports (animation-timeline: view()) {
@@ -2006,7 +2128,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
     .porque.is-carril .pq-panel{padding-top:clamp(64px,8vw,104px);padding-bottom:0}
     .porque.is-carril .section-head{margin-bottom:0}
     .porque.is-carril .pq-recorrido{
-      height:calc(100svh + var(--pq-dist, 0px));
+      --pq-ritmo:.6;
+      height:calc(100svh + var(--pq-dist, 0px) * var(--pq-ritmo));
       view-timeline:--pq block;
     }
     .porque.is-carril .pq-pin{

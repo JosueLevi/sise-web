@@ -1761,86 +1761,58 @@
   }
 
   /* ============================================================
-     4b. PILARES — la foto y la pestana se relevan solas
+     4b. PILARES — baraja de fichas
      ============================================================
-     Cada pilar dura --pil-paso (CSS): cambia la foto, se abre su texto
-     y su linea avanza. Se pausa con el raton encima -para leer con
-     calma- y con el foco del teclado dentro; al reanudar, la linea
-     sigue desde donde iba. */
-  const pilEscena = $('#pilEscena');
-  if (pilEscena && !reduceMotion) {
-    const capas = $$('.pil-capa', pilEscena);
-    const tabs  = $$('.pil-tab', pilEscena);
-    const PASO = (parseFloat(getComputedStyle(pilEscena).getPropertyValue('--pil-paso')) || 4) * 1000;
-    const estado = { visible: false, teclado: false, raton: false };
-    let actualPil = 0, reloj = null, restante = PASO, inicio = 0;
+     Las tres fichas se quedan pegadas en el mismo sitio, asi que la
+     que entra tapa del todo a la anterior. Para que la de debajo no
+     desaparezca sin mas, se le da un --p de 0 a 1 con lo que lleva
+     tapado: el CSS la encoge, la sube y le apaga el contenido, y el
+     canto que asoma se lee como una carta de la baraja.
 
-    function reiniciaLinea(t) {
-      const barra = $('.pil-linea > span', t);
-      if (!barra) return;
-      barra.style.animation = 'none';
-      void barra.offsetWidth;
-      barra.style.animation = '';
-    }
+     Se mide aqui y no con animation-timeline porque el sujeto es un
+     elemento pegajoso: su posicion ya la esta tocando el propio
+     sticky, y las lineas de tiempo de vista no son fiables sobre el. */
+  const pilStack = $('.pil-stack');
 
-    /* Corre solo si se ve y nadie lo esta mirando de cerca */
-    function evalua() {
-      const corre = estado.visible && !estado.teclado && !estado.raton;
-      if (corre && !reloj) {
-        inicio = performance.now();
-        reloj = setTimeout(siguiente, restante);
-        pilEscena.classList.remove('is-pausada');
-      } else if (!corre && reloj) {
-        clearTimeout(reloj); reloj = null;
-        restante = Math.max(0, restante - (performance.now() - inicio));
-        pilEscena.classList.add('is-pausada');
-      } else if (!corre) {
-        pilEscena.classList.add('is-pausada');
+  if (pilStack && !reduceMotion) {
+    const fichas = $$('.pil-ficha', pilStack);
+
+    if (fichas.length > 1) {
+      let pedido = false;
+
+      function pintaBaraja() {
+        pedido = false;
+
+        /* Cuanto ha subido cada ficha sobre el pie de la anterior:
+           0 mientras esta debajo del todo, 1 cuando la cubre entera. */
+        const paso = [];
+        for (let i = 0; i < fichas.length - 1; i++) {
+          const yo = fichas[i].getBoundingClientRect();
+          const siguiente = fichas[i + 1].getBoundingClientRect();
+          const p = (yo.bottom - siguiente.top) / (yo.height || 1);
+          paso[i] = Math.min(1, Math.max(0, p));
+        }
+
+        /* La profundidad de cada ficha es la SUMA de las que le han
+           caido encima, no solo la de al lado. Sin acumular, las dos de
+           atras se iban al mismo sitio y asomaba un solo canto en vez
+           de dos: no habia baraja, habia dos cartas pegadas. */
+        for (let i = 0; i < fichas.length; i++) {
+          let d = 0;
+          for (let j = i; j < paso.length; j++) d += paso[j];
+          fichas[i].style.setProperty('--d', d.toFixed(3));
+          fichas[i].style.setProperty('--p', Math.min(1, d).toFixed(3));
+        }
       }
+
+      addEventListener('scroll', () => {
+        if (pedido) return;
+        pedido = true;
+        requestAnimationFrame(pintaBaraja);
+      }, { passive: true });
+      addEventListener('resize', pintaBaraja);
+      pintaBaraja();
     }
-
-    function muestraPilar(i) {
-      actualPil = (i + tabs.length) % tabs.length;
-      capas.forEach((c, n) => c.classList.toggle('is-activa', n === actualPil));
-      tabs.forEach((t, n) => {
-        const on = n === actualPil;
-        t.classList.toggle('is-activa', on);
-        t.setAttribute('aria-selected', String(on));
-        if (on) reiniciaLinea(t);
-      });
-      // cada pilar empieza con su tiempo completo
-      clearTimeout(reloj); reloj = null; restante = PASO;
-      evalua();
-    }
-    function siguiente() { reloj = null; muestraPilar(actualPil + 1); }
-
-    tabs.forEach((t, n) => t.addEventListener('click', () => muestraPilar(n)));
-
-    /* Solo el foco de teclado pausa: el de un clic o un toque no */
-    pilEscena.addEventListener('focusin', () => {
-      estado.teclado = !!pilEscena.querySelector(':focus-visible'); evalua();
-    });
-    pilEscena.addEventListener('focusout', (e) => {
-      if (!pilEscena.contains(e.relatedTarget)) { estado.teclado = false; evalua(); }
-    });
-
-    /* Solo raton: en tactil no hay "salir", y un toque lo dejaria
-       pausado para siempre */
-    pilEscena.addEventListener('pointerenter', (e) => {
-      if (e.pointerType === 'mouse') { estado.raton = true; evalua(); }
-    });
-    pilEscena.addEventListener('pointerleave', (e) => {
-      if (e.pointerType === 'mouse') { estado.raton = false; evalua(); }
-    });
-
-    /* Solo corre mientras se ve. Al entrar por primera vez la linea del
-       primero arranca desde cero, en sincronia con el reloj. */
-    new IntersectionObserver((es) => {
-      es.forEach((e) => { estado.visible = e.isIntersecting; evalua(); });
-    }, { threshold: 0.25 }).observe(pilEscena);
-
-    pilEscena.classList.add('is-pausada');
-    muestraPilar(0);
   }
 
   /* ============================================================
