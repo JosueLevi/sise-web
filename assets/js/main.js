@@ -396,6 +396,54 @@
   }
 
   /* ============================================================
+     1d. VIDEO DEL BANNER
+     ============================================================
+     El banner es un carrusel de tres: la primera lleva el lema de la
+     marca y las otras dos son piezas de campana con su texto dentro de
+     la imagen. El video sustituye a la foto de la primera y se aparta
+     en las demas, que si no se quedarian mudas.
+
+     El archivo no se pide hasta que hace falta: en movil no se carga, y
+     en escritorio se engancha cuando el banner ya esta en pantalla. */
+  const heroVideo = $('#heroVideo');
+  const escenaVideo = $('#heroStage');
+
+  if (heroVideo && escenaVideo) {
+    const enEscritorio = window.matchMedia('(min-width:821px)');
+    let cargado = false;
+
+    function carga() {
+      if (cargado || !enEscritorio.matches || reduceMotion) return;
+      cargado = true;
+      heroVideo.src = heroVideo.dataset.src;
+    }
+
+    function sincroniza() {
+      const primera = $('.hero-slide', escenaVideo);
+      const manda = !!primera && primera.classList.contains('is-on');
+      heroVideo.classList.toggle('is-on', manda);
+      if (manda) {
+        carga();
+        /* Puede fallar por politica de reproduccion automatica: con el
+           video mudo no deberia, pero si pasa se queda el poster y la
+           pagina sigue igual. */
+        const r = heroVideo.play();
+        if (r && r.catch) r.catch(() => {});
+      } else if (cargado) {
+        heroVideo.pause();
+      }
+    }
+
+    /* Las diapositivas las pinta el carrusel, asi que hay que esperar a
+       que existan y despues seguir sus cambios de clase. */
+    new MutationObserver(sincroniza).observe(escenaVideo, {
+      childList: true, subtree: true, attributes: true, attributeFilter: ['class']
+    });
+    enEscritorio.addEventListener('change', sincroniza);
+    sincroniza();
+  }
+
+  /* ============================================================
      1b. NAVEGACIÓN CON DROPDOWNS
      ============================================================ */
 

@@ -1041,7 +1041,7 @@ const TRANSPARENCIA = {
 const NOSOTROS_FOTOS = [
   'assets/img/pilares-fondo.webp',
   'assets/img/hero-01.webp',
-  'assets/img/cierre.webp'
+  'assets/img/animacion-digital.webp'
 ];
 
 /* Linea de tiempo. El texto institucional ya venia en orden

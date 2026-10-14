@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=613">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=647">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -18,7 +18,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-400.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-condensed-800.woff2">
 <link rel="preload" as="image" href="assets/img/hero-01.webp?v=3">
-<link rel="stylesheet" href="assets/css/style.css?v=613">
+<link rel="stylesheet" href="assets/css/style.css?v=647">
 </head>
 <body class="inicio">
 
@@ -81,6 +81,15 @@
 <!-- ============ HERO ============ -->
 <section class="hero" id="inicio" aria-roledescription="carrusel" aria-label="Presentación">
   <div class="hero-bg" id="heroStage"></div>
+  <!-- Video solo sobre la primera diapositiva. Las otras dos son piezas
+       de campana que traen su propio texto dentro de la imagen, asi que
+       taparlas con el video las dejaria sin nada que decir.
+       El archivo lo carga main.js y solo en escritorio: en movil son
+       2,7 MB de datos para un adorno. -->
+  <video class="hero-video" id="heroVideo" muted loop playsinline
+         preload="none" aria-hidden="true" tabindex="-1"
+         poster="assets/img/hero-01.webp?v=3"
+         data-src="assets/video/home.mp4"></video>
   <div class="hero-veil"></div>
 
   <div class="shell hero-grid">
@@ -194,9 +203,7 @@
         <span class="hub-photo" data-bg="assets/img/hub-semipresencial.webp"></span>
         <span class="hub-sello">25 carreras</span>
         <span class="hub-body">
-          <span class="hub-kicker">Tu profesi&oacute;n</span>
           <span class="hub-title">Carreras <br>Semipresenciales</span>
-          <span class="hub-meta">3 a&ntilde;os &middot; en sede y en l&iacute;nea</span>
         </span>
       </a>
 
@@ -204,9 +211,7 @@
         <span class="hub-photo" data-bg="assets/img/hub-virtual.webp"></span>
         <span class="hub-sello">11 carreras</span>
         <span class="hub-body">
-          <span class="hub-kicker">100% en l&iacute;nea</span>
           <span class="hub-title">Carreras <br>Virtuales</span>
-          <span class="hub-meta">2 a&ntilde;os &middot; a tu ritmo</span>
         </span>
       </a>
 
@@ -215,9 +220,7 @@
         <span class="hub-photo" data-bg="assets/img/hub-escuela.webp"></span>
         <span class="hub-sello">&iexcl;Nuevo!</span>
         <span class="hub-body">
-          <span class="hub-kicker">Ahora somos</span>
           <span class="hub-title">Escuela</span>
-          <span class="hub-meta">Grado de bachiller</span>
         </span>
       </a>
     </div>
@@ -435,12 +438,11 @@
     <div class="cierre-foto" aria-hidden="true"></div>
     <div class="cierre-txt">
     <h2 class="cierre-titulo">&iquest;Listo para <em>comenzar?</em></h2>
-    <p class="cierre-sub">D&eacute;janos tus datos y un asesor te contacta hoy mismo.</p>
+    <p class="cierre-sub">Un asesor te escribe hoy. Sin compromiso.</p>
     <div class="cierre-acciones">
       <a class="btn btn-pill btn-primary" href="#form">Quiero informaci&oacute;n
         <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7m0 0H9m8 0v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
-      <a class="btn btn-pill btn-ghost" href="carreras-semipresenciales.html">Ver carreras</a>
     </div>
     </div>
   </div>
@@ -539,9 +541,9 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=613"></script>
-<script src="assets/js/data.js?v=613"></script>
-<script src="assets/js/crm.js?v=613"></script>
-<script src="assets/js/main.js?v=613"></script>
+<script src="assets/js/icons.js?v=647"></script>
+<script src="assets/js/data.js?v=647"></script>
+<script src="assets/js/crm.js?v=647"></script>
+<script src="assets/js/main.js?v=647"></script>
 </body>
 </html>
