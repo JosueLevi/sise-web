@@ -785,9 +785,14 @@ const AREAS_IDIOMAS = [
   { slug: 'idiomas', label: 'Idiomas', icon: 'area-idiomas' }
 ];
 
+/* OJO con las url: apuntan a la pagina de Idiomas porque todavia no
+   hay una ficha por idioma. Desde el menu llevan donde tienen que
+   llevar; dentro de la propia pagina de Idiomas, la tarjeta apunta a
+   la pagina en la que ya estas. En cuanto exista la ficha de cada
+   idioma, se cambia aqui y vale para los dos sitios. */
 const IDIOMAS_CURSO = [
-  { nombre: 'Inglés',           cat: 'idiomas', url: '#' },
-  { nombre: 'Lengua de señas',  cat: 'idiomas', url: '#' }
+  { nombre: 'Inglés',           cat: 'idiomas', url: 'idiomas.html' },
+  { nombre: 'Lengua de señas',  cat: 'idiomas', url: 'idiomas.html' }
 ];
 
 /* ---------- ESCUELA ----------
@@ -832,6 +837,10 @@ const MENU = [
     auto: 'cursos',
     cta: { label: 'Ver toda la oferta', url: '#' }
   },
+  /* OCULTA POR AHORA. Para devolverla al menu, basta con quitar los
+     dos marcadores de comentario de abajo. Los datos que la alimentan
+     -AREAS_ESCUELA y ESCUELA- siguen donde estaban y el panel del menu
+     desplegado la sigue mostrando: aqui solo se retira de la barra.
   {
     label: 'Escuela',
     url: '#',
@@ -841,6 +850,15 @@ const MENU = [
       icono: 'info',
       texto: 'El bachiller equivalente al universitario es un grado académico reconocido por SUNEDU que acredita el mismo nivel de formación que un bachiller universitario.'
     }
+  },
+  */
+  {
+    /* El desplegable sale de AREAS_IDIOMAS e IDIOMAS_CURSO, igual que
+       los demas. Al ser un solo grupo, el panel es el compacto que
+       cuelga del propio boton y no el ancho centrado. */
+    label: 'Idiomas',
+    url: 'idiomas.html',
+    auto: 'idiomas'
   },
   {
     label: 'Admisión',
