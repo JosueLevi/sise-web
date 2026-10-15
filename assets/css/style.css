@@ -1906,10 +1906,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
 @media (prefers-reduced-motion:reduce){.pil-ficha-foto{animation:none}}
 /* Velo solo por abajo, donde vive el texto. Arriba no hay nada: ahi
    la foto se ve limpia. */
+/* Velo mas suave: a .92 en el pie y hasta el 66% del alto oscurecia
+   media foto. Ahora arranca en .80, se apaga antes (58%) y la curva baja
+   mas deprisa; el texto sigue por encima del minimo de contraste
+   (medido en las tres fotos, con el acercamiento en su punto maximo). */
 .pil-ficha::after{
   content:'';position:absolute;inset:0;z-index:-1;
   background:linear-gradient(to top,
-    rgba(7,8,12,.92) 0%,rgba(7,8,12,.78) 20%,rgba(7,8,12,.40) 42%,transparent 66%);
+    rgba(7,8,12,.80) 0%,rgba(7,8,12,.62) 20%,rgba(7,8,12,.26) 40%,transparent 58%);
 }
 /* El texto va abajo, que es justo por donde empieza a taparlo la
    ficha siguiente. Se apaga deprisa -desaparecido en el primer
