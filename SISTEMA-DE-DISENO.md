@@ -21,7 +21,7 @@ caja nueva hay que encajarla en una de estas tres.
 | **3** | **Vidrio** | Translúcido con desenfoque, **solo sobre una foto** | Formulario y botones del banner, franja de pilares, rótulos de laboratorio, datos de sede, cabecera |
 
 **La restricción importante del vidrio:** necesita algo que desenfocar. Sobre el
-gris plano no se ve como vidrio, se ve como un rectángulo gris. Si no hay foto
+fondo blanco no se ve como vidrio, se ve como un rectángulo gris. Si no hay foto
 debajo, es papel.
 
 El vidrio tiene dos versiones, **y se elige por el color del texto, no por el de
@@ -30,8 +30,8 @@ la foto**: clara para texto oscuro, oscura para texto blanco.
 Una sola pareja de sombras para las tres, en reposo y al pasar por encima.
 
 ```css
---papel-sombra:       0 8px 24px rgba(18,19,26,.07);
---papel-sombra-alta:  0 18px 42px rgba(18,19,26,.13);
+--papel-sombra:       0 0 0 1px rgba(18,19,26,.06), 0 8px 24px rgba(18,19,26,.07);
+--papel-sombra-alta:  0 0 0 1px rgba(18,19,26,.07), 0 18px 42px rgba(18,19,26,.13);
 --vidrio-claro:          rgba(255,255,255,.72);
 --vidrio-oscuro:         rgba(7,8,12,.34);
 --vidrio-filete:         rgba(255,255,255,.65);
@@ -74,14 +74,14 @@ pequeño (4,5:1). `--red-700` llega a 5,3:1.
 ### Grises
 
 Había 17 sueltos; se redujeron a estos. Los tres primeros son de texto y todos
-pasan 4,5:1 sobre blanco y sobre el gris de página.
+pasan 4,5:1 sobre el fondo blanco de página.
 
 | Token | Valor | Para qué |
 |---|---|---|
 | `--ink` | `#12131A` | Títulos |
 | `--ink-2` | `#2A2C36` | Texto fuerte |
 | `--body` | `#5C6270` | Párrafos y controles |
-| `--muted` | `#676D7B` | Texto secundario (4,7:1 sobre el gris de página) |
+| `--muted` | `#676D7B` | Texto secundario (5,2:1 sobre el blanco de página) |
 | `--gris-400` | `#9AA0AE` | Placeholder atenuado, adornos. **Nunca texto que haya que leer** |
 | `--gris-300` | `#CBD0DA` | Bordes de controles, separadores |
 | `--gris-100` | `#EDEFF4` | Rellenos: cajas de imagen, hueco de foto pendiente |
@@ -90,7 +90,7 @@ pasan 4,5:1 sobre blanco y sobre el gris de página.
 
 | Token | Valor | Para qué |
 |---|---|---|
-| `--bg` | `#F5F4F2` | Fondo general. Gris apenas cálido, conversa con el carbón del pie |
+| `--bg` | `#FFFFFF` | Fondo general: blanco puro en todo el sitio (antes `#F5F4F2`, gris cálido). Por eso el papel lleva un filete de 1px en su sombra: sobre blanco, solo la sombra no bastaba para despegar las tarjetas |
 | `--bg-soft` | `#F6F7FA` | Variante más fría |
 | `--line` | `#E7E9F0` | Separadores |
 | `--white` | `#fff` | Papel |

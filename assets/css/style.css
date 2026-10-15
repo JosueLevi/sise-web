@@ -110,7 +110,8 @@
   --negro:#07080C;     /* paneles oscuros: Por que elegir SISE y Experiencias */
   --negro-rgb:7,8,12;
   --tienda-lado:clamp(16px,4vw,72px);   /* margen lateral del catalogo */
-  --bg:#F5F4F2;        /* fondo general: gris apenas calido, conversa con el carbon del footer */
+  --bg:#FFFFFF;        /* fondo general: blanco puro en todo el sitio. Antes era #F5F4F2, un gris
+                          calido; se unifico con la ficha de carrera, que ya iba en blanco */
   --bg-soft:#F6F7FA;
   --line:#E7E9F0;
 
@@ -162,8 +163,11 @@
    encima. Los valores viven aqui para que una tarjeta nueva no tenga
    que inventarse los suyos. */
 :root{
-  --papel-sombra:0 8px 24px rgba(18,19,26,.07);
-  --papel-sombra-alta:0 18px 42px rgba(18,19,26,.13);
+  /* Con un filete de 1px delante: sobre el gris la tarjeta blanca se
+     despegaba sola; sobre el fondo blanco solo la separaba la sombra y
+     en las pantallas con poco contraste se perdia. */
+  --papel-sombra:0 0 0 1px rgba(18,19,26,.06),0 8px 24px rgba(18,19,26,.07);
+  --papel-sombra-alta:0 0 0 1px rgba(18,19,26,.07),0 18px 42px rgba(18,19,26,.13);
   --vidrio-claro:rgba(255,255,255,.72);
   --vidrio-oscuro:rgba(7,8,12,.34);
   --vidrio-filete:rgba(255,255,255,.65);
@@ -1886,7 +1890,20 @@ body:not(.form-abierto) .form-velo{opacity:0}
   position:absolute;inset:0;z-index:-2;
   background-size:cover;background-position:center;
   opacity:calc(1 - var(--p,0) * .82);
+  /* Acercamiento con desplazamiento (efecto Ken Burns), ida y vuelta.
+     Al 8% en 14s no se percibia: a los 7 segundos iba por el 5% y la
+     foto se leia quieta. Al 16% en 9s se nota, y como cada foto se
+     acerca hacia un punto distinto (transform-origin) se lee como un
+     movimiento de camara y no como una foto que crece. Con la propiedad
+     scale suelta y no con transform, que en WebKit se cae si lleva
+     calc con variable. La tarjeta recorta (overflow:hidden). */
+  animation:pilZoom 9s ease-in-out infinite alternate;
 }
+.pil-ficha:nth-child(1) .pil-ficha-foto{transform-origin:28% 40%}
+.pil-ficha:nth-child(2) .pil-ficha-foto{transform-origin:72% 35%}
+.pil-ficha:nth-child(3) .pil-ficha-foto{transform-origin:50% 70%}
+@keyframes pilZoom{from{scale:1}to{scale:1.16}}
+@media (prefers-reduced-motion:reduce){.pil-ficha-foto{animation:none}}
 /* Velo solo por abajo, donde vive el texto. Arriba no hay nada: ahi
    la foto se ve limpia. */
 .pil-ficha::after{
@@ -2269,11 +2286,6 @@ body:not(.form-abierto) .form-velo{opacity:0}
    bloque "Que quieres estudiar", en azul y del otro lado para que
    rimen sin parecer la misma seccion. */
 .sedes{position:relative;background:transparent;padding:96px 0 100px;margin-bottom:0;overflow:hidden}
-/* En la ficha, Sedes viene despues de Egresados, que es blanco: sin
-   transicion el gris de pagina empezaba de golpe con un corte recto.
-   Arranca en blanco y se funde al gris, y las dos secciones se leen
-   como una. El "~" lo limita a la ficha; en el inicio no cambia. */
-.car-cuerpo ~ .sedes{background:linear-gradient(180deg,#FFFFFF 0,var(--bg) 280px)}
 .sedes .shell{position:relative;z-index:1}
 .sedes::before{
   content:'';position:absolute;z-index:0;pointer-events:none;
@@ -2475,9 +2487,11 @@ body:not(.form-abierto) .form-velo{opacity:0}
    claras partia la lectura. */
 .experiencias{
   position:relative;overflow:hidden;
-  /* Empieza en transparente: arrancar con color marcaba una linea
-     recta contra el gris de la seccion de arriba. */
-  background:linear-gradient(180deg,
+  /* De abajo hacia arriba: el rosa sube desde el pie de la seccion y se
+     apaga hacia el titulo. Arranca en transparente en el borde mismo
+     (y llega al maximo al 26%): con color en el canto marcaria una
+     linea recta contra la seccion de Sedes, que va debajo. */
+  background:linear-gradient(0deg,
     rgba(255,14,73,0) 0,
     rgba(255,14,73,.13) 26%,
     rgba(255,14,73,.06) 58%,
@@ -3110,7 +3124,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .carrito-lista{flex:1;overflow-y:auto;padding:14px 22px;display:grid;gap:8px;align-content:start}
 .carrito-it{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:12px 14px;border-radius:12px;background:var(--bg);font-size:15px;color:var(--ink);
+  /* --bg-soft y no --bg: el panel del carrito es blanco, y con el fondo
+     de pagina en blanco los productos se fundian con el. */
+  padding:12px 14px;border-radius:12px;background:var(--bg-soft);font-size:15px;color:var(--ink);
 }
 .carrito-quita{width:30px;height:30px;flex:none;border-radius:8px;display:grid;place-content:center;color:var(--muted);cursor:pointer}
 .carrito-quita svg{width:16px;height:16px}
@@ -4109,7 +4125,29 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* ============================================================
    CONVENIOS — dos columnas verticales
    ============================================================ */
-.convenios{background:transparent;overflow:hidden}
+.convenios{background:transparent;overflow:hidden;isolation:isolate}
+/* Arco de fondo en rojo suave, el mismo recurso que en la ficha de
+   carrera (alli en indigo): entra por la izquierda detras del texto y
+   su canto llega al arranque de las columnas de logos. Esta era la
+   seccion mas plana del inicio, gris liso entre Pilares y Experiencias,
+   y bajo el texto quedaba un hueco sin vestir. Banda ancha difuminada
+   que entra y sale fundida antes de los bordes de la seccion; detras de
+   todo (la seccion aisla su apilado y lo recorta). Solo en escritorio:
+   en movil las columnas se apilan y no queda fondo que vestir. */
+@media (min-width:901px){
+  .conv-txt{position:relative}
+  .conv-txt::before{
+    content:'';position:absolute;z-index:-1;pointer-events:none;
+    width:1500px;height:1500px;left:-810px;top:-620px;
+    background:radial-gradient(closest-side,
+      transparent calc(100% - 134px),
+      rgba(255,14,73,.08) calc(100% - 128px),
+      rgba(255,14,73,.08) calc(100% - 6px),
+      transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 26%,#000 42%,#000 56%,transparent 72%);
+    mask-image:linear-gradient(180deg,transparent 26%,#000 42%,#000 56%,transparent 72%);
+  }
+}
 .conv-2col{
   display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
   gap:clamp(28px,4vw,64px);align-items:center;
@@ -4125,9 +4163,15 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .conv-cta{display:inline-flex}
 
 /* Las dos columnas corren en sentidos opuestos */
-.conv-rails{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+/* Cada columna lleva 8px de relleno a los lados: el carril recorta lo
+   que se sale (overflow:hidden, para el desfile de logos) y las
+   tarjetas ocupaban todo su ancho, asi que el filete y la sombra de los
+   costados quedaban cortados. El margen negativo y el gap a 0 dejan las
+   tarjetas exactamente donde estaban: 16px entre columnas y a ras de la
+   columna de contenido. */
+.conv-rails{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-inline:-8px}
 .conv-rail{
-  height:clamp(360px,44vw,520px);overflow:hidden;
+  height:clamp(360px,44vw,520px);overflow:hidden;padding-inline:8px;
   /* Se difuminan arriba y abajo con una mascara (a transparente, no a
      un color): funciona igual sobre cualquier fondo y las tarjetas no
      aparecen ni se cortan de golpe. */
@@ -4148,13 +4192,18 @@ body:not(.form-abierto) .form-velo{opacity:0}
    bucle caiga exactamente donde empieza la copia. */
 /* El mismo papel. Levanta menos al pasar por encima que las tarjetas
    grandes: son treinta y estan en movimiento. */
+/* Filete y sombra corta, pegada a la tarjeta: con el fondo de pagina en
+   blanco, la sombra de 24px de antes se veia como una mancha gris
+   oscura entre los logos, y solo con el filete la columna de la derecha
+   -que no tiene el arco detras- se perdia. 3px de caida y 10 de
+   difuminado dan volumen sin extenderse por los huecos. */
 .conv-item{
   height:96px;margin-bottom:16px;display:grid;place-items:center;
   padding:0 16px;background:#fff;border-radius:18px;
-  box-shadow:var(--papel-sombra);
+  box-shadow:0 0 0 1px rgba(18,19,26,.08),0 3px 10px rgba(18,19,26,.08);
   transition:transform .3s var(--ease),box-shadow .3s var(--ease);
 }
-.conv-item:hover{transform:translateY(-3px);box-shadow:var(--papel-sombra-alta)}
+.conv-item:hover{transform:translateY(-3px);box-shadow:0 0 0 1px rgba(18,19,26,.09),0 8px 18px rgba(18,19,26,.1)}
 .conv-item img{width:88%;height:auto}
 /* Respaldo mientras no esta el archivo del logo */
 .conv-word{
@@ -4176,7 +4225,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .conv-rail{height:clamp(320px,58vw,420px)}
 }
 @media (max-width:560px){
-  .conv-rails{gap:12px}
+  /* 6+6 de relleno = los 12px de separacion de siempre en movil */
+  .conv-rails{gap:0;margin-inline:-6px}
+  .conv-rail{padding-inline:6px}
   .conv-item{height:78px;margin-bottom:12px;padding:0 12px;border-radius:15px}
   .conv-word{font-size:16px}
 }
