@@ -325,10 +325,18 @@ p{margin:0}
    hamburguesa fuera de la pantalla. Chrome no tiene ese fallo. */
 .brand-logo{display:block;width:108px;height:27px}
 /* Logo con el aval de la Universidad Cientifica del Sur: proporcion
-   541x70 (7,7:1). A 29px de alto "SISE" mide lo mismo que con la version
-   anterior del logo (600x78 a 32px); el ancho va explicito por el mismo
-   motivo de Safari. */
-.brand-logo[data-ico="logo-respaldo"]{width:224px;height:29px}
+   598x87 (6,9:1). Crece lo que permite cada ancho para que se lea el
+   rotulo "con el respaldo de la universidad", que ocupa 11,5 de los 87
+   de alto: a 36px sus mayusculas se quedaban en 4,7px. Medido en cada
+   ancho, con la cabecera arriba y al bajar: 44px desde 1440 (5,8px de
+   rotulo), 40px de 1300 a 1439 y 32px en el tramo apretado de 1181 a
+   1299 (mas abajo). A 48px el boton del menu se salia de la pantalla a
+   1366. La pildora no crece: su alto lo marca Empleabilidad (52px).
+   El ancho va explicito por el mismo motivo de Safari. */
+.brand-logo[data-ico="logo-respaldo"]{width:275px;height:40px}
+@media (min-width:1440px){
+  .brand-logo[data-ico="logo-respaldo"]{width:302px;height:44px}
+}
 .brand-logo > svg{width:100%;height:100%;display:block}
 
 /* El hueco entre entradas: 16px a 1300 (la pildora aun es estrecha y en
@@ -342,7 +350,7 @@ p{margin:0}
    y por debajo de 1181 el menu va entero en la hamburguesa. */
 @media (min-width:1181px) and (max-width:1299px){
   .main-nav{gap:10px}
-  .brand-logo[data-ico="logo-respaldo"]{width:178px;height:23px}
+  .brand-logo[data-ico="logo-respaldo"]{width:220px;height:32px}
   .site-header .btn-empleo{padding:12px 18px;font-size:15px;margin-left:12px}
   /* La barra pintada (al bajar, y siempre en las paginas internas como
      Cursos) lleva mas relleno lateral: aqui se recorta para que quepa. */
@@ -545,12 +553,12 @@ p{margin:0}
 .sm-brand{display:inline-flex;flex-direction:column;gap:5px}
 .sm-brand-logo{display:block;width:clamp(112px,12vw,142px);color:var(--red)}
 .sm-brand-logo svg{width:100%;height:auto;display:block}
-/* Logo con el aval (541x70): mas ancho que el anterior para que el texto
+/* Logo con el aval (598x87): mas ancho que el anterior para que el texto
    de la Cientifica se lea. Tamaño explicito por Safari, como en el header. */
-.sm-brand-logo[data-ico="logo-respaldo"]{width:270px;height:35px}
+.sm-brand-logo[data-ico="logo-respaldo"]{width:357px;height:52px}
 .sm-brand-logo[data-ico="logo-respaldo"] svg{height:100%}
 @media (max-width:640px){
-  .sm-brand-logo[data-ico="logo-respaldo"]{width:216px;height:28px}
+  .sm-brand-logo[data-ico="logo-respaldo"]{width:261px;height:38px}
 }
 .sm-brand-sub{
   font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;
@@ -3971,10 +3979,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
   /* En movil comparte fila con Empleabilidad y la hamburguesa y al logo
      le quedan ~108px: el aval de la Cientifica saldria de 4px, ilegible.
      Se muestra solo "SISE >>", recortando el mismo SVG: la caja deja ver
-     los primeros ~258 de sus 541 de ancho (los chevrones acaban en 254).
+     los primeros ~261 de sus 598 de ancho (los chevrones acaban en 254).
      A 26px de alto las letras miden lo mismo que antes. */
-  .brand-logo[data-ico="logo-respaldo"]{width:96px;height:26px;overflow:hidden}
-  .brand-logo[data-ico="logo-respaldo"] > svg{width:201px;max-width:none}
+  .brand-logo[data-ico="logo-respaldo"]{width:96px;height:32px;overflow:hidden}
+  .brand-logo[data-ico="logo-respaldo"] > svg{width:220px;max-width:none}
   .career-grid{grid-template-columns:repeat(2,1fr);gap:16px}
   .career-card{min-height:330px}
   .exp-grid{
@@ -4555,25 +4563,26 @@ body:not(.form-abierto) .form-velo{opacity:0}
      no hay un solo borde de color, las tarjetas se separan del fondo con
      sombra. Se queda un filo rosa muy claro para no perder del todo la
      idea del diseno, y la forma de hoja intacta. */
-  background:#fff;border:1px solid #FFD9E3;
+  /* En reposo ya van "encendidas": borde rojo, halo rojo e icono
+     adelantado, que antes solo se veia al pasar el raton (y en movil,
+     nunca). Al pasar por encima suben y el halo crece un poco. */
+  background:#fff;border:1px solid var(--red);
   border-radius:26px 26px 100px 26px;
   /* Alto comun otra vez, pero ajustado: 252px sobraban y sin nada se
      quedaban aplastadas. 190 deja respirar al icono sin abrir un hueco. */
   padding:30px 16px;min-height:227px;
-  box-shadow:var(--shadow-sm);
+  /* Halo contenido: a 34px y .22 se veia como una mancha rosa bajo las
+     cuatro tarjetas juntas. */
+  box-shadow:0 8px 18px rgba(255,14,73,.13);
   transition:transform .3s var(--ease),box-shadow .3s var(--ease),
              border-color .3s var(--ease);
 }
-/* Al pasar por encima la tarjeta se tine del rojo de marca -borde y
-   sombra-, y el icono se adelanta un poco al levantarse: eso es lo que
-   hace que el gesto se sienta vivo y no un simple desplazamiento. */
 .fact:hover{
   transform:translateY(-4px);
-  border-color:var(--red);
-  box-shadow:0 14px 34px rgba(255,14,73,.28);
+  box-shadow:0 12px 24px rgba(255,14,73,.2);
 }
-.fact-ico{transition:transform .3s var(--ease)}
-.fact:hover .fact-ico{transform:translateY(-3px) scale(1.1)}
+.fact-ico{transition:transform .3s var(--ease);transform:translateY(-3px) scale(1.1)}
+.fact:hover .fact-ico{transform:translateY(-5px) scale(1.14)}
 .fact-ico{display:block;width:40px;height:40px;flex:none;color:var(--tono,var(--red));margin-bottom:6px}
 /* Misma vuelta de color que las tarjetas del inicio: rojo, amarillo,
    azul y rojo. */
