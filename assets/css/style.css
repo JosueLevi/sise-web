@@ -4401,6 +4401,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* El relleno general de 75px se hereda del cuerpo, pero justo debajo
    del banner sobra: la ruta arrancaba muy despegada de la foto. */
 .car-lead{overflow:hidden;overflow:clip}
+/* Contexto de apilado propio: sin el, el arco de fondo de las tarjetas
+   (z-index:-1) se iria por detras del blanco de la seccion. */
+.car-lead{isolation:isolate}
 .car-cuerpo > .car-lead{padding-top:clamp(26px,3vw,38px)}
 .car-lead-grid{
   /* Una sola columna: el formulario ya no vive aqui dentro */
@@ -4415,6 +4418,23 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* Sin pincelada detras: con el panel en oscuro, el color ya lo pone el
    propio bloque y el amarillo asomando por los bordes solo ensuciaba. */
 .car-why-block{position:relative;min-width:0;margin-top:clamp(34px,4vw,56px)}
+/* Eco del arco de las tarjetas, mas pequeno y en la esquina contraria:
+   entra por la derecha detras de la baraja de cifras. Con un solo arco
+   parecia una pieza suelta; dos en diagonal se leen como recurso. Mismo
+   indigo, misma banda difuminada y mismo fundido. */
+@media (min-width:901px){
+  .car-why-block::before{
+    content:'';position:absolute;z-index:-1;pointer-events:none;
+    width:760px;height:760px;right:-470px;top:-170px;
+    background:radial-gradient(closest-side,
+      transparent calc(100% - 104px),
+      rgba(var(--indigo-rgb),.08) calc(100% - 98px),
+      rgba(var(--indigo-rgb),.08) calc(100% - 6px),
+      transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 4%,#000 26%,#000 62%,transparent 86%);
+    mask-image:linear-gradient(180deg,transparent 4%,#000 26%,#000 62%,transparent 86%);
+  }
+}
 
 .crumb{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:14px;color:var(--muted);margin-bottom:26px}
 .crumb a{color:var(--body);font-weight:500;transition:color .2s var(--ease)}
@@ -4551,13 +4571,45 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .car-h:first-child{margin-top:0}
 
 /* Datos rapidos */
-.car-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:40px 0 0}
+.car-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:40px 0 0;position:relative}
+/* Arco de fondo en indigo suave: entra desde la izquierda por detras de
+   las tarjetas y del bloque del grado, y hace eco del semiarco blanco
+   que el bloque lleva en su esquina. Indigo y no rojo: la zona ya tiene
+   el borde y el halo rojos de las tarjetas y el bloque del grado entero;
+   un arco rosa se leia como el rojo derramandose. El frio equilibra y
+   enlaza con el icono de Modalidad y el panel de "Por que estudiar".
+   - Una sola banda ancha (130px) y no un borde: se pinta con un
+     degradado radial cuyos cantos se difuminan un par de pixeles, asi
+     se lee como una aguada y no como una linea trazada.
+   - Entra y sale fundida (mascara de arriba a abajo): sin ella la
+     seccion la cortaba de golpe por arriba y por abajo.
+   - Circulo grande (1300px) para que la curva sea tranquila.
+   Va detras de todo (z-index -1 dentro de .car-lead, que aisla su
+   apilado). Solo en escritorio: en movil las tarjetas ocupan todo el
+   ancho y no queda fondo que vestir. */
+@media (min-width:901px){
+  .car-facts::before{
+    content:'';position:absolute;z-index:-1;pointer-events:none;
+    width:1300px;height:1300px;left:-1060px;top:-275px;
+    background:radial-gradient(closest-side,
+      transparent calc(100% - 134px),
+      rgba(var(--indigo-rgb),.09) calc(100% - 128px),
+      rgba(var(--indigo-rgb),.09) calc(100% - 6px),
+      transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 6%,#000 30%,#000 72%,transparent 96%);
+    mask-image:linear-gradient(180deg,transparent 6%,#000 30%,#000 72%,transparent 96%);
+  }
+}
 .fact{
   /* En columna y perfiladas en rojo, como en el diseno. La esquina de
      abajo a la derecha lleva 100px de radio y las otras tres 18: es lo
      que le da la forma de hoja, y por eso el radio no puede ir en una
      sola cifra. */
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  /* Contenido arriba y no centrado en vertical: "Manana / Tarde /
+     Noche" ocupa dos lineas y, centrado, subia el icono y la etiqueta de
+     esa tarjeta por encima de las otras tres. Arriba y con el mismo
+     relleno, los cuatro iconos y las cuatro etiquetas quedan en linea. */
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
   gap:5px;text-align:center;
   /* El perfil rojo de 2px era lo mas severo de la pagina: en el inicio
      no hay un solo borde de color, las tarjetas se separan del fondo con
@@ -4566,11 +4618,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
   /* En reposo ya van "encendidas": borde rojo, halo rojo e icono
      adelantado, que antes solo se veia al pasar el raton (y en movil,
      nunca). Al pasar por encima suben y el halo crece un poco. */
-  background:#fff;border:1px solid var(--red);
+  /* Borde en rosa medio y no en el rojo pleno: con el bloque del grado
+     debajo esta era la zona mas roja de la pagina, y el que tiene que
+     mandar es el bloque. Al pasar por encima se enciende el rojo. */
+  background:#fff;border:1px solid #FF9AB3;
   border-radius:26px 26px 100px 26px;
   /* Alto comun otra vez, pero ajustado: 252px sobraban y sin nada se
      quedaban aplastadas. 190 deja respirar al icono sin abrir un hueco. */
-  padding:30px 16px;min-height:227px;
+  padding:58px 16px 30px;min-height:227px;
   /* Halo contenido: a 34px y .22 se veia como una mancha rosa bajo las
      cuatro tarjetas juntas. */
   box-shadow:0 8px 18px rgba(255,14,73,.13);
@@ -4578,7 +4633,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
              border-color .3s var(--ease);
 }
 .fact:hover{
-  transform:translateY(-4px);
+  transform:translateY(-4px);border-color:var(--red);
   box-shadow:0 12px 24px rgba(255,14,73,.2);
 }
 .fact-ico{transition:transform .3s var(--ease);transform:translateY(-3px) scale(1.1)}
@@ -4628,9 +4683,16 @@ body:not(.form-abierto) .form-velo{opacity:0}
    es un dibujo vertical de 466x757, asi que se muestra al tamano que
    pide -130px de ancho- y manda el alto de la tarjeta. Es el unico
    dibujo de la ficha y por eso carga sola el bloque. */
+/* Medallon blanco detras del dibujo: la camiseta de la chica es del
+   mismo rojo que el fondo y su cuerpo se fundia con el. El circulo la
+   recorta y pone un punto de luz a la izquierda que equilibra el
+   semiarco de la derecha. Va en el fondo del propio <img> (la caja se
+   ensancha y el dibujo se contiene dentro), sin marcado extra. */
 .car-grado-ilu{
-  width:65px;height:auto;flex:none;align-self:center;
-  margin:-4px 0;
+  width:104px;height:112px;object-fit:contain;flex:none;align-self:center;
+  margin:-10px -8px;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(255,255,255,.96) 0 47px,rgba(255,255,255,.28) 48px 53px,transparent 54px);
 }
 @media (max-width:820px){
   /* Al lado del texto dejaba la columna en 170px y la lista de titulos
@@ -4638,7 +4700,11 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .car-grado{flex-direction:column;align-items:flex-start;gap:18px;padding:26px 24px}
   /* Centrado solo el dibujo: el texto se queda alineado a la izquierda,
      que es como se lee. */
-  .car-grado-ilu{width:56px;align-self:center;margin:0}
+  .car-grado-ilu{
+    width:92px;height:96px;align-self:center;margin:0;
+    background:radial-gradient(circle at 50% 50%,
+      rgba(255,255,255,.96) 0 41px,rgba(255,255,255,.28) 42px 46px,transparent 47px);
+  }
 }
 .car-grado p{font-size:16px;color:#fff;line-height:1.6}
 .car-grado strong{color:#fff;font-weight:700}
@@ -5399,7 +5465,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .car-modos .mod-opt{flex:1;justify-content:center}
   /* Cuatro tarjetas no caben en una fila de movil */
   .car-facts{grid-template-columns:repeat(2,1fr);gap:12px}
-  .fact{padding:26px 12px;min-height:205px;border-radius:22px 22px 74px 22px}
+  .fact{padding:38px 12px 24px;min-height:205px;border-radius:22px 22px 74px 22px}
   /* Una sola columna: a dos, las tarjetas se quedaban en 166px y el
      nombre de la certificacion salia en cuatro renglones. */
   /* En una sola columna, cuadradas quedarian larguisimas: dos por fila
