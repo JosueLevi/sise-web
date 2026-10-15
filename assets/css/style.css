@@ -2581,7 +2581,34 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* ============================================================
    NOVEDADES
    ============================================================ */
-.novedades{background:transparent}
+.novedades{background:transparent;overflow:hidden;overflow:clip;isolation:isolate}
+/* Arco de fondo en rojo suave, el espejo del de "Preparate para el
+   mercado laboral": entra por la derecha detras de las tarjetas. Misma
+   banda difuminada y mismo fundido arriba y abajo, que se apaga antes de
+   los bordes de la seccion; la seccion aisla su apilado y lo recorta.
+   Solo en escritorio. */
+@media (min-width:901px){
+  .novedades > .shell{position:relative}
+  /* Caja del alto del bloque de contenido (titulo + tarjetas) y no un
+     cuadrado fijo: asi el arco llega hasta el pie de las tarjetas en
+     cualquier ancho -a 1100 pasan a dos filas y la seccion dobla su
+     alto-. Sale 80px por arriba y por abajo, dentro del relleno de la
+     seccion (96px), y se funde antes de tocar el borde. El circulo va
+     con radio fijo, asi la curva no se deforma aunque la caja no sea
+     cuadrada. */
+  .novedades > .shell::before{
+    content:'';position:absolute;z-index:-1;pointer-events:none;
+    top:-80px;bottom:-80px;right:-1240px;width:1500px;
+    background:radial-gradient(circle 750px at 50% 50%,
+      transparent 616px,
+      rgba(255,14,73,.08) 622px,
+      rgba(255,14,73,.08) 744px,
+      transparent 750px);
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 26%,#000 84%,transparent 100%);
+    mask-image:linear-gradient(180deg,transparent 0,#000 26%,#000 84%,transparent 100%);
+  }
+}
+
 /* Blog / Eventos son solo dos y caben en cualquier pantalla: se libran
    de la tira arrastrable que .chips adopta por debajo de 1024px para
    los 8 filtros de carreras, y se quedan centradas siempre. Va fuera de
