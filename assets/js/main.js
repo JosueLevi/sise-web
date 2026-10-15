@@ -1014,6 +1014,50 @@
     sweepReveal();
   }
 
+  /* La parte roja de los titulos se reescribe con rotulador: el <em> de
+     cada titulo de seccion y la linea grande de Sedes. Se duplica aqui
+     y no en el HTML para no copiar cada titulo dos veces en diez
+     paginas; la copia de rotulador va oculta a lectores de pantalla.
+     Es un guiño, no un estado: cuando el titulo entra en pantalla (pasa
+     del 75% del alto) la cortina lo reescribe en .7s, se queda dos
+     segundos y vuelve a la Barlow con la cortina al reves. Si sale de la
+     pantalla y vuelve a entrar, se repite. Con movimiento reducido no se
+     hace: el titulo se queda en Barlow. */
+  const rotulas = $$('.section-title em, .sedes-title .lg').map((h) => {
+    const original = h.innerHTML;
+    h.innerHTML = `<span class="rotula"><span class="rotula-a">${original}</span>`
+                + `<span class="rotula-b" aria-hidden="true">${original}</span></span>`;
+    return h.firstElementChild;
+  });
+  if (rotulas.length && !reduceMotion) {
+    const ENTRA = 0.75;     // fraccion del alto de pantalla que dispara
+    const BARRIDO = 700;    // ms de cortina, igual que la transicion del CSS
+    const ESTANCIA = 2000;  // ms que se queda en rotulador
+    const ESPERA = 300;     // deja terminar el fundido de entrada antes
+    const sweepRotula = () => {
+      const alto = window.innerHeight;
+      rotulas.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const estado = el.dataset.rotula || 'listo';
+        if (estado === 'listo' && r.top < alto * ENTRA && r.bottom > 0) {
+          el.dataset.rotula = 'activo';
+          setTimeout(() => el.style.setProperty('--p', '1'), ESPERA);
+          setTimeout(() => {
+            el.style.setProperty('--p', '0');
+            el.dataset.rotula = 'hecho';
+          }, ESPERA + BARRIDO + ESTANCIA);
+        } else if (estado === 'hecho' && (r.top > alto || r.bottom < 0)) {
+          // Ya ha salido de la pantalla: se rearma para la proxima vez
+          el.dataset.rotula = 'listo';
+        }
+      });
+    };
+    window.addEventListener('scroll', sweepRotula, { passive: true });
+    window.addEventListener('resize', sweepRotula, { passive: true });
+    window.addEventListener('load', sweepRotula);
+    sweepRotula();
+  }
+
   /* ============================================================
      4. CARRERAS — grilla + filtros
      ============================================================ */

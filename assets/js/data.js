@@ -284,7 +284,7 @@ const CARRERAS = [
     descripcion: 'Mueve mercadería, almacenes y cadena de suministro.',
     cat: 'gestion',
     modalidades: ['Semipresencial', 'Virtual'],
-    img: 'assets/img/carrera-logistica.webp',
+    img: 'assets/img/carrera-logistica.webp?v=3',
     icon: 'logistica',
     url: 'carrera-logistica.html'
   },

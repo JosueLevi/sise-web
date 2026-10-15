@@ -42,6 +42,11 @@ Una sola pareja de sombras para las tres, en reposo y al pasar por encima.
 Todo vidrio lleva su `@supports not (backdrop-filter…)` con un color sólido
 de respaldo.
 
+**Excepción:** el rótulo de laboratorio y de sede (`.lab-nombre`) usa vidrio
+al `.86` y texto en `--red-700`, no `--vidrio-claro` y `--red`. Es texto rojo
+pequeño sobre foto: con el `.72` el fondo se quedaba gris en las fotos oscuras
+y no pasaba de 3,8:1. Al `.86` llega a 4,5:1 aunque debajo haya negro.
+
 ---
 
 ## 2. Color
@@ -101,14 +106,15 @@ entre sí. Quedan dos niveles. **No añadir un tercero.**
 
 ## 3. Tipografía
 
-Tres familias, alojadas en local (`assets/fonts/`, woff2, `font-display:swap`),
+Cuatro familias, alojadas en local (`assets/fonts/`, woff2, `font-display:swap`),
 no pedidas a Google: quita dos viajes antes de poder pintar texto.
 
 | Familia | Pesos | Para qué |
 |---|---|---|
 | **Barlow Condensed** | 600 · 700 · 800 · 900 | Todos los títulos |
 | **Barlow** | 400 · 500 · 600 · 700 · 800 | Todo el texto corrido, botones y controles |
-| **Permanent Marker** | 400 | Lettering de marcador. Hoy solo el banner del inicio; en pruebas, los acentos de los títulos |
+| **Permanent Marker** | 400 | Lettering de marcador del banner del inicio ("COMO SE VIVE"). Solo tiene mayúsculas |
+| **Caveat Brush** | 400 | Rotulador de la parte roja de los títulos de sección, que se reescribe al hacer scroll. Tiene minúsculas: los títulos van en tipo oración. A `1.04em` ocupa lo mismo que la Barlow Condensed que sustituye |
 
 ### Escala
 

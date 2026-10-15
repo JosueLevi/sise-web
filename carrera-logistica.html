@@ -7,15 +7,15 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=669">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=723">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
 
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-400.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-condensed-800.woff2">
-<link rel="preload" as="image" href="assets/img/carrera-logistica.webp">
-<link rel="stylesheet" href="assets/css/style.css?v=669">
+<link rel="preload" as="image" href="assets/img/carrera-logistica.webp?v=3">
+<link rel="stylesheet" href="assets/css/style.css?v=723">
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -74,16 +74,11 @@
 
 <!-- ============ HERO ============ -->
 <section class="car-hero car-hero--hub car-hero--ficha">
-  <div class="car-hero-bg" style="background-image:url('assets/img/carrera-logistica.webp')"></div>
+  <div class="car-hero-bg" style="background-image:url('assets/img/carrera-logistica.webp?v=3')"></div>
   <div class="car-hero-veil"></div>
   <div class="shell car-hero-inner">
-    <span class="car-tag">Carrera profesional t&eacute;cnica &middot; 3 a&ntilde;os</span>
+    <span class="car-tag">Carrera profesional t&eacute;cnica</span>
     <h1 class="car-hero-title">Gesti&oacute;n <em>Log&iacute;stica</em></h1>
-    <div class="car-hero-pills">
-      <span>Semipresencial</span>
-      <span>Virtual</span>
-      <span>Grado y t&iacute;tulo del MINEDU</span>
-    </div>
   </div>
 </section>
 
@@ -227,7 +222,7 @@
     </header>
 
     <div class="campo-grid reveal">
-      <div class="campo-img" style="background-image:url('assets/img/carrera-logistica.webp')"></div>
+      <div class="campo-img" style="background-image:url('assets/img/carrera-logistica.webp?v=3')"></div>
       <div class="campo-txt">
         <h3 class="car-h">D&oacute;nde trabajar&aacute;s</h3>
         <p class="car-p">Empresas dedicadas al control y gesti&oacute;n de stock, compras y abastecimiento. Multinacionales de transporte de mercader&iacute;as y aduanas. &Aacute;reas de control de inventarios, producci&oacute;n y distribuci&oacute;n de empresas de cualquier rubro: banca, retail, telefon&iacute;a. Constructoras y mineras de car&aacute;cter p&uacute;blico y privado.</p>
@@ -413,16 +408,27 @@
     </header>
 
     <div class="egr-grid reveal">
-      <div class="egr-label">
+      <!-- La cita va antes que el video en el marcado (es lo que se lee);
+           en pantalla va debajo. -->
+      <figure class="egr-cita">
         <span class="egr-comillas" data-ico="comillas" aria-hidden="true"></span>
-        <p class="egr-quote">La malla curricular de SISE me ayud&oacute; bastante, porque mientras llevaba los cursos iba teniendo las certificaciones y las pod&iacute;a presentar en un trabajo.</p>
-        <span class="egr-role">Jefe de Cadena de Retail &mdash; Per&uacute; Forus</span>
-      </div>
-      <div class="egr-video" id="egrVideo" data-yt="0c6fOEoZD04" data-forma="ancha"
-           style="background-image:url('https://i.ytimg.com/vi/0c6fOEoZD04/maxresdefault.jpg')">
-        <button class="egr-play" type="button" aria-label="Reproducir testimonio">
+        <blockquote class="egr-quote">
+          <p>La malla curricular de SISE me ayud&oacute; bastante, porque mientras llevaba los cursos iba teniendo las certificaciones y las pod&iacute;a presentar en un trabajo.</p>
+        </blockquote>
+        <figcaption class="egr-firma">
+          <img class="egr-avatar" src="assets/img/egresado-josue-frias-avatar.webp" alt="" width="56" height="56" loading="lazy" decoding="async">
+          <span class="egr-quien">
+            <strong class="egr-nombre">Josu&eacute; Frias Aquino</strong>
+            <span class="egr-role">Jefe de Cadena de Retail &middot; Per&uacute; Forus</span>
+          </span>
+        </figcaption>
+      </figure>
+      <div class="egr-video car-video" id="egrVideo" data-yt="0c6fOEoZD04" data-forma="ancha"
+           style="background-image:url('assets/img/egresado-josue-frias.webp')">
+        <button class="egr-play" type="button" aria-label="Reproducir el testimonio de Josu&eacute; Frias Aquino">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.4)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>
         </button>
+        <span class="car-video-pie">Mira la historia de Josu&eacute;</span>
       </div>
     </div>
   </div>
@@ -622,10 +628,10 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=669"></script>
-<script src="assets/js/data.js?v=669"></script>
-<script src="assets/js/crm.js?v=669"></script>
-<script src="assets/js/main.js?v=669"></script>
+<script src="assets/js/icons.js?v=723"></script>
+<script src="assets/js/data.js?v=723"></script>
+<script src="assets/js/crm.js?v=723"></script>
+<script src="assets/js/main.js?v=723"></script>
 
 </body>
 </html>

@@ -32,8 +32,9 @@ decidir estética, no para verificar.
 
 **El `?v=NNN`.** Cada cambio sube ese número en *todos* los HTML a la vez, o el
 navegador sigue sirviendo lo viejo.
-**Excepción:** `hero-01.webp?v=3` lleva su propia versión y un `sed` global
-sobre `\?v=\d+` se la come. Hay que restaurarla después de cada subida.
+**Excepción:** `hero-01.webp?v=3` y `carrera-logistica.webp?v=3` llevan su
+propia versión y un `sed` global sobre `\?v=\d+` se la come. Hay que
+restaurarlas después de cada subida.
 
 **WebKit y `transform`.** Descarta la declaración entera —se queda en `none`—
 cuando un `calc()` con variable aparece dentro de una función de transform. En

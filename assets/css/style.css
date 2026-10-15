@@ -46,6 +46,13 @@
   font-family:'Permanent Marker';font-style:normal;font-weight:400;font-display:swap;
   src:url('../fonts/permanent-marker-400.woff2') format('woff2');
 }
+/* Rotulador de la parte roja de los titulos. Permanent Marker solo
+   tiene mayusculas; este tiene minusculas, y los titulos van en tipo
+   oracion. Subconjunto latino de Google Fonts (licencia OFL). */
+@font-face{
+  font-family:'Caveat Brush';font-style:normal;font-weight:400;font-display:swap;
+  src:url('../fonts/caveat-brush-400.woff2') format('woff2');
+}
 
 /* ============================================================
    SISE · Instituto Superior — Hoja de estilos
@@ -318,10 +325,10 @@ p{margin:0}
    hamburguesa fuera de la pantalla. Chrome no tiene ese fallo. */
 .brand-logo{display:block;width:108px;height:27px}
 /* Logo con el aval de la Universidad Cientifica del Sur: proporcion
-   469x70 (6,7:1). A 29px de alto "SISE" mide lo mismo que con la version
+   541x70 (7,7:1). A 29px de alto "SISE" mide lo mismo que con la version
    anterior del logo (600x78 a 32px); el ancho va explicito por el mismo
    motivo de Safari. */
-.brand-logo[data-ico="logo-respaldo"]{width:194px;height:29px}
+.brand-logo[data-ico="logo-respaldo"]{width:224px;height:29px}
 .brand-logo > svg{width:100%;height:100%;display:block}
 
 /* El hueco entre entradas: 16px a 1300 (la pildora aun es estrecha y en
@@ -335,7 +342,7 @@ p{margin:0}
    y por debajo de 1181 el menu va entero en la hamburguesa. */
 @media (min-width:1181px) and (max-width:1299px){
   .main-nav{gap:10px}
-  .brand-logo[data-ico="logo-respaldo"]{width:154px;height:23px}
+  .brand-logo[data-ico="logo-respaldo"]{width:178px;height:23px}
   .site-header .btn-empleo{padding:12px 18px;font-size:15px;margin-left:12px}
   /* La barra pintada (al bajar, y siempre en las paginas internas como
      Cursos) lleva mas relleno lateral: aqui se recorta para que quepa. */
@@ -538,12 +545,12 @@ p{margin:0}
 .sm-brand{display:inline-flex;flex-direction:column;gap:5px}
 .sm-brand-logo{display:block;width:clamp(112px,12vw,142px);color:var(--red)}
 .sm-brand-logo svg{width:100%;height:auto;display:block}
-/* Logo con el aval (469x70): mas ancho que el anterior para que el texto
+/* Logo con el aval (541x70): mas ancho que el anterior para que el texto
    de la Cientifica se lea. Tamaño explicito por Safari, como en el header. */
-.sm-brand-logo[data-ico="logo-respaldo"]{width:234px;height:35px}
+.sm-brand-logo[data-ico="logo-respaldo"]{width:270px;height:35px}
 .sm-brand-logo[data-ico="logo-respaldo"] svg{height:100%}
 @media (max-width:640px){
-  .sm-brand-logo[data-ico="logo-respaldo"]{width:188px;height:28px}
+  .sm-brand-logo[data-ico="logo-respaldo"]{width:216px;height:28px}
 }
 .sm-brand-sub{
   font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;
@@ -1249,14 +1256,66 @@ body:not(.form-abierto) .form-velo{opacity:0}
    ============================================================ */
 .section{padding:96px 0;position:relative}
 .section-head{text-align:center;max-width:760px;margin:0 auto 40px}
+/* En tipo oracion, como se escriben en el HTML: solo la primera letra
+   (y los nombres propios) en mayuscula. En versalitas todo el titulo
+   gritaba igual y el acento rojo perdia peso. */
 .section-title{
-  font-size:clamp(34px,4.6vw,52px);text-transform:uppercase;font-weight:800;letter-spacing:.01em;
+  font-size:clamp(34px,4.6vw,52px);font-weight:800;letter-spacing:.01em;
 }
 /* El acento de los titulos va en el rojo vivo de marca: son titulares
    de 34 a 52px en negrita -texto grande-, y ahi el minimo exigido es
    3:1; este llega a 3,3:1. El rojo oscuro se reserva para textos
    pequenos, donde el vivo no alcanzaria. */
 .section-title em{font-style:normal;color:var(--red)}
+
+/* La parte roja de los titulos se reescribe con rotulador al bajar; el
+   resto del titulo se queda en Barlow. Una familia tipografica no se
+   puede interpolar, asi que el guion duplica solo esa parte (el <em>,
+   o la linea grande de Sedes) y apila las dos copias en la misma celda;
+   una cortina la recorre de izquierda a derecha: lo que ya paso es
+   rotulador, lo que falta sigue en Barlow. Se lee como si alguien la
+   repasara con el marcador. El rotulador es Caveat Brush, con
+   minusculas; el "COMO SE VIVE" del hero sigue en Permanent Marker. Un
+   titulo sin parte roja no lleva efecto.
+   La cortina la mueve el guion: --p pasa de 0 a 1 cuando el titulo
+   entra en pantalla, se queda dos segundos y vuelve a 0. El barrido lo
+   hace la transicion de .7s, que tiene que coincidir con BARRIDO en
+   main.js.
+   Con varias lineas la cortina las barre todas a la vez: el recorte es
+   de la caja, no del texto. */
+.rotula{--p:0;display:inline-grid;vertical-align:baseline}
+/* El rotulador cambia la letra, no el color: cada parte conserva el
+   suyo -el titulo su tinta, el <em> su rojo- en las dos copias. */
+.rotula > span{grid-area:1/1;transition:clip-path .7s cubic-bezier(.65,0,.35,1)}
+.rotula-a{clip-path:inset(-.3em 0 -.3em calc(var(--p) * 100%))}
+.rotula-b{
+  font-family:'Caveat Brush','Permanent Marker','Barlow Condensed',cursive;
+  font-weight:400;
+  /* Caveat Brush, con minusculas: los titulos van en tipo oracion y
+     Permanent Marker (el del "COMO SE VIVE") solo tiene mayusculas.
+     Sale mas estrecho que la Barlow condensada; a 1.04em ocupa lo mismo
+     (medido en los 23 titulos: de .95 a 1.05), asi que corta las lineas
+     en el mismo sitio y el titulo no se mueve al cambiar.
+     --rotula-escala permite afinarlo por titulo. */
+  font-size:var(--rotula-escala,1.04em);
+  align-self:center;
+  letter-spacing:0;
+  /* currentColor y no el rojo: el trazo que engorda el marcador tiene
+     que seguir el color de cada parte, o la tinta oscura saldria con
+     borde rojo. */
+  -webkit-text-stroke:1.5px currentColor;
+  /* Con skewX el borde inclinado se sale de la caja; el margen negativo
+     del inset evita que la cortina le corte las puntas. Por eso el lado
+     derecho va de 100% + .3em (oculta) a -.3em (entera), no de 100% a 0:
+     con 100% en reposo seguia a la vista la franja de .3em que el inset
+     izquierdo abre por fuera de la caja, y asomaba la punta inclinada
+     del primer signo como una coma suelta delante de cada titulo. */
+  transform:skewX(-8deg) rotate(-1.2deg);
+  clip-path:inset(-.3em calc((1 - var(--p)) * (100% + .6em) - .3em) -.3em -.3em);
+}
+@media (prefers-reduced-motion:reduce){
+  .rotula > span{transition:none}
+}
 .section-sub{margin-top:14px;font-size:16px;color:var(--body)}
 .section-cta{text-align:center;margin-top:48px}
 
@@ -2202,6 +2261,11 @@ body:not(.form-abierto) .form-velo{opacity:0}
    bloque "Que quieres estudiar", en azul y del otro lado para que
    rimen sin parecer la misma seccion. */
 .sedes{position:relative;background:transparent;padding:96px 0 100px;margin-bottom:0;overflow:hidden}
+/* En la ficha, Sedes viene despues de Egresados, que es blanco: sin
+   transicion el gris de pagina empezaba de golpe con un corte recto.
+   Arranca en blanco y se funde al gris, y las dos secciones se leen
+   como una. El "~" lo limita a la ficha; en el inicio no cambia. */
+.car-cuerpo ~ .sedes{background:linear-gradient(180deg,#FFFFFF 0,var(--bg) 280px)}
 .sedes .shell{position:relative;z-index:1}
 .sedes::before{
   content:'';position:absolute;z-index:0;pointer-events:none;
@@ -2228,9 +2292,11 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* Áreas para que en móvil el orden sea título → foto → listado.
    Sin ellas la foto acababa por encima del título. */
 .sedes-head{text-align:center;max-width:760px;margin:0 auto 34px}
-.sedes-title{display:inline-flex;flex-direction:column;text-transform:uppercase;color:var(--ink)}
+.sedes-title{display:inline-flex;flex-direction:column;color:var(--ink)}
 .sedes-title .sm{font-weight:700;font-size:clamp(24px,2.6vw,36px);letter-spacing:.02em}
 .sedes-title .lg{font-weight:900;font-size:clamp(38px,5vw,62px);letter-spacing:.005em;margin-top:-.06em;color:var(--red)}
+/* En Sedes el rotulador va solo en la linea grande, la roja. */
+.sedes-title .lg .rotula-b{letter-spacing:0}
 .sedes-sub{margin-top:14px;color:var(--body);font-size:16px}
 .sedes-sub strong{font-weight:700;color:var(--ink)}
 
@@ -2409,7 +2475,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
     rgba(255,14,73,.06) 58%,
     rgba(255,14,73,0) 88%);
 }
-/* Un fondo unico en la ficha: egresados deja de tener banda propia. */
+/* Egresados no lleva banda de color: va en blanco, entre las
+   bandas de color alternas de la ficha (ver .car-cuerpo > .car-cert). */
 .car-egresado{position:relative;overflow:hidden}
 .experiencias > .shell,
 .car-egresado > .shell{position:relative;z-index:1;width:100%}
@@ -3904,10 +3971,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
   /* En movil comparte fila con Empleabilidad y la hamburguesa y al logo
      le quedan ~108px: el aval de la Cientifica saldria de 4px, ilegible.
      Se muestra solo "SISE >>", recortando el mismo SVG: la caja deja ver
-     los primeros ~257 de sus 469 de ancho (los chevrones acaban en 254).
+     los primeros ~258 de sus 541 de ancho (los chevrones acaban en 254).
      A 26px de alto las letras miden lo mismo que antes. */
   .brand-logo[data-ico="logo-respaldo"]{width:96px;height:26px;overflow:hidden}
-  .brand-logo[data-ico="logo-respaldo"] > svg{width:174px;max-width:none}
+  .brand-logo[data-ico="logo-respaldo"] > svg{width:201px;max-width:none}
   .career-grid{grid-template-columns:repeat(2,1fr);gap:16px}
   .career-card{min-height:330px}
   .exp-grid{
@@ -4256,12 +4323,37 @@ body:not(.form-abierto) .form-velo{opacity:0}
      500px fijos se comen la pantalla entera. */
   .car-hero--hub{min-height:500px;max-height:76vh}
 }
-/* Ficha de carrera: en escritorio el banner baja a 560px. Aqui el
+/* Ficha de carrera: en escritorio el banner baja a 640px. Aqui el
    banner solo presenta la carrera y debajo espera el contenido con el
-   formulario, asi que conviene que la ficha empiece antes. En movil
-   mantiene los 500px de las demas paginas. */
+   formulario, asi que conviene que la ficha empiece antes que en las
+   paginas de oferta (720). Se subio de 560 a peticion, para dar mas
+   aire a la foto. En movil sube a 540 solo si cabe en el 76% de la
+   ventana: el max-height no sirve de techo, porque cuando choca con el
+   min-height gana el minimo. En un movil bajito se queda en los 500 de
+   siempre. */
+@media (max-width:900px){
+  .car-hero--ficha{min-height:max(500px,min(540px,76vh))}
+  /* En movil los textos ocupan casi todo el ancho, asi que el velo es
+     una franja abajo y no una mancha. Sin el lateral: oscurecia toda la
+     mitad izquierda de la foto sin que hubiera texto encima. La franja
+     tiene que llegar fuerte: el titulo cae sobre la grua y el contenedor
+     rojo, y el nombre de la carrera, en rojo, bajaba a 2,3:1. */
+  .car-hero--ficha .car-hero-veil{
+    background:linear-gradient(180deg,rgba(8,9,14,.42) 0%,transparent 22%),
+               linear-gradient(0deg,rgba(8,9,14,.86) 0%,rgba(8,9,14,.62) 34%,transparent 56%);
+  }
+}
 @media (min-width:901px){
-  .car-hero--ficha{min-height:560px}
+  .car-hero--ficha{min-height:640px}
+  /* Velo solo donde hay texto: una mancha abajo a la izquierda, detras
+     del titulo, y una franja suave arriba para el menu. El resto de la
+     foto queda limpia. El bloque de texto acaba hacia el 40% del ancho
+     en cualquier pantalla (el titulo tiene tope), por eso la elipse se
+     mide en porcentaje. */
+  .car-hero--ficha .car-hero-veil{
+    background:linear-gradient(180deg,rgba(8,9,14,.42) 0%,transparent 24%),
+               radial-gradient(ellipse 50% 62% at 12% 80%,rgba(8,9,14,.8) 0%,rgba(8,9,14,.55) 45%,transparent 100%);
+  }
   /* El bloque se apoya en el pie del banner, asi que bajarlo es
      quitarle relleno por debajo. Va con la clase del bloque delante
      para pesar mas que el .car-hero--hub de unas lineas mas abajo, que
@@ -4278,6 +4370,13 @@ body:not(.form-abierto) .form-velo{opacity:0}
   .car-hero.car-hero--ficha .car-hero-inner{padding-bottom:40px}
 }
 .car-hero--hub .car-hero-title{font-size:clamp(32px,4.4vw,52px)}
+/* En la ficha el velo general es ligero (solo donde hay texto) y el
+   nombre de la carrera, en rojo, cae a veces sobre cielo: el rojo
+   necesita un fondo muy oscuro para leerse. En vez de oscurecer la foto,
+   un halo pegado a las propias letras. */
+.car-hero--ficha .car-hero-title{
+  text-shadow:0 0 26px rgba(8,9,14,.9),0 0 10px rgba(8,9,14,.75),0 2px 4px rgba(0,0,0,.5);
+}
 .car-hero--hub .car-hero-sub{font-size:16px}
 /* Sin el hueco que dejaba la cabecera fija: ahora lo llena el banner.
    Y ajustado al mismo aire que la ficha de carrera, para que las cuatro
@@ -4398,8 +4497,16 @@ body:not(.form-abierto) .form-velo{opacity:0}
    parrafo de arriba abajo. Con hyphens:auto el navegador parte donde
    toca -la pagina declara lang="es", asi que usa el diccionario
    correcto- y los espacios se quedan parejos. */
+/* Todo el texto de lectura de la ficha va en --ink-2 (texto fuerte) y
+   no en --body: en gris medio se leia apagado. Son los parrafos, los
+   subtitulos de seccion, las tarjetas de "Por que estudiar" (en su
+   regla) y el subtitulo de Sedes, que es el bloque compartido con el
+   inicio: el "~" lo limita a la ficha. Etiquetas, pastillas inactivas,
+   contadores y cargos se quedan en gris: son datos, no lectura. */
+.car-cuerpo .section-sub,
+.car-cuerpo ~ .sedes .sedes-sub{color:var(--ink-2)}
 .car-p{
-  font-size:16px;line-height:1.6;color:var(--body);
+  font-size:16px;line-height:1.6;color:var(--ink-2);
   text-align:justify;hyphens:auto;
 }
 /* Tambien justificado en movil, por peticion. La particion de palabras
@@ -4488,11 +4595,25 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .fact-t{font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.11em;color:var(--body);line-height:1.2}
 .fact-v{font-size:16px;font-weight:600;color:var(--ink);line-height:1.3;margin-top:2px}
 
-/* Grado y titulo */
+/* Grado y titulo, en el rojo primario fuerte, que se aclara en
+   diagonal hacia abajo a la derecha (el primario mezclado con un 18% de
+   blanco). De adorno, un solo aro blanco suave en la esquina de arriba
+   a la derecha, cortado por el borde.
+   El texto va en blanco a 16px, decidido asi: sobre este rojo se queda
+   en ~3,8:1 (3,1 en el punto mas claro), por debajo del 4,5:1 que pide
+   el texto normal. Se probo a 19px en negrita, que lo convierte en texto
+   grande y lo hace pasar, y se prefirio el tamano original. */
 .car-grado{
+  position:relative;overflow:hidden;isolation:isolate;
   display:flex;gap:34px;align-items:center;margin-top:40px;
-  background:#fff;border-radius:var(--r-lg);padding:30px 34px;
-  box-shadow:var(--shadow-sm);
+  background:linear-gradient(135deg,var(--red) 0%,var(--red) 35%,#FF3A6B 100%);
+  border-radius:var(--r-lg);padding:30px 34px;
+  box-shadow:0 14px 34px rgba(255,14,73,.24);
+}
+.car-grado::after{
+  content:'';position:absolute;z-index:-1;pointer-events:none;
+  width:240px;height:240px;top:-110px;right:-70px;
+  border-radius:50%;border:32px solid rgba(255,255,255,.14);
 }
 /* Ilustracion en vez del icono en disco. No es un pictograma de 28px:
    es un dibujo vertical de 466x757, asi que se muestra al tamano que
@@ -4510,11 +4631,12 @@ body:not(.form-abierto) .form-velo{opacity:0}
      que es como se lee. */
   .car-grado-ilu{width:56px;align-self:center;margin:0}
 }
-.car-grado p{font-size:16px;color:var(--body);line-height:1.6}
-.car-grado strong{color:var(--ink);font-weight:700}
+.car-grado p{font-size:16px;color:#fff;line-height:1.6}
+.car-grado strong{color:#fff;font-weight:700}
 .car-grado ul{margin:10px 0 0;display:grid;gap:7px}
-.car-grado li{position:relative;padding-left:16px;font-size:16px;color:var(--ink)}
-.car-grado li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--red)}
+.car-grado li{position:relative;padding-left:16px;font-size:16px;color:#fff;font-weight:500}
+/* Vinetas en el amarillo de marca: en rojo desaparecian sobre el rojo. */
+.car-grado li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--terciario)}
 
 /* ---------- Carril del formulario ----------
    El formulario acompanaba solo a la primera seccion: estaba dentro de
@@ -4534,12 +4656,65 @@ body:not(.form-abierto) .form-velo{opacity:0}
    Va en el cuerpo de la ficha y no en .section, que lo comparten todas
    las paginas: cambiarlo alli movería tambien el ritmo del inicio. */
 .car-cuerpo > section{padding-top:75px;padding-bottom:75px}
+/* Bandas de color suave, alternas. Con un solo fondo para toda la ficha
+   la pagina se leia plana, como un PDF: las secciones no se distinguian
+   y las tarjetas blancas apenas se despegaban del gris. Una de cada dos
+   lleva un tinte de la paleta que se apaga en diagonal hacia el blanco
+   -indigo, la crema del amarillo y el rosa del rojo, por turnos- y las
+   demas van en blanco, que hace de pausa. Blanco y no el gris de
+   pagina: el tinte se apaga hacia el blanco por la derecha y, contra el
+   gris, ese borde blanco chocaba con la seccion de al lado.
+   Los tintes son claros a proposito: el texto secundario (--muted) se
+   sigue leyendo encima a mas de 4,5:1. Las pinceladas y el patron de
+   iconos de campo y egresados van en las bandas neutras, asi que no se
+   pelean con el color. */
+.car-cuerpo > section{background:#fff}
+/* Sobre el gris las tarjetas blancas se despegaban solas; sobre blanco
+   las que solo tenian sombra se perdian. Un filete muy suave, como
+   anillo de sombra para no mover nada. Las demas ya llevan borde
+   propio: el rosa de las cifras y el gris de la malla, y el bloque del
+   grado ya es rojo. */
+.car-cuerpo .campo-roles li{box-shadow:var(--shadow-sm),0 0 0 1px var(--line)}
+.car-cuerpo .campo-roles li:hover{box-shadow:var(--shadow-md),0 0 0 1px var(--line)}
+/* Las tres bandas en el primario: el rojo mezclado con blanco al 20%
+   (#FFCFDB, el "200"), su mitad en el centro y blanco al final. Se
+   probo el 300 (#FFB7C8) y el rojo de los titulos bajaba a 2,8:1 sobre
+   el rosa; con el 200 se queda en 3,1:1, por encima del 3:1 de texto
+   grande. Antes las bandas turnaban indigo, crema y rosa.
+   Encima, un fundido de blanco en el borde de arriba: la seccion
+   anterior es blanca y, sin el, el rosa empezaba de golpe con un corte
+   recto. Con el, una seccion entra en la otra. Llega hasta el 40% del
+   alto de la banda, en porcentaje y no en px: las tres miden distinto
+   (de ~400 a ~800px) y asi el fundido ocupa lo mismo en todas. */
+.car-cuerpo{--banda:#FFCFDB;--banda-medio:#FFE7ED}
+.car-cuerpo > .car-labs,
+.car-cuerpo > .car-convenios,
+.car-cuerpo > .car-cert{
+  background:
+    linear-gradient(180deg,#FFFFFF 0%,rgba(255,255,255,.7) 14%,rgba(255,255,255,0) 40%),
+    linear-gradient(118deg,var(--banda) 0%,var(--banda-medio) 45%,#FFFFFF 100%);
+}
+/* Convenios va en el amarillo de marca y al reves: el color arranca
+   arriba y el fundido a blanco va abajo, hasta el 40%, donde entra la
+   malla (blanca). Entre Laboratorios y Certificaciones, las dos en
+   rosa, rompe la repeticion. El amarillo se mezcla al 35% y no al 20%
+   como el rojo: es tan claro que al 20% casi no se veia. */
+.car-cuerpo > .car-convenios{
+  --banda:#FEF0C1;--banda-medio:#FEF7DF;
+  background:
+    linear-gradient(0deg,#FFFFFF 0%,rgba(255,255,255,.7) 14%,rgba(255,255,255,0) 40%),
+    linear-gradient(118deg,var(--banda) 0%,var(--banda-medio) 45%,#FFFFFF 100%);
+}
 .car-cuerpo{position:relative}
 .car-cuerpo{--form-w:392px;--form-aire:44px}
 .car-form-rail{
-  /* Separado del banner, pero no tanto como para descolgarse de la
-     ruta, que ahora arranca antes. */
-  position:absolute;top:44px;bottom:0;width:var(--form-w);
+  /* Sube y monta sobre el pie del banner: la tarjeta pertenece a las
+     dos secciones y las cose, en vez de dejar dos bloques separados por
+     un corte recto. Es el mismo gesto que el formulario del inicio.
+     El z-index le gana al bloque de texto del banner (z-index 2), que
+     sin el pintaria encima de la tarjeta. Por debajo de 1060 el carril
+     vuelve al flujo y esto deja de aplicar. */
+  position:absolute;top:-150px;bottom:0;width:var(--form-w);z-index:3;
   /* Alineado con el borde derecho del .shell */
   right:max(var(--gut), calc(50% - (var(--shell) / 2) + var(--gut)));
 }
@@ -4547,10 +4722,32 @@ body:not(.form-abierto) .form-velo{opacity:0}
   padding-right:calc(var(--gut) + var(--form-w) + var(--form-aire));
 }
 .car-form-wrap{position:sticky;top:calc(var(--header-h) + 20px)}
+
 .lead-card--carrera{background:#fff;box-shadow:var(--shadow-md);animation:none;padding:26px 24px}
 .lead-card--carrera .lead-title{font-size:22px}
 .lead-card--carrera .lead-note{
   text-align:center;font-size:14px;color:var(--muted);margin:-4px 0 15px;
+}
+/* Vidrio, como el formulario del inicio, en escritorio: la tarjeta monta
+   sobre el pie del banner y acompana el scroll por encima del contenido,
+   asi que lo que pasa por detras se ve desenfocado. Se deshacen las tres
+   diferencias de arriba -fondo, sombra y entrada- y el desenfoque lo
+   pone la regla base de .lead-card. Por debajo de 1061 la tarjeta va en
+   el flujo sobre el fondo claro (o es el emergente, en movil) y sigue
+   en blanco. */
+@media (min-width:1061px){
+  .lead-card--carrera{
+    background:rgba(255,255,255,.8);
+    box-shadow:var(--shadow-lg);
+    animation:riseIn .8s var(--ease) .28s backwards;
+  }
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+    .lead-card--carrera{background:rgba(255,255,255,.93)}
+  }
+  /* La nota gris daba ~5:1 sobre blanco; sobre el vidrio, con la foto o
+     el video oscuro detras, bajaba a 3,7:1. Un gris intermedio entre
+     --muted y --ink-2 la mantiene como texto secundario. */
+  .lead-card--carrera .lead-note{color:#4A4F5C}
 }
 
 .field-full{grid-column:1/-1}
@@ -4630,7 +4827,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   font-size:clamp(21px,2.4vw,25px);line-height:1.15;letter-spacing:.01em;
   color:var(--indigo);margin-bottom:6px;
 }
-.why-slide p{font-size:16px;line-height:1.6;color:var(--body);text-wrap:pretty}
+.why-slide p{font-size:16px;line-height:1.6;color:var(--ink-2);text-wrap:pretty}
 
 /* Las flechas son las mismas del carril de laboratorios, clase incluida:
    dos controles iguales en la misma pagina que se vieran distintos solo
@@ -4746,12 +4943,15 @@ body:not(.form-abierto) .form-velo{opacity:0}
   position:absolute;left:18px;bottom:18px;max-width:calc(100% - 36px);
   padding:8px 16px;border-radius:999px;
   /* Vidrio, no blanco macizo: la pastilla se apoya en la foto en vez
-     de taparla. Se queda en .72 y no mas abajo porque el rojo tiene
-     que seguir leyendose cuando debajo hay una zona oscura. */
-  background:var(--vidrio-claro);
+     de taparla. Rojo oscuro y no el primario: es texto pequeño (15px,
+     13 en movil) y con --red bajaba a 2,8:1. Y vidrio al .86, no el
+     .72 general: con el .72, sobre una foto oscura el fondo de la
+     pastilla se quedaba gris y ni el rojo oscuro pasaba de 3,8:1. Al
+     .86 llega a 4,5:1 aunque debajo hubiera negro puro. */
+  background:rgba(255,255,255,.86);
   -webkit-backdrop-filter:var(--vidrio-blur);backdrop-filter:var(--vidrio-blur);
   border:1px solid var(--vidrio-filete);
-  color:var(--red);
+  color:var(--red-700);
   font-size:15px;font-weight:600;line-height:1.25;
   box-shadow:0 6px 18px rgba(0,0,0,.18);
 }
@@ -5019,7 +5219,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
    rojo de marca: el oscuro se reserva para el hover. */
 .cert-n{
   font-weight:700;text-transform:uppercase;
-  font-size:14px;letter-spacing:.1em;color:var(--paso,var(--red));
+  /* Rojo oscuro: rotulo de 14px, con --red se quedaba en 3,9:1 sobre
+     el blanco de la tarjeta. */
+  font-size:14px;letter-spacing:.1em;color:var(--paso,var(--red-700));
 }
 .cert-card p{font-size:14px;color:var(--ink);line-height:1.4;font-weight:500}
 
@@ -5031,17 +5233,22 @@ body:not(.form-abierto) .form-velo{opacity:0}
 /* Apilado: la cita a 289px de ancho salia en renglones de seis
    palabras y el video al lado se quedaba en 467. */
 /* ---------- Egresado de exito ----------
-   Dos piezas separadas, no una pegada a la otra: el video arriba y la
-   cita debajo, con aire entre las dos. Montada sobre el video tapaba
-   los controles de YouTube, y encajada a ras parecia el pie de una
-   captura de pantalla.
+   Video arriba y cita debajo, apilados: la columna de contenido comparte
+   ancho con el formulario (~750px) y lado a lado la cita se quedaba en
+   renglones de seis palabras. Montada sobre el video tapaba los
+   controles de YouTube.
 
-   La cita se presenta como cita: comillas de marca al fondo, el texto
-   en primer plano y la identidad separada por un filete. */
+   La cita va sin caja, como pieza editorial: comilla de apertura en rojo
+   arriba a la izquierda, texto grande en tinta y firma con cara, nombre
+   y cargo. Un solo acento, el rojo: antes convivian el rojo del marco,
+   la crema de la caja y el salmon de las comillas. */
 .egr-grid{
-  display:flex;flex-direction:column;gap:18px;
+  display:flex;flex-direction:column;gap:clamp(26px,3vw,38px);
   max-width:1100px;margin-inline:auto;
 }
+/* El video usa el aspecto del de la ficha (.car-video: velo abajo,
+   acercamiento al pasar y pastilla), sin su margen de abajo. */
+.egr-grid .car-video{margin:0}
 .egr-video{
   position:relative;aspect-ratio:16/9;overflow:hidden;
   border-radius:var(--r-lg);
@@ -5104,39 +5311,31 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 /* En el marcado la cita va antes que el video, que es donde tiene
    sentido leerla; en pantalla va despues. */
-.egr-label{
-  order:2;position:relative;overflow:hidden;
-  /* La crema de las pastillas de carrera, con el rojo de marca encima.
-     El texto largo va en tinta y no en rojo: rojo sobre crema se queda
-     en 3,4:1 de contraste y una cita de dos lineas hay que leerla, no
-     mirarla. El rojo se reserva para las comillas y el cargo. */
-  background:var(--crema);color:var(--ink);
-  border-radius:var(--r-lg);
-  padding:30px 34px 32px;
-  display:flex;flex-direction:column;align-items:flex-start;gap:14px;
+.egr-cita{
+  order:2;margin:0;position:relative;
+  padding-left:clamp(0px,1.5vw,18px);
 }
-/* Comillas al fondo, grandes y tenues: marcan que es una cita sin
-   tener que entrecomillar el texto. */
 .egr-comillas{
-  position:absolute;right:26px;top:22px;z-index:0;
-  width:88px;height:88px;color:var(--red);opacity:.22;pointer-events:none;
+  display:block;width:36px;height:36px;margin-bottom:12px;
+  color:var(--red);pointer-events:none;
 }
 .egr-comillas svg{width:100%;height:100%;display:block}
-.egr-label > :not(.egr-comillas){position:relative;z-index:1}
-
-.egr-quote{
-  font-style:italic;font-size:18px;line-height:1.5;
-  max-width:62ch;
+.egr-quote{margin:0}
+/* En tinta fuerte, sin cursiva y un escalon por encima de los parrafos
+   (16px): destaca como cita sin salirse del ritmo de la ficha. A 23px
+   se veia mas grande que el resto de la pagina. */
+.egr-quote p{
+  font-size:clamp(17px,1.4vw,19px);font-weight:500;line-height:1.55;
+  color:var(--ink-2);max-width:58ch;margin:0;text-wrap:pretty;
 }
-/* Filete corto encima del cargo: separa la voz de quien la dice */
-.egr-role{
-  position:relative;padding-top:16px;
-  font-size:14px;font-weight:700;color:var(--red);
+.egr-firma{display:flex;align-items:center;gap:12px;margin-top:20px}
+.egr-avatar{
+  width:48px;height:48px;border-radius:50%;object-fit:cover;flex:none;
+  box-shadow:0 0 0 3px #fff,0 0 0 4px rgba(255,14,73,.35),0 6px 16px rgba(18,19,26,.14);
 }
-.egr-role::before{
-  content:'';position:absolute;left:0;top:0;
-  width:44px;height:2px;border-radius:99px;background:var(--red);opacity:.5;
-}
+.egr-quien{display:flex;flex-direction:column;gap:2px;line-height:1.3}
+.egr-nombre{font-size:15px;font-weight:700;color:var(--ink)}
+.egr-role{font-size:13px;color:var(--muted)}
 
 .egr-play{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
@@ -5151,9 +5350,9 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .egr-play:hover svg circle{fill:var(--red-700)}
 
 @media (max-width:820px){
-  .egr-label{padding:26px 22px 28px;gap:12px}
-  .egr-quote{font-size:16px}
-  .egr-comillas{width:64px;height:64px;right:18px;top:16px}
+  .egr-comillas{width:30px;height:30px;margin-bottom:10px}
+  .egr-firma{margin-top:16px}
+  .egr-avatar{width:44px;height:44px}
 }
 
 
