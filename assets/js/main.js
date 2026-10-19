@@ -800,36 +800,12 @@
   const formVelo   = $('#formVelo');
   const tarjetaForm = $('.lead-card');
 
-  /* El emergente es cosa de movil. En escritorio el formulario ya esta
-     a la vista dentro del banner, asi que el flotante solo tiene que
-     llevar hasta el. Antes se disparaba el emergente en las dos: en
-     escritorio no se movia nada -las reglas que lo convierten en
-     emergente viven en la media query- pero si dejaba el body con
-     overflow:hidden, o sea la pagina bloqueada y sin forma de
-     desbloquearla salvo con Escape, porque el aspa esta oculta y el
-     velo no tiene alto. */
-  const esEmergente = () => window.matchMedia('(max-width: 820px)').matches;
-
   /* En las paginas que no llevan formulario propio -carreras, cursos e
-     idiomas- se va al del inicio. */
+     idiomas- se va al del inicio, que lo abre al llegar con #form. */
   const destinoForm = (typeof FLOTANTES !== 'undefined' && FLOTANTES.registro &&
                        FLOTANTES.registro.url) || 'index.html#form';
 
-  function vaAlForm() {
-    if (!tarjetaForm) { window.location.href = destinoForm; return; }
-    /* Arriba del todo no hay scroll que lo despierte: se saca a mano. */
-    revelaForm();
-    /* El margen deja el formulario por debajo de la cabecera, que va
-       fija y si no le tapa el titulo. */
-    const y = tarjetaForm.getBoundingClientRect().top + window.scrollY - 96;
-    window.scrollTo({ top: Math.max(y, 0), behavior: 'smooth' });
-    /* Un destello para que el ojo sepa donde ha aterrizado: sin el, en
-       el inicio el formulario ya estaba en pantalla y el boton parecia
-       no hacer nada. Se reinicia a mano por si se pulsa dos veces. */
-    tarjetaForm.classList.remove('is-marcada');
-    void tarjetaForm.offsetWidth;
-    tarjetaForm.classList.add('is-marcada');
-  }
+  function vaAlForm() { window.location.href = destinoForm; }
 
   if (abrirForm && !tarjetaForm) abrirForm.addEventListener('click', vaAlForm);
 
@@ -847,38 +823,57 @@
     });
   }
 
+  /* El formulario se abre siempre como emergente, en movil y en
+     escritorio. En escritorio antes se desplazaba la pagina hasta la
+     tarjeta, y eso fallaba de tres maneras: desde el pie del inicio te
+     subia hasta arriba, en Logistica parecia no hacer nada (la tarjeta
+     ya estaba a la vista) y en tableta te bajaba hasta el final. Las
+     reglas que sacan la tarjeta de su sitio estan en el CSS
+     (body.form-abierto); aqui solo se abre, se cierra y se cuida el foco. */
   if (abrirForm && formVelo && tarjetaForm) {
     let formDesde = null;
+    let relojCierre = 0;
 
     function abreForm() {
       formDesde = document.activeElement;
+      // En el inicio la tarjeta espera oculta al primer scroll
+      revelaForm();
+      clearTimeout(relojCierre);
+      document.body.classList.remove('form-cerrando');
+      /* Al bloquear el scroll desaparece la barra y toda la pagina se
+         ensanchaba de golpe por detras del velo; se compensa su ancho. */
+      const barra = window.innerWidth - document.documentElement.clientWidth;
+      if (barra > 0) document.body.style.paddingRight = barra + 'px';
       document.body.classList.add('form-abierto');
       formVelo.hidden = false;
       document.body.style.overflow = 'hidden';
       abrirForm.setAttribute('aria-expanded', 'true');
       tarjetaForm.scrollTop = 0;
       const primero = $('input, select, button', tarjetaForm);
-      if (primero) primero.focus();
+      if (primero) primero.focus({ preventScroll: true });
     }
 
     function cierraForm() {
       if (!document.body.classList.contains('form-abierto')) return;
+      /* form-cerrando deja la tarjeta centrada mientras se desvanece; sin
+         ella volvia a su sitio de golpe con el velo todavia encima. */
+      document.body.classList.add('form-cerrando');
       document.body.classList.remove('form-abierto');
       /* El velo se apaga con transicion, asi que se oculta al final y no
          de golpe: si se quita el hidden ahora desaparece de una y la
          tarjeta se queda sola desvaneciendose sobre la pagina. */
-      setTimeout(() => {
+      relojCierre = setTimeout(() => {
+        document.body.classList.remove('form-cerrando');
         if (!document.body.classList.contains('form-abierto')) formVelo.hidden = true;
       }, 240);
       document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
       abrirForm.setAttribute('aria-expanded', 'false');
-      if (formDesde && document.contains(formDesde)) formDesde.focus();
+      if (formDesde && document.contains(formDesde)) formDesde.focus({ preventScroll: true });
       formDesde = null;
     }
 
-    abrirForm.addEventListener('click', () => {
-      if (esEmergente()) abreForm(); else vaAlForm();
-    });
+    abrirForm.addEventListener('click', abreForm);
     if (cerrarForm) cerrarForm.addEventListener('click', cierraForm);
     formVelo.addEventListener('click', cierraForm);
     document.addEventListener('keydown', (e) => {
@@ -887,19 +882,8 @@
     });
 
     /* Se llega con #form desde el flotante de carreras, cursos e
-       idiomas, que no llevan formulario propio. En escritorio el ancla
-       ya basta, pero en movil la tarjeta es un emergente oculto: sin
-       esto el usuario aterrizaba en el inicio sin ver ningun
-       formulario, que es justo lo que habia pedido. */
-    if (location.hash === '#form') {
-      if (esEmergente()) abreForm(); else vaAlForm();
-    }
-
-    /* Si se pasa a escritorio con el emergente abierto, la tarjeta
-       vuelve al banner y el estado sobra. */
-    window.matchMedia('(min-width: 821px)').addEventListener('change', (e) => {
-      if (e.matches) cierraForm();
-    });
+       idiomas, que no llevan formulario propio: se abre al entrar. */
+    if (location.hash === '#form') abreForm();
   }
 
   /* El carril de sedes de "Por que SISE" usa este mismo componente,
@@ -2481,6 +2465,10 @@
           e.preventDefault();
           abierto ? elige(marcado) : abre();
         } else if (e.key === 'Escape') {
+          /* Con la lista abierta, Esc solo cierra la lista: si sigue
+             subiendo, el del documento cerraba tambien el emergente
+             entero (para entonces la lista ya no constaba como abierta). */
+          if (abierto) e.stopPropagation();
           cierra(true);
         } else if (e.key === 'Home' || e.key === 'End') {
           if (abierto) { e.preventDefault(); marca(e.key === 'Home' ? 0 : items.length - 1); }
@@ -3175,6 +3163,15 @@
         if (abierto) return;
         cerrarTodos();
         abierto = true;
+        /* En el emergente la tarjeta recorta lo que sobresale, asi que la
+           lista ocupa justo el ancho del formulario: se corre hacia la
+           izquierda lo que el campo esta separado del borde del form. */
+        const formEl = field.closest('form');
+        if (formEl && document.body.classList.contains('form-abierto')) {
+          const dx = field.getBoundingClientRect().left - formEl.getBoundingClientRect().left;
+          list.style.setProperty('--sel-x', (-dx) + 'px');
+          list.style.setProperty('--sel-w', formEl.clientWidth + 'px');
+        }
         field.classList.add('is-open');
         btn.setAttribute('aria-expanded', 'true');
         marca(Math.max(0, items.findIndex((it) => it.dataset.val === sel.value)));
@@ -3207,6 +3204,10 @@
           e.preventDefault();
           abierto ? elige(marcado) : abre();
         } else if (e.key === 'Escape') {
+          /* Con la lista abierta, Esc solo cierra la lista: si sigue
+             subiendo, el del documento cerraba tambien el emergente
+             entero (para entonces la lista ya no constaba como abierta). */
+          if (abierto) e.stopPropagation();
           cierra(true);
         } else if (e.key === 'Home' || e.key === 'End') {
           if (abierto) { e.preventDefault(); marca(e.key === 'Home' ? 0 : items.length - 1); }

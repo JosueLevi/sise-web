@@ -925,6 +925,61 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .lead-cerrar svg{width:17px;height:17px;display:block}
 .lead-cerrar:hover{background:var(--line);color:var(--ink)}
 
+/* Emergente tambien en escritorio. "Listo para comenzar" y los demas
+   "pedir informacion" antes desplazaban la pagina hasta la tarjeta: desde
+   el pie del inicio te subian hasta arriba, en Logistica parecia que no
+   hacia nada (la tarjeta ya estaba a la vista) y en tableta te bajaba
+   hasta el final. Ahora la misma tarjeta sale de su sitio, se centra
+   sobre el velo y vuelve al cerrar; no se duplica, asi que validacion,
+   desplegables y envio siguen siendo los de siempre.
+   form-cerrando (main.js) la mantiene centrada mientras se desvanece:
+   sin ella volvia a su sitio de golpe con el velo aun encima.
+   El carril de Logistica es un contexto de apilado (z-index 3): sin
+   subirlo, el velo (200) tapaba la tarjeta aunque esta lleve 210. */
+@media (min-width:821px){
+  body.form-abierto .lead-card,
+  body.form-cerrando .lead-card{
+    position:fixed;z-index:210;left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    width:min(94vw,460px);max-height:90vh;overflow-y:auto;margin:0;
+    background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;
+    box-shadow:0 24px 60px rgba(12,13,20,.28);
+    visibility:visible;
+  }
+  body.form-abierto .lead-card{animation:formEntra .28s var(--ease)}
+  body.form-cerrando .lead-card{opacity:0;transition:opacity .2s var(--ease);animation:none}
+  body.form-abierto .lead-cerrar{display:grid}
+}
+/* Fuera de la media query a proposito: en movil el carril es un hijo
+   flex con z-index 3, y un hijo flex con z-index crea contexto de
+   apilado aunque sea static. Ahi el velo tapaba la tarjeta y el
+   formulario de Logistica se abria oscurecido y sin responder. */
+body.form-abierto .car-form-rail,
+body.form-cerrando .car-form-rail{z-index:220}
+/* Lo mismo con el banner del inicio: al abrir un desplegable se sube a
+   z-index 30 (para que la lista pise la seccion de abajo) y con eso la
+   tarjeta volvia a quedar bajo el velo. En el emergente no hace falta. */
+body.form-abierto .hero,
+body.form-abierto .hero:has(.field.is-open),
+body.form-cerrando .hero{z-index:auto}
+/* Desplegables dentro del emergente: la tarjeta tiene scroll propio y
+   recorta lo que sobresale, y las listas salian mas anchas que su campo
+   (hacia la derecha o, en la columna derecha, hacia la izquierda). Aqui
+   ocupan justo el ancho del formulario (--sel-x y --sel-w los pone
+   main.js al abrir) y son mas bajas, para que quepan en la tarjeta. */
+body.form-abierto .lead-card .field .sel-list{
+  left:var(--sel-x,0);right:auto;
+  width:var(--sel-w,100%);min-width:0;max-width:none;
+  max-height:min(280px,42vh);
+}
+@keyframes formEntra{
+  from{opacity:0;transform:translate(-50%,-50%) scale(.97)}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  body.form-abierto .lead-card{animation:none}
+}
+
 .lead-title{
   text-align:center;font-size:22px;font-weight:800;color:var(--ink);
   letter-spacing:.005em;margin-bottom:11px;
