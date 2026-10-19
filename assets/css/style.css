@@ -332,14 +332,14 @@ p{margin:0}
    598x87 (6,9:1). Crece lo que permite cada ancho para que se lea el
    rotulo "con el respaldo de la universidad", que ocupa 11,5 de los 87
    de alto: a 36px sus mayusculas se quedaban en 4,7px. Medido en cada
-   ancho, con la cabecera arriba y al bajar: 44px desde 1440 (5,8px de
-   rotulo), 40px de 1300 a 1439 y 32px en el tramo apretado de 1181 a
-   1299 (mas abajo). A 48px el boton del menu se salia de la pantalla a
-   1366. La pildora no crece: su alto lo marca Empleabilidad (52px).
+   ancho, con la cabecera arriba y al bajar. Hoy: 40px desde 1440
+   (5,3px de rotulo), 36px de 821 a 1439 y 30px en el tramo apretado de
+   1181 a 1299 (mas abajo); se rebajo un ~10% a peticion desde 44/40/32.
+   A 48px el boton del menu se salia de la pantalla a 1366. La pildora no crece: su alto lo marca Empleabilidad (52px).
    El ancho va explicito por el mismo motivo de Safari. */
-.brand-logo[data-ico="logo-respaldo"]{width:275px;height:40px}
+.brand-logo[data-ico="logo-respaldo"]{width:248px;height:36px}
 @media (min-width:1440px){
-  .brand-logo[data-ico="logo-respaldo"]{width:302px;height:44px}
+  .brand-logo[data-ico="logo-respaldo"]{width:275px;height:40px}
 }
 .brand-logo > svg{width:100%;height:100%;display:block}
 
@@ -354,7 +354,7 @@ p{margin:0}
    y por debajo de 1181 el menu va entero en la hamburguesa. */
 @media (min-width:1181px) and (max-width:1299px){
   .main-nav{gap:10px}
-  .brand-logo[data-ico="logo-respaldo"]{width:220px;height:32px}
+  .brand-logo[data-ico="logo-respaldo"]{width:206px;height:30px}
   .site-header .btn-empleo{padding:12px 18px;font-size:15px;margin-left:12px}
   /* La barra pintada (al bajar, y siempre en las paginas internas como
      Cursos) lleva mas relleno lateral: aqui se recorta para que quepa. */
@@ -4696,6 +4696,239 @@ body:not(.form-abierto) .form-velo{opacity:0}
    impide que los espacios se abran de par en par. */
 .car-p + .car-p{margin-top:12px}
 
+/* ---------- Que aprenderas: areas de la carrera ----------
+   Sustituye al parrafo largo. Seis areas sacadas de la malla oficial y
+   ordenadas como se mueve la mercancia (compra, almacen, transporte,
+   exterior, cadena, numeros). Llevaron numero (01-06); se quito a
+   peticion, el orden sigue contando el recorrido.
+   Cada tarjeta dice ademas en que ciclos se ve y, si la hay, la
+   certificacion que deja: el "para que" que una lista de temas no da.
+
+   En indigo y no en rojo: justo debajo van las tarjetas de datos,
+   perfiladas en rosa, y diez tarjetas rojas seguidas se leian como un
+   solo bloque. El indigo es el segundo color de la marca y ya es el de
+   los arcos de esta pagina.
+
+   Al pasar el raton (o al tocar, o con Enter) se monta encima un panel
+   claro con tres cursos reales. Encima y no debajo para no mover la
+   rejilla; claro y no de color pleno, y con 150ms de espera, porque al
+   cruzar la seccion con el raton se encendian paneles sin querer. El
+   panel repite icono y nombre: al taparse la tarjeta se perdia de que
+   area eran los cursos. */
+.apr-grid{
+  --apr:var(--indigo);
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:14px;margin-top:22px;
+}
+/* Flecha de la marca (la doble de "SISE >>") detras de la rejilla, en
+   lugar del arco indigo: con todo en indigo la zona se quedaba fria y
+   sin pulso. Entra desde el borde izquierdo de la pantalla, como lo
+   hacia el arco: el left resta el margen de la columna (lo que sobra a
+   cada lado de --shell mas el --gut) y la deja 120px fuera, con la
+   punta hacia las tarjetas.
+   En trazo y no rellena, como la flecha del logo: rellena era una
+   mancha rosa de cantos duros que no se parecia a nada mas de la pagina
+   y tenia las tarjetas (de vidrio entonces) tenidas a trozos. Ahora
+   habla el mismo idioma que los arcos: fina, rojo al 35% y fundida por
+   arriba, por abajo y hacia la derecha, de modo que nace en el borde y
+   se disuelve antes de llegar al contenido. Las tarjetas vuelven a ser
+   blancas. Detras de todo: .car-lead aisla su apilado y recorta lo que
+   sale. Solo en escritorio; en movil la rejilla es un carril que se
+   desliza. */
+@media (min-width:901px){
+  .apr-grid{position:relative}
+  .apr-grid::before{
+    content:'';position:absolute;z-index:-1;pointer-events:none;
+    width:640px;height:679px;top:50%;translate:0 -50%;
+    left:calc(-1 * (max(0px, (100vw - var(--shell)) / 2) + var(--gut)) - 120px);
+    background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='-2%20-2%2071%2075'%3E%3Cpath%20fill='none'%20stroke='rgb(255,14,73)'%20stroke-width='1.6'%20stroke-linejoin='round'%20d='M39.9688%200.5L66.0654%2035.3896L39.9688%2070.2803H15.5781L41.4502%2035.6895L41.6748%2035.3896L41.4502%2035.0908L15.5791%200.5H39.9688ZM13.7793%2019.1602L24.8652%2033.9795L13.7803%2048.7998H0.999023L11.8604%2034.2793L12.084%2033.9805L11.8604%2033.6807L0.999023%2019.1602H13.7793Z'/%3E%3C/svg%3E") center/contain no-repeat;
+    opacity:.35;
+    -webkit-mask-image:linear-gradient(90deg,#000 25%,transparent 88%),linear-gradient(180deg,transparent 0,#000 22%,#000 78%,transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:linear-gradient(90deg,#000 25%,transparent 88%),linear-gradient(180deg,transparent 0,#000 22%,#000 78%,transparent 100%);
+    mask-composite:intersect;
+  }
+}
+.apr{
+  /* En columna para que el boton estire hasta el alto de la fila: si no,
+     en una fila con una tarjeta mas alta el "Ver cursos" de las otras
+     se quedaba a media altura y no alineaba. */
+  display:flex;flex-direction:column;
+  position:relative;border-radius:18px;overflow:hidden;
+  background:#fff;border:1px solid rgba(var(--indigo-rgb),.18);
+  box-shadow:0 6px 16px rgba(var(--indigo-rgb),.07);
+  transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .4s var(--ease);
+}
+.apr-btn{
+  position:relative;
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  flex:1 0 auto;width:100%;min-height:214px;padding:22px 20px 18px;
+  background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;
+}
+.apr-btn:focus-visible{outline:2px solid var(--apr);outline-offset:-5px;border-radius:18px}
+/* Icono suelto y grande, sin baldosa: con ella eran dos marcos (la
+   tarjeta y la baldosa) y el dibujo se quedaba en 30px. Asi el
+   amarillo del duotono es lo que da color a la tarjeta. */
+.apr-ico{display:block;flex:none;width:46px;height:46px;margin:0 0 6px -2px;color:var(--apr)}
+.apr-ico svg{width:100%;height:100%;display:block}
+/* Barlow normal en seminegra, no la condensada: en condensada a 21px y
+   en negra pesaba mas que "Que aprenderas" (condensada 600 a 28px), que
+   es su titulo. Con otra textura queda claramente un nivel por debajo. */
+.apr-t{
+  font-family:'Barlow',sans-serif;font-weight:600;
+  font-size:17.5px;line-height:1.25;color:var(--ink);
+}
+.apr-d{font-size:14.5px;line-height:1.45;color:var(--ink-2)}
+.apr-meta{display:flex;flex-direction:column;gap:3px;margin-top:2px;font-size:13px;line-height:1.35}
+.apr-ciclo{font-weight:700;color:var(--apr);letter-spacing:.02em}
+.apr-cert{color:var(--ink-2)}
+.apr-cert-k{font-weight:600;color:var(--muted)}
+.apr-cert-k::after{content:':'}
+.apr-mas{
+  display:inline-flex;align-items:center;gap:7px;margin-top:auto;padding-top:8px;
+  font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--apr);
+}
+/* La flecha de los botones del sitio (la diagonal de "Ver convenios"),
+   en blanco sobre el circulo indigo, en lugar del "+". */
+.apr-mas::after{
+  content:'';display:block;width:22px;height:22px;border-radius:50%;
+  background:var(--apr) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7m0 0H9m8 0v8'/%3E%3C/svg%3E") center/13px no-repeat;
+  transition:transform .35s var(--ease);
+}
+/* El panel calca el relleno de la tarjeta (22/20, menos los 3px del
+   filete de arriba) y su cabecera lleva el icono al mismo tamano y en el
+   mismo sitio que la tarjeta. Entra solo fundido, sin desplazarse: asi
+   el icono no cambia de tamano ni se mueve al pasar el raton, solo
+   aparecen los cursos a su alrededor. */
+.apr-cursos{
+  position:absolute;inset:0;overflow:auto;padding:19px 20px 18px;cursor:pointer;
+  background:#F4F3FB;color:var(--ink-2);
+  border-top:3px solid var(--apr);
+  opacity:0;visibility:hidden;
+  transition:opacity .45s var(--apr-curva),visibility 0s linear .45s;
+}
+/* Entrada escalonada del contenido del panel: primero el fondo, luego
+   cabecera, rotulo, cada curso y el enlace, con 40ms entre uno y otro y
+   despues de que el texto de la tarjeta se haya ido (160ms), para que
+   los dos titulos no coincidan a medio fundido. Solo
+   4px de recorrido. El icono de la cabecera no entra aparte: funde
+   con el fondo del panel mientras el de la tarjeta sigue debajo, y la
+   suma se ve fija; con su propia espera parpadeaba a medio camino.
+   --apr-espera la pone el hover (150ms) para no abrir al cruzar. */
+.apr{--apr-espera:0s;--apr-curva:cubic-bezier(.22,.61,.36,1)}
+.apr-cab-t,.apr-k,.apr-cursos li,.apr-malla{
+  opacity:0;transition:opacity .3s var(--apr-curva),transform .45s var(--apr-curva);
+}
+.apr-k,.apr-cursos li,.apr-malla{transform:translateY(4px)}
+/* Lo de la tarjeta se va mientras entra el panel: sin esto, durante el
+   fundido se veian dos textos superpuestos y el cambio se leia brusco. */
+.apr-t,.apr-d,.apr-meta,.apr-mas{transition:opacity .35s var(--apr-curva)}
+.apr.is-open .apr-t,.apr.is-open .apr-d,.apr.is-open .apr-meta,.apr.is-open .apr-mas{opacity:0;transition-duration:.16s}
+.apr.is-open .apr-cab-t,.apr.is-open .apr-k,.apr.is-open .apr-cursos li,.apr.is-open .apr-malla{opacity:1;transform:none}
+.apr.is-open .apr-cab-t{transition-delay:calc(var(--apr-espera) + .16s)}
+.apr.is-open .apr-k{transition-delay:calc(var(--apr-espera) + .2s)}
+.apr.is-open .apr-cursos li:nth-child(1){transition-delay:calc(var(--apr-espera) + .24s)}
+.apr.is-open .apr-cursos li:nth-child(2){transition-delay:calc(var(--apr-espera) + .28s)}
+.apr.is-open .apr-cursos li:nth-child(3){transition-delay:calc(var(--apr-espera) + .32s)}
+.apr.is-open .apr-malla{transition-delay:calc(var(--apr-espera) + .36s)}
+.apr-cab{
+  display:flex;align-items:center;gap:12px;padding-right:22px;
+  font-family:'Barlow',sans-serif;font-weight:600;font-size:16px;line-height:1.25;color:var(--ink);
+}
+.apr-cab-ico{display:block;flex:none;width:46px;height:46px;margin-left:-2px;color:var(--apr)}
+.apr-cab-ico svg{width:100%;height:100%;display:block}
+.apr-k{margin-top:12px;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--apr)}
+.apr-cursos ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:7px}
+.apr-cursos li{position:relative;padding-left:16px;font-size:14.5px;line-height:1.35;font-weight:500;color:var(--ink-2)}
+.apr-cursos li::before{
+  content:'';position:absolute;left:0;top:.5em;width:6px;height:6px;
+  border-radius:50%;background:var(--apr);
+}
+/* Abierta con toque o teclado: lleva aspa para que se vea como cerrarla
+   (con el raton basta con salir de la tarjeta). */
+.apr-malla{
+  display:inline-flex;align-items:center;gap:6px;margin-top:14px;
+  font-size:13px;font-weight:700;color:var(--apr);text-decoration:underline;
+  text-decoration-color:rgba(var(--indigo-rgb),.35);text-underline-offset:3px;
+}
+.apr-malla::after{content:'\2192';transition:transform .2s var(--ease)}
+.apr-malla:hover{text-decoration-color:currentColor}
+.apr-malla:hover::after{transform:translateX(3px)}
+.apr.is-open .apr-cursos::after{
+  content:'\00d7';position:absolute;top:14px;right:16px;font-size:24px;line-height:1;color:var(--muted);
+}
+.apr.is-open .apr-cursos{
+  opacity:1;visibility:visible;
+  transition:opacity .45s var(--apr-curva) var(--apr-espera),visibility 0s linear var(--apr-espera);
+}
+/* Hover suave, a peticion: la tarjeta sube solo 2px en medio segundo,
+   el borde y la sombra apenas se avivan, el contenido de la tarjeta se
+   desvanece mientras el panel funde y su contenido entra escalonado.
+   Al salir se deshace sin espera. Mismas reglas que .is-open (toque y
+   teclado), repetidas para :hover con la espera de 150ms. */
+@media (hover:hover) and (pointer:fine){
+  .apr{transition:transform .5s var(--apr-curva),box-shadow .5s var(--apr-curva),border-color .5s var(--apr-curva)}
+  .apr:hover{--apr-espera:.15s;transform:translateY(-2px);border-color:rgba(var(--indigo-rgb),.3);box-shadow:0 12px 26px rgba(var(--indigo-rgb),.09)}
+  .apr:hover .apr-cursos{
+    opacity:1;visibility:visible;
+    transition:opacity .45s var(--apr-curva) var(--apr-espera),visibility 0s linear var(--apr-espera);
+  }
+  .apr:hover .apr-t,.apr:hover .apr-d,.apr:hover .apr-meta,.apr:hover .apr-mas{
+    opacity:0;transition-duration:.16s;transition-delay:var(--apr-espera);
+  }
+  .apr:hover .apr-cab-t,.apr:hover .apr-k,.apr:hover .apr-cursos li,.apr:hover .apr-malla{opacity:1;transform:none}
+  .apr:hover .apr-cab-t{transition-delay:calc(var(--apr-espera) + .16s)}
+  .apr:hover .apr-k{transition-delay:calc(var(--apr-espera) + .2s)}
+  .apr:hover .apr-cursos li:nth-child(1){transition-delay:calc(var(--apr-espera) + .24s)}
+  .apr:hover .apr-cursos li:nth-child(2){transition-delay:calc(var(--apr-espera) + .28s)}
+  .apr:hover .apr-cursos li:nth-child(3){transition-delay:calc(var(--apr-espera) + .32s)}
+  .apr:hover .apr-malla{transition-delay:calc(var(--apr-espera) + .36s)}
+}
+/* Movil: slider horizontal con imanes (scroll-snap), a peticion. Cada
+   tarjeta ocupa el 80% del ancho y la siguiente asoma por la derecha:
+   ese borde es lo que dice "hay mas, desliza" sin flechas. Las tarjetas
+   vuelven a ser las de escritorio (en columna, con el panel de cursos
+   encima), porque con ancho fijo ya caben y asi no cambia el alto del
+   slider al abrir una. El carril sale hasta los bordes de la pantalla
+   y el relleno lateral alinea la primera tarjeta con el texto.
+   Debajo, puntos de posicion (main.js). */
+@media (max-width:600px){
+  .apr-grid{
+    grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:80%;
+    gap:12px;margin:18px calc(-1 * var(--gut)) 0;padding:6px var(--gut) 10px;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;scroll-padding-inline:var(--gut);
+    scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .apr-grid::-webkit-scrollbar{display:none}
+  .apr{scroll-snap-align:start}
+  .apr-btn{min-height:0;padding:20px 18px 16px}
+  /* Mismo relleno que la tarjeta para que el icono no salte al abrir */
+  .apr-cursos{padding:17px 18px 14px}
+}
+.apr-puntos{display:none}
+@media (max-width:600px){
+  .apr-puntos{display:flex;justify-content:center;gap:4px;margin-top:6px}
+  /* Boton de 24px con el punto dibujado dentro: el punto visible es
+     pequeno, pero el area de toque no. */
+  .apr-punto{
+    display:grid;place-items:center;width:24px;height:24px;padding:0;
+    background:none;border:0;cursor:pointer;
+  }
+  .apr-punto::before{
+    content:'';width:7px;height:7px;border-radius:999px;
+    background:rgba(var(--indigo-rgb),.25);
+    transition:width .25s var(--ease),background .25s var(--ease);
+  }
+  .apr-punto.is-on::before{width:20px;background:var(--apr,var(--indigo))}
+}
+@media (prefers-reduced-motion:reduce){
+  .apr,.apr-cursos,.apr-cab-t,.apr-k,.apr-cursos li,.apr-malla,
+  .apr-t,.apr-d,.apr-meta,.apr-mas{transition:none!important}
+  .apr-k,.apr-cursos li,.apr-malla{transform:none}
+  .apr.is-open .apr-cursos{animation:none}
+}
+
 /* ---------- Jerarquia de titulos de la ficha ----------
    Tres niveles, y cada uno se distingue por algo mas que el tamano,
    que es lo que fallaba: 40, 22 y 17 eran solo tres numeros y el ojo
@@ -4726,34 +4959,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
 
 /* Datos rapidos */
 .car-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:40px 0 0;position:relative}
-/* Arco de fondo en indigo suave: entra desde la izquierda por detras de
-   las tarjetas y del bloque del grado, y hace eco del semiarco blanco
-   que el bloque lleva en su esquina. Indigo y no rojo: la zona ya tiene
-   el borde y el halo rojos de las tarjetas y el bloque del grado entero;
-   un arco rosa se leia como el rojo derramandose. El frio equilibra y
-   enlaza con el icono de Modalidad y el panel de "Por que estudiar".
-   - Una sola banda ancha (130px) y no un borde: se pinta con un
-     degradado radial cuyos cantos se difuminan un par de pixeles, asi
-     se lee como una aguada y no como una linea trazada.
-   - Entra y sale fundida (mascara de arriba a abajo): sin ella la
-     seccion la cortaba de golpe por arriba y por abajo.
-   - Circulo grande (1300px) para que la curva sea tranquila.
-   Va detras de todo (z-index -1 dentro de .car-lead, que aisla su
-   apilado). Solo en escritorio: en movil las tarjetas ocupan todo el
-   ancho y no queda fondo que vestir. */
-@media (min-width:901px){
-  .car-facts::before{
-    content:'';position:absolute;z-index:-1;pointer-events:none;
-    width:1300px;height:1300px;left:-1060px;top:-275px;
-    background:radial-gradient(closest-side,
-      transparent calc(100% - 134px),
-      rgba(var(--indigo-rgb),.09) calc(100% - 128px),
-      rgba(var(--indigo-rgb),.09) calc(100% - 6px),
-      transparent 100%);
-    -webkit-mask-image:linear-gradient(180deg,transparent 6%,#000 30%,#000 72%,transparent 96%);
-    mask-image:linear-gradient(180deg,transparent 6%,#000 30%,#000 72%,transparent 96%);
-  }
-}
+/* Aqui iba un arco indigo de fondo; lo sustituye la flecha de la marca
+   que va detras de "Que aprenderas" (ver .apr-grid::before). */
 .fact{
   /* En columna y perfiladas en rojo, como en el diseno. La esquina de
      abajo a la derecha lleva 100px de radio y las otras tres 18: es lo
@@ -5388,6 +5595,14 @@ body:not(.form-abierto) .form-velo{opacity:0}
 .malla-ciclo li[data-t="exp"]{--tono:var(--red)}
 .malla-ciclo li[data-t="emp"]{--tono:var(--terciario)}
 .malla-ciclo li[data-t="esp"]{--tono:var(--indigo)}
+/* Cursos senalados desde "Ver en la malla" (main.js): fondo indigo
+   suave que entra y se va, para que el ojo los encuentre en el ano. */
+.malla-ciclo li{border-radius:4px}
+.malla-ciclo li.is-destacado{animation:mallaDestaca 2.8s var(--ease)}
+@keyframes mallaDestaca{
+  0%,70%{background:rgba(var(--indigo-rgb),.13);box-shadow:0 0 0 4px rgba(var(--indigo-rgb),.13)}
+  100%{background:transparent;box-shadow:0 0 0 4px transparent}
+}
 .malla-soon{color:var(--muted);font-size:14px}
 
 /* ---------- Certificaciones ---------- */
