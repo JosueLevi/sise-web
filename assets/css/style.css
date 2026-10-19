@@ -2511,6 +2511,10 @@ body:not(.form-abierto) .form-velo{opacity:0}
 }
 /* Egresados no lleva banda de color: va en blanco, entre las
    bandas de color alternas de la ficha (ver .car-cuerpo > .car-cert). */
+/* Ficha en modalidad virtual (main.js, conmutador de la cabecera):
+   sin laboratorios ni sedes, que solo tienen sentido en presencial. */
+.modo-virtual .car-labs,
+.modo-virtual #sedes{display:none}
 .car-egresado{position:relative;overflow:hidden}
 .experiencias > .shell,
 .car-egresado > .shell{position:relative;z-index:1;width:100%}
@@ -4446,7 +4450,8 @@ body:not(.form-abierto) .form-velo{opacity:0}
      500px fijos se comen la pantalla entera. */
   .car-hero--hub{min-height:500px;max-height:76vh}
 }
-/* Ficha de carrera: en escritorio el banner baja a 640px. Aqui el
+/* Ficha de carrera: en escritorio el banner baja a 580px (estuvo en
+   640; se recorto a peticion para que el contenido asome antes). Aqui el
    banner solo presenta la carrera y debajo espera el contenido con el
    formulario, asi que conviene que la ficha empiece antes que en las
    paginas de oferta (720). Se subio de 560 a peticion, para dar mas
@@ -4467,7 +4472,7 @@ body:not(.form-abierto) .form-velo{opacity:0}
   }
 }
 @media (min-width:901px){
-  .car-hero--ficha{min-height:640px}
+  .car-hero--ficha{min-height:580px}
   /* Velo solo donde hay texto: una mancha abajo a la izquierda, detras
      del titulo, y una franja suave arriba para el menu. El resto de la
      foto queda limpia. El bloque de texto acaba hacia el 40% del ancho

@@ -2676,7 +2676,22 @@
         if (oculto) { oculto.value = modo; oculto.setAttribute('value', modo); }
         const dato = $('[data-fact="modalidad"]');
         if (dato) dato.textContent = modo;
+        muestraModo(modo);
       });
+    });
+  }
+
+  /* En virtual no hay laboratorios ni sede a la que ir: esas dos
+     secciones se ocultan (la regla esta en el CSS, .modo-virtual) y
+     vuelven al pasar a semipresencial. El enlace "Sedes" del pie
+     apuntaba a la seccion de esta misma pagina; en virtual se queda sin
+     destino, asi que se manda a la del inicio. */
+  function muestraModo(modo) {
+    const virtual = modo.toLowerCase() === 'virtual';
+    document.body.classList.toggle('modo-virtual', virtual);
+    $$('a[href="#sedes"], a[data-sedes-pie]').forEach((a) => {
+      a.dataset.sedesPie = '1';
+      a.setAttribute('href', virtual ? 'index.html#sedes' : '#sedes');
     });
   }
 
