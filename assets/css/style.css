@@ -2620,6 +2620,31 @@ body:not(.form-abierto) .form-velo{opacity:0}
     mask-image:linear-gradient(180deg,transparent 0,#000 26%,#000 84%,transparent 100%);
   }
 }
+/* Version movil de los dos arcos del inicio (este y el de Convenios).
+   El de escritorio no sirve aqui: mide 1500px y en 390 solo asomaba un
+   trozo casi recto de banda, que se leia como una mancha y no como un
+   arco. En su lugar, un circulo de 640px que asoma 100px desde el borde
+   -Convenios por la izquierda, Novedades por la derecha, como en
+   escritorio- a la altura del titulo. Asi la curva entra entera en
+   pantalla y la banda solo roza el arranque de las lineas del texto,
+   nunca las tarjetas ni los logos, que van por encima en blanco.
+   Misma tinta (rojo al 8%) y mismo fundido arriba y abajo. */
+@media (max-width:900px){
+  .convenios,.novedades{position:relative}
+  .convenios::before,.novedades::before{
+    content:'';position:absolute;z-index:-1;pointer-events:none;
+    width:640px;height:640px;top:-150px;
+    background:radial-gradient(closest-side,
+      transparent calc(100% - 76px),
+      rgba(255,14,73,.08) calc(100% - 72px),
+      rgba(255,14,73,.08) calc(100% - 4px),
+      transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 14%,#000 34%,#000 66%,transparent 88%);
+    mask-image:linear-gradient(180deg,transparent 14%,#000 34%,#000 66%,transparent 88%);
+  }
+  .convenios::before{left:-540px}
+  .novedades::before{right:-540px}
+}
 
 /* Blog / Eventos son solo dos y caben en cualquier pantalla: se libran
    de la tira arrastrable que .chips adopta por debajo de 1024px para
@@ -4524,6 +4549,40 @@ body:not(.form-abierto) .form-velo{opacity:0}
     -webkit-mask-image:linear-gradient(180deg,transparent 4%,#000 26%,#000 62%,transparent 86%);
     mask-image:linear-gradient(180deg,transparent 4%,#000 26%,#000 62%,transparent 86%);
   }
+}
+/* Version movil, el mismo recurso que los arcos del inicio en movil:
+   circulo de 640px que asoma 100px desde el borde. El de escritorio
+   (760px a 470 fuera) dejaba en 390 una franja recta sin curva.
+   Dos sitios, los unicos con aire de sobra cuando todo se apila:
+   - Por que estudiar: la ilustracion va centrada y estrecha y deja
+     blanco a los dos lados. Entra por la derecha, como en escritorio,
+     a la altura de la figura.
+   - Malla curricular: titulo, entradilla y boton van a la izquierda y
+     la derecha del encabezado queda vacia. Tambien por la derecha.
+   Las tarjetas de datos no lo llevan: ocupan todo el ancho y el arco
+   solo asomaria a trozos por las rendijas. En indigo, el color de los
+   arcos de esta pagina. */
+@media (max-width:900px){
+  .car-malla{overflow:hidden;overflow:clip;isolation:isolate}
+  .car-why-block::before,.car-malla::before{
+    content:'';position:absolute;z-index:-1;pointer-events:none;
+    width:640px;height:640px;right:-540px;
+    background:radial-gradient(closest-side,
+      transparent calc(100% - 76px),
+      rgba(var(--indigo-rgb),.08) calc(100% - 72px),
+      rgba(var(--indigo-rgb),.08) calc(100% - 4px),
+      transparent 100%);
+    -webkit-mask-image:linear-gradient(180deg,transparent 14%,#000 34%,#000 66%,transparent 88%);
+    mask-image:linear-gradient(180deg,transparent 14%,#000 34%,#000 66%,transparent 88%);
+  }
+  .car-why-block::before{top:-80px;right:calc(-540px - var(--gut))}
+  .car-malla::before{top:-200px}
+}
+/* En tableta el boton de descarga sube a la derecha del titulo y el
+   arco le pasaba por detras. Mas abajo cae junto a las tres cifras,
+   que solo ocupan media fila y dejan ese lado libre. */
+@media (min-width:600px) and (max-width:900px){
+  .car-malla::before{top:-50px}
 }
 
 .crumb{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:14px;color:var(--muted);margin-bottom:26px}
