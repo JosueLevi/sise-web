@@ -63,8 +63,14 @@ const FLOTANTES = {
    solo.
 
    "Conoce mas" lleva a url si la hay. Sin url abre el formulario con
-   la carrera ya elegida (el nombre tiene que existir en CRM_CARRERAS). */
+   la carrera ya elegida (el nombre tiene que existir en CRM_CARRERAS).
+
+   APAGADO POR AHORA (octubre 2026): se pidio retirarlo del sitio sin
+   perderlo, porque se volvera a usar. Para encenderlo de nuevo basta con
+   poner activo: true; el resto de datos y la imagen siguen en su sitio.
+   Si se reactiva con otra campana, revisar imagen, textos y "hasta". */
 const PROMO = {
+  activo: false,                            // false = no se muestra en ninguna pagina
   imagen: 'assets/img/popup-interiores.webp',
   alt: 'Carrera Diseño de Interiores. Diseña proyectos reales desde tu primer año en SISE DECO. Inicio de clases: 5 de octubre. Conoce más aquí.',
   titulo: 'Diseño de Interiores',          // lo que se lee en la pestaña minimizada

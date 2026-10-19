@@ -78,6 +78,10 @@ local en `python -m http.server 5510`:
 - **Fotos pendientes:** las 8 de la plana directiva (`assets/img/equipo/`, hay
   un LEEME con los nombres), las 27 de curso y las 5 reales de la línea de
   tiempo, que hoy son prestadas de otras secciones.
+- **Popup promocional apagado.** El anuncio de abajo a la izquierda (Diseño de
+  Interiores) se retiró en octubre de 2026 para usarlo más adelante. Está
+  entero en `PROMO` de `data.js` con `activo: false`; para volver a mostrarlo
+  basta con ponerlo en `true` (y revisar imagen, textos y la fecha `hasta`).
 - **`experimentos/`** guarda la versión 2 del inicio (lettering de rotulador,
   hub con marco de color). Retirada, no borrada.
 - **Códigos CRM** de tres carreras sin asignar, y CORS pendiente de habilitar en

@@ -443,6 +443,43 @@
     sincroniza();
   }
 
+  /* ---------- Formulario del banner: entra con el primer scroll ----------
+     Al cargar, el banner se ve entero -video incluido- sin la tarjeta
+     encima. Con el primer gesto (rueda, scroll, tecla o toque) entra el
+     formulario con su animacion de siempre y ya no se vuelve a ocultar.
+
+     Y si nadie se mueve, entra solo a los 4,5 s: el formulario es lo
+     que convierte en el banner, y quien llega de un anuncio y se queda
+     mirando sin hacer scroll no lo veria nunca. El tiempo da para ver
+     el arranque del video sin dejar el lado derecho vacio demasiado.
+     Solo pinta en escritorio: en movil la tarjeta es un emergente y la
+     regla que la esconde vive en una media query de 821 para arriba.
+
+     Si se llega con la pagina ya bajada (recarga a mitad) o con #form,
+     no se espera: el formulario sale desde el principio. */
+  const heroForm = $('.hero');
+  const ESPERA_FORM = 4500;
+  let formEnEspera = false;
+  let relojForm = null;
+
+  function revelaForm() {
+    if (!formEnEspera) return;
+    formEnEspera = false;
+    clearTimeout(relojForm);
+    heroForm.classList.remove('form-espera');
+    ['scroll', 'wheel', 'touchmove', 'keydown'].forEach((ev) =>
+      window.removeEventListener(ev, revelaForm));
+  }
+
+  if (heroForm && $('.lead-card', heroForm) &&
+      window.scrollY < 10 && location.hash !== '#form') {
+    formEnEspera = true;
+    heroForm.classList.add('form-espera');
+    ['scroll', 'wheel', 'touchmove', 'keydown'].forEach((ev) =>
+      window.addEventListener(ev, revelaForm, { passive: true }));
+    relojForm = setTimeout(revelaForm, ESPERA_FORM);
+  }
+
   /* ============================================================
      1b. NAVEGACIÓN CON DROPDOWNS
      ============================================================ */
@@ -780,6 +817,8 @@
 
   function vaAlForm() {
     if (!tarjetaForm) { window.location.href = destinoForm; return; }
+    /* Arriba del todo no hay scroll que lo despierte: se saca a mano. */
+    revelaForm();
     /* El margen deja el formulario por debajo de la cabecera, que va
        fija y si no le tapa el titulo. */
     const y = tarjetaForm.getBoundingClientRect().top + window.scrollY - 96;
@@ -3452,7 +3491,8 @@
   const carreraPedida = new URLSearchParams(location.search).get('carrera');
   if (carreraPedida) eligeCarrera(carreraPedida);
 
-  const promoDatos = (typeof PROMO !== 'undefined') ? PROMO : null;
+  /* activo:false lo apaga sin borrar los datos (ver PROMO en data.js). */
+  const promoDatos = (typeof PROMO !== 'undefined' && PROMO && PROMO.activo !== false) ? PROMO : null;
   const promoVence = promoDatos && promoDatos.hasta && new Date(promoDatos.hasta + 'T23:59:59') < new Date();
   // Cerrado en esta visita (solo si se permite cerrar): no vuelve a salir
   const CLAVE_CERRADO = 'sise-promo-cerrado';

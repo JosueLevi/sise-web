@@ -864,6 +864,14 @@ p{margin:0}
    entra y sale; nada de mover la tarjeta, que ya esta en su sitio.
    El ancla #form necesita margen propio: la cabecera va fija y sin el
    se come el titulo del formulario. */
+/* En espera hasta el primer scroll (main.js): el banner y su video se
+   ven enteros al entrar. Se quita la animacion para que, al soltar la
+   clase, riseIn vuelva a arrancar y la tarjeta entre igual que antes.
+   visibility y no display: el hueco se queda reservado y el titulo no
+   salta de sitio cuando aparece la tarjeta. */
+@media (min-width:821px){
+  .hero.form-espera .lead-card{visibility:hidden;animation:none}
+}
 .lead-card{scroll-margin-top:96px}
 .lead-card.is-marcada{animation:marcaForm 1.5s var(--ease)}
 @keyframes marcaForm{
