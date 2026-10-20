@@ -2742,6 +2742,49 @@
     }));
   }
 
+  /* Ficha v2: menu de secciones. Marca la ultima seccion cuyo inicio ya
+     paso el tercio superior de la pantalla, y en movil (donde el menu es
+     un carril que se desliza) trae a la vista el enlace marcado. Las
+     secciones ocultas (laboratorios y sedes en virtual) no cuentan. */
+  const subnav = $('.car-subnav');
+  if (subnav) {
+    const enlaces = $$('a', subnav);
+    const destinos = enlaces.map((a) => $(a.getAttribute('href')));
+    const carrilNav = $('ul', subnav);
+    let marcado = -1, cuadro = 0;
+    const marca = () => {
+      const corte = window.innerHeight * 0.35;
+      let activo = 0;
+      destinos.forEach((sec, i) => {
+        if (sec && sec.offsetParent !== null && sec.getBoundingClientRect().top <= corte) activo = i;
+      });
+      if (activo === marcado) return;
+      marcado = activo;
+      enlaces.forEach((a, i) => a.classList.toggle('is-on', i === activo));
+      const on = enlaces[activo];
+      if (carrilNav.scrollWidth > carrilNav.clientWidth) {
+        carrilNav.scrollTo({ left: on.offsetLeft - 16, behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+    };
+    window.addEventListener('scroll', () => {
+      cancelAnimationFrame(cuadro);
+      cuadro = requestAnimationFrame(marca);
+    }, { passive: true });
+    marca();
+  }
+
+  /* Ficha v2: el mapa de sedes solo al pedirlo */
+  const verMapa = $('#verMapa');
+  if (verMapa) {
+    verMapa.addEventListener('click', () => {
+      const sec = verMapa.closest('.sedes');
+      const on = !sec.classList.contains('ver-mapa');
+      sec.classList.toggle('ver-mapa', on);
+      verMapa.setAttribute('aria-expanded', String(on));
+      verMapa.textContent = on ? 'Ocultar mapa' : 'Ver mapa';
+    });
+  }
+
   /* "Ver en la malla": baja a la malla, abre el ano donde caen mas de
      esos cursos (a igualdad, el primero) y los ilumina un momento. Sin
      esto el enlace dejaba al visitante frente a un acordeon cerrado y
@@ -2780,6 +2823,9 @@
     const play = $('.egr-play', caja);
     if (play) play.addEventListener('click', () => abreVideo(caja));
   });
+  /* "Conoce la carrera en 1 minuto" del banner: el mismo reproductor,
+     con el id del video en el propio boton. */
+  $$('.car-hero-video').forEach((b) => b.addEventListener('click', () => abreVideo(b)));
 
   /* Adelanto en la portada (data-previo): al pasar el raton, el video
      corre sin sonido dentro de la tarjeta.

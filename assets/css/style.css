@@ -4587,6 +4587,44 @@ body.form-abierto .lead-card .field .sel-list{
 .car-hero--ficha .car-hero-title{
   text-shadow:0 0 26px rgba(8,9,14,.9),0 0 10px rgba(8,9,14,.75),0 2px 4px rgba(0,0,0,.5);
 }
+/* "Conoce la carrera en 1 minuto": play rojo grande con dos anillos que
+   se expanden (pulso), y el rotulo al lado en la letra de los titulos.
+   Se probaron una capsula de vidrio con portada, una nota de rotulador y
+   un aro-reloj de 1:00; el pulso es lo que mas llama y mejor se entiende.
+   Tamano contenido (46px, rotulo a 20px) y anillos tenues: al principio
+   iba a 62px y se comia el titulo. Sin movimiento para quien pide
+   reducirlo. */
+.car-hero-video{
+  display:inline-flex;align-items:center;gap:12px;margin-top:18px;padding:0;
+  background:none;border:0;color:#fff;cursor:pointer;font:inherit;text-align:left;
+}
+.car-hero-video:focus-visible{outline:2px solid #fff;outline-offset:6px;border-radius:999px}
+.chv-play{
+  position:relative;flex:none;display:grid;place-items:center;
+  width:46px;height:46px;border-radius:50%;background:var(--red);
+  box-shadow:0 6px 16px rgba(255,14,73,.35);
+  transition:transform .25s var(--ease),background .25s var(--ease);
+}
+.chv-play svg{width:20px;height:20px;margin-left:2px;position:relative}
+.chv-play::before,.chv-play::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.5);animation:chvPulso 2.8s ease-out infinite;
+}
+.chv-play::after{animation-delay:1.4s}
+@keyframes chvPulso{from{transform:scale(1);opacity:.8}to{transform:scale(1.6);opacity:0}}
+.car-hero-video:hover .chv-play{transform:scale(1.06);background:var(--red-600)}
+.chv-txt{display:flex;flex-direction:column;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.chv-txt small{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;opacity:.85}
+.chv-txt b{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;line-height:1.05}
+@media (max-width:600px){
+  .car-hero-video{margin-top:14px;gap:11px}
+  .chv-play{width:42px;height:42px}
+  .chv-play svg{width:18px;height:18px}
+  .chv-txt b{font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  .chv-play::before,.chv-play::after{animation:none;opacity:0}
+}
 .car-hero--hub .car-hero-sub{font-size:16px}
 /* Sin el hueco que dejaba la cabecera fija: ahora lo llena el banner.
    Y ajustado al mismo aire que la ficha de carrera, para que las cuatro
@@ -6004,4 +6042,92 @@ body.form-abierto .lead-card .field .sel-list{
     @keyframes pxDelante{from{translate:0 60px}to{translate:0 -60px}}
     @keyframes pxDetras{from{translate:0 -30px}to{translate:0 30px}}
   }
+}
+
+/* ============================================================
+   FICHA DE CARRERA v2 (carrera-logistica-v2.html, en prueba)
+   ============================================================
+   Cinco cambios para que la ficha se recorra sin leerla entera. Las
+   clases son nuevas, asi que la ficha actual no se entera. */
+
+/* ---- 1. Menu de secciones fijo ----
+   Pegajoso dentro de .car-cuerpo (va de la ficha al pie de Egresados).
+   Baja hasta debajo de la cabecera cuando esta se ve (al subir) y sube
+   al borde cuando se aparta (al bajar). Va solo en la columna de la
+   izquierda: a la derecha esta el formulario. */
+.car-subnav{
+  position:sticky;top:12px;z-index:40;
+  margin-top:22px;transition:top .3s var(--ease);
+}
+body:has(.site-header:not(.is-hidden)) .car-subnav{top:calc(var(--header-h) + 18px)}
+.car-cuerpo > .car-subnav > .shell{
+  padding-right:calc(var(--gut) + var(--form-w) + var(--form-aire));
+}
+.car-subnav ul{
+  list-style:none;margin:0;padding:6px;display:flex;gap:4px;
+  overflow-x:auto;scrollbar-width:none;
+  background:rgba(255,255,255,.9);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-radius:999px;box-shadow:0 0 0 1px rgba(18,19,26,.07),0 8px 22px rgba(18,19,26,.08);
+}
+.car-subnav ul::-webkit-scrollbar{display:none}
+.car-subnav a{
+  display:block;white-space:nowrap;padding:9px 16px;border-radius:999px;
+  font-size:14px;font-weight:600;color:var(--ink-2);
+  transition:background .2s var(--ease),color .2s var(--ease);
+}
+.car-subnav a:hover{color:var(--red)}
+.car-subnav a.is-on{background:var(--red);color:#fff}
+.modo-virtual .subnav-presencial{display:none}
+/* El salto deja la seccion por debajo de la cabecera y del menu */
+.car-cuerpo > section,.sedes--compacta{scroll-margin-top:150px}
+
+/* ---- 2. Certificaciones dentro de la malla ----
+   Al pie de cada ciclo: la de empleabilidad (amarillo) y, en los pares,
+   el modulo (rojo), con las mismas tintas que la leyenda de la malla. */
+.malla-certs{display:grid;gap:6px;margin-top:14px}
+.malla-cert{
+  display:flex;flex-direction:column;gap:1px;
+  padding:9px 12px;border-radius:10px;font-size:13.5px;line-height:1.35;color:var(--ink);
+  background:color-mix(in srgb,var(--terciario) 22%,#fff);
+}
+.malla-cert b{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8A6D00}
+.malla-cert--mod{background:color-mix(in srgb,var(--red) 9%,#fff)}
+.malla-cert--mod b{color:var(--red-700)}
+
+/* ---- 3. Por que estudiar: tira compacta ----
+   Reutiliza la tira de cifras del inicio (.pil-cifras), con su contador
+   y su indigo. La nota de la fuente va debajo, pequena. */
+.why-tira{margin-top:26px}
+.why-tira .pil-dato{max-width:18ch;margin-inline:auto}
+.why-fuente{margin-top:16px;font-size:12.5px;color:var(--muted);text-align:center}
+
+/* ---- 4. Practica (laboratorios + convenios) ----
+   La banda rosa de Laboratorios; los logos de convenios debajo. */
+.car-cuerpo > .car-practica{
+  background:
+    linear-gradient(180deg,#FFFFFF 0%,rgba(255,255,255,.7) 14%,rgba(255,255,255,0) 40%),
+    linear-gradient(118deg,var(--banda) 0%,var(--banda-medio) 45%,#FFFFFF 100%);
+}
+.car-practica .car-h{margin-top:40px}
+.modo-virtual .practica-labs{display:none}
+.modo-virtual .car-practica .car-h{margin-top:0}
+
+/* ---- 5. Sedes compacta: el mapa solo al pedirlo ---- */
+.sedes--compacta .sede-panel{grid-template-columns:1fr;max-width:620px}
+/* Sin el mapa al lado la foto ya no tiene que igualar su alto: de 588
+   (525 en movil) a una tarjeta apaisada. Con el mapa abierto vuelve. */
+.sedes--compacta:not(.ver-mapa) .sede-info{min-height:340px}
+.sedes--compacta .sede-mapa{display:none}
+.sedes--compacta.ver-mapa .sede-panel{grid-template-columns:minmax(0,.42fr) minmax(0,1fr);max-width:1150px}
+.sedes--compacta.ver-mapa .sede-mapa{display:block}
+.sede-ver-mapa-caja{display:flex;justify-content:center;margin-top:18px}
+
+@media (max-width:1060px){
+  .car-cuerpo > .car-subnav > .shell{padding-right:var(--gut)}
+  .car-subnav{margin:14px 0 0}
+}
+@media (max-width:900px){
+  .sedes--compacta.ver-mapa .sede-panel{grid-template-columns:1fr;max-width:560px}
+  .why-tira{grid-template-columns:1fr 1fr;gap:22px 0}
 }
