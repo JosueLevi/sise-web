@@ -82,6 +82,11 @@ local en `python -m http.server 5510`:
   Interiores) se retiró en octubre de 2026 para usarlo más adelante. Está
   entero en `PROMO` de `data.js` con `activo: false`; para volver a mostrarlo
   basta con ponerlo en `true` (y revisar imagen, textos y la fecha `hasta`).
+- **Fuera de Google (`noindex, nofollow`).** Es una maqueta publicada en un
+  link público con la marca y los datos de SISE: todas las páginas llevan
+  `<meta name="robots" content="noindex, nofollow">` tras el charset para que
+  no aparezcan en búsquedas junto a la web oficial. Las páginas nuevas deben
+  llevarlo también, y hay que **quitarlo al pasar a producción**.
 - **`experimentos/`** guarda la versión 2 del inicio (lettering de rotulador,
   hub con marco de color). Retirada, no borrada.
 - **Códigos CRM** de tres carreras sin asignar, y CORS pendiente de habilitar en
