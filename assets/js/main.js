@@ -22,19 +22,7 @@
     /* Provisional: birrete neutro para las carreras cuyo icono
        todavia no ha llegado del diseno. */
     'carrera': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 22 8.4l-10 4.8L2 8.4z"/><path d="M6 10.6v4.6c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.6"/></svg>',
-    /* Iconos de área del menú de carreras. Provisionales: hechos a mano
-       para calzar con el diseño, listos para sustituir por los SVG reales. */
-    'area-gestion': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 20.2 7.4v9.2L12 21.2 3.8 16.6V7.4z"/><path d="m3.8 7.4 8.2 4.6 8.2-4.6"/><path d="M12 12v9.2"/></svg>',
-    'area-tecnologia': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.1"/><path d="M12 2.9c2.7 2.4 2.7 15.8 0 18.2M12 2.9c-2.7 2.4-2.7 15.8 0 18.2"/><path d="M3.3 9h17.4M3.3 15h17.4"/></svg>',
-    'area-publicidad': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8.4" width="18" height="12.2" rx="2.1"/><path d="m3.6 8.4 3.3-4.5h3.2L6.8 8.4m4.4 0 3.3-4.5h3.2l-3.3 4.5"/></svg>',
-    'area-salud': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.9 12.2h4.2l2-5.4 3.2 10.9 2.3-5.5h6.5"/></svg>',
-    'area-banca': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.6 19.4h16.8"/><path d="m4.8 15.4 4.4-4.7 3.1 3.1 5.6-6.3"/><path d="M14.2 7.5h3.7v3.8"/></svg>',
-    'area-diseno': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 1.7-4.6L15.9 5.2a2.2 2.2 0 0 1 3.1 3.1L8.6 18.3z"/><path d="m14.6 6.5 2.9 2.9"/></svg>',
-    'area-hoteleria': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.2 3.1v7a2.1 2.1 0 0 0 4.2 0v-7"/><path d="M9.3 12.1V21"/><path d="M17.6 3.1c-1.6 2-2.3 4.1-2.3 6.2 0 1.6.8 2.4 2.3 2.4V21"/></svg>',
-    'area-ingenieria': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 18.6h17.6"/><path d="M5.4 18.6v-2.3a6.6 6.6 0 0 1 13.2 0v2.3"/><path d="M9.8 5.4h4.4v4.1"/></svg>',
-    'area-office': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.2" width="16" height="17.6" rx="2"/><path d="M8.2 8h7.6M8.2 12h7.6M8.2 16h4.6"/></svg>',
-    'area-modas': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3.2 12 6l3-2.8"/><path d="M9 3.2c-.4 1.8-1.7 2.7-3.4 3.6L8 9.3v10.5h8V9.3l2.4-2.5C16.7 5.9 15.4 5 15 3.2"/></svg>',
-    'area-idiomas': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.2v17.6"/><path d="M5 4.2c3.5-1.8 6.5 1.8 10 0v8.4c-3.5 1.8-6.5-1.8-10 0"/></svg>',
+    /* Los iconos de area (area-*) ya viven en icons.js. */
     'caret': '<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     /* Logo de YouTube Shorts: el cuerpo toma el color del contenedor
        y el triángulo va calado en blanco. */
@@ -1183,8 +1171,13 @@
       </article>`;
   }
 
+  /* El icono de la tarjeta es el de su area (el mismo del menu), no uno
+     por carrera: de las 26 solo 7 traian icono propio de Figma y el
+     resto salia con un birrete generico, asi que la rejilla mezclaba
+     dos estilos. El icono propio queda como respaldo por si alguna
+     carrera no tuviera area. */
   function cardHTML(c, i) {
-    const icon = ico(c.icon) || ico('carrera');
+    const icon = iconoArea(c) || ico(c.icon) || ico('carrera');
     return `
       <a class="career-card" href="${esc(c.url || '#')}" data-cat="${esc(c.cat)}" style="animation-delay:${i * 60}ms">
         <div class="cc-top">
@@ -1621,20 +1614,11 @@
      gancho en el DOM, asi que el bloque no estorba en el resto de la
      web aunque main.js sea el mismo para todas las paginas. */
 
-  /* Dibujos de los valores y de la linea de tiempo. Van aqui y no en
-     icons.js porque no se usan en ninguna otra pagina. */
-  const NOS_ICONOS = {
-    resultados: '<rect x="3.4" y="4.6" width="17.2" height="14.8" rx="2.2"/><path d="m8.2 13.8 3.8-3.9 3.8 3.9M12 9.9v5.5"/>',
-    trofeo: '<path d="M7.4 4.2h9.2v4.3a4.6 4.6 0 0 1-9.2 0z"/><path d="M7.4 5.6H4.9v1.2a3.1 3.1 0 0 0 3.1 3.1M16.6 5.6h2.5v1.2a3.1 3.1 0 0 1-3.1 3.1"/><path d="M12 13.1v3.3M9 19.8h6l-.6-3.4H9.6z"/>',
-    persona: '<circle cx="12" cy="8.2" r="3.7"/><path d="M5.2 20.2a6.8 6.8 0 0 1 13.6 0"/>',
-    balanza: '<path d="M12 4.6v15.1M8.2 19.7h7.6M5.4 7.6h13.2"/><path d="m5.4 7.6-2.6 5.3a2.9 2.9 0 0 0 5.2 0zM18.6 7.6 16 12.9a2.9 2.9 0 0 0 5.2 0z"/>',
-    escudo: '<path d="M12 2.9 19.4 5.5v5.7c0 4.3-3 8.2-7.4 9.5-4.4-1.3-7.4-5.2-7.4-9.5V5.5z"/><path d="m9.1 11.9 2 2.1 3.8-4"/>'
-  };
-
-  const nosIco = (k) => NOS_ICONOS[k]
-    ? `<span class="nos-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
-         stroke-linejoin="round">${NOS_ICONOS[k]}</svg></span>`
+  /* Iconos de los valores: viven en icons.js como valor-<clave> (Phosphor
+     duotono, como el resto de iconos de contenido). La clave sale del
+     campo icono de VALORES en data.js. */
+  const nosIco = (k) => ico('valor-' + k)
+    ? `<span class="nos-ico" aria-hidden="true">${ico('valor-' + k)}</span>`
     : '';
 
   /* ---------- Banner: las fotos se relevan ----------

@@ -803,10 +803,9 @@ const IDIOMAS_CURSO = [
 
 /* ---------- ESCUELA ----------
    Los programas con grado de bachiller, los mismos que anuncia la
-   tarjeta "Escuela" del inicio. Comparten el icono de Idiomas hasta
-   que haya uno propio. */
+   tarjeta "Escuela" del inicio. */
 const AREAS_ESCUELA = [
-  { slug: 'escuela', label: 'Escuela', icon: 'area-idiomas' }
+  { slug: 'escuela', label: 'Escuela', icon: 'area-escuela' }
 ];
 
 const ESCUELA = [
@@ -819,7 +818,7 @@ const ESCUELA = [
    Mismo formato que Escuela: alimenta el panel "Admision" del menu y el
    subgrupo del mismo nombre en la hamburguesa, asi que se edita aqui. */
 const AREAS_ADMISION = [
-  { slug: 'admision', label: 'Admisión', icon: 'matricula' }
+  { slug: 'admision', label: 'Admisión', icon: 'area-admision' }
 ];
 
 const ADMISION_TIPOS = [

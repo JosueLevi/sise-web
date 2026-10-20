@@ -2035,13 +2035,12 @@ body.form-abierto .lead-card .field .sel-list{
   margin-top:clamp(26px,3vw,38px);
 }
 .pil-cifra{padding:0 18px;text-align:center}
-/* Icono pequeno sobre el numero, cada uno en un color de marca */
-.pil-cifra-ico{display:block;width:34px;height:34px;margin:0 auto 10px}
+/* Icono sobre el numero: Phosphor duotono, trazo rojo y relleno
+   amarillo en los cuatro, como los datos rapidos de la ficha. Antes iban
+   en rojo, amarillo, indigo y rojo; con el relleno amarillo el icono
+   amarillo se comia a si mismo. */
+.pil-cifra-ico{display:block;width:38px;height:38px;margin:0 auto 10px;color:var(--red)}
 .pil-cifra-ico svg{width:100%;height:100%;display:block}
-.pil-cifra:nth-child(1) .pil-cifra-ico{color:var(--red)}
-.pil-cifra:nth-child(2) .pil-cifra-ico{color:#E8B400}
-.pil-cifra:nth-child(3) .pil-cifra-ico{color:var(--indigo)}
-.pil-cifra:nth-child(4) .pil-cifra-ico{color:var(--red)}
 .pil-cifra + .pil-cifra{border-left:1px solid var(--gris-300)}
 .pil-num{
   font-family:'Barlow Condensed',sans-serif;font-weight:800;
@@ -3670,14 +3669,11 @@ body.form-abierto .lead-card .field .sel-list{
 }
 .val-p{font-size:16px;line-height:1.75;color:var(--body);margin:0;max-width:58ch}
 
-/* El icono en su pastilla rosa, compartido por los valores */
-.nos-ico{
-  display:grid;place-content:center;
-  width:58px;height:58px;border-radius:999px;
-  background:var(--red-soft);color:var(--red);
-  margin-bottom:20px;
-}
-.nos-ico svg{width:28px;height:28px;display:block}
+/* Icono de cada valor: suelto y grande, sin la pastilla rosa que lo
+   envolvia (la misma regla que las tarjetas de "Que aprenderas": un
+   solo marco, y el amarillo del duotono pone el color). */
+.nos-ico{display:block;width:52px;height:52px;color:var(--red);margin:0 0 18px -2px}
+.nos-ico svg{width:100%;height:100%;display:block}
 
 /* --- Video institucional --- */
 /* Va nada mas entrar y a todo el ancho de la caja: es la pieza que
@@ -3791,8 +3787,7 @@ body.form-abierto .lead-card .field .sel-list{
   .val-tab{padding:14px 14px 16px;gap:11px}
   .val-nombre{font-size:19px}
   .val-linea{left:14px;right:14px}
-  .nos-ico{width:50px;height:50px;margin-bottom:16px}
-  .nos-ico svg{width:24px;height:24px}
+  .nos-ico{width:44px;height:44px;margin-bottom:14px}
   .nos-sedes .lab-slide{min-height:240px}
 }
 
@@ -5052,24 +5047,14 @@ body.form-abierto .lead-card .field .sel-list{
   transform:translateY(-4px);border-color:var(--red);
   box-shadow:0 12px 24px rgba(255,14,73,.2);
 }
-.fact-ico{transition:transform .3s var(--ease);transform:translateY(-3px) scale(1.1)}
-.fact:hover .fact-ico{transform:translateY(-5px) scale(1.14)}
-.fact-ico{display:block;width:40px;height:40px;flex:none;color:var(--tono,var(--red));margin-bottom:6px}
-/* Misma vuelta de color que las tarjetas del inicio: rojo, amarillo,
-   azul y rojo. */
-.fact:nth-child(1){--tono:var(--red)}
-.fact:nth-child(2){--tono:var(--terciario)}
-.fact:nth-child(3){--tono:var(--indigo)}
-.fact:nth-child(4){--tono:var(--red)}
+/* Iconos Phosphor duotono, como las areas de "Que aprenderas": trazo
+   rojo y relleno amarillo en los cuatro. Antes iban en rojo, amarillo,
+   indigo y rojo, pero con el relleno amarillo el reloj amarillo se
+   comia a si mismo; y en rojo pertenecen a estas tarjetas perfiladas en
+   rosa (en indigo parecian prestados de las de abajo). Mismo tamano en
+   reposo y al pasar el raton: solo sube la tarjeta. */
+.fact-ico{display:block;width:44px;height:44px;flex:none;color:var(--red);margin-bottom:6px}
 .fact-ico svg{width:100%;height:100%;display:block}
-/* Trazo en pixeles de pantalla y no en unidades del dibujo.
-
-   Los iconos vienen en lienzos distintos -tres en uno de 60 y el de
-   modalidad en uno de 24-, asi que el mismo numero daba grosores muy
-   distintos: 1,5px frente a 2,9. Con non-scaling-stroke el navegador
-   deja de escalar el trazo y 2,5 son 2,5px en los cuatro, pase lo que
-   pase con el tamano del icono. Es 1px mas que antes. */
-.fact-ico svg *{vector-effect:non-scaling-stroke;stroke-width:2.5}
 /* El rotulo es lo secundario y el dato lo importante: antes iba al
    reves, con "INICIO" en negrita oscura y "5 de enero" en gris claro. */
 .fact-t{font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.11em;color:var(--body);line-height:1.2}
@@ -5500,11 +5485,12 @@ body.form-abierto .lead-card .field .sel-list{
 }
 .campo-roles li{transition:transform .22s var(--ease),box-shadow .22s var(--ease)}
 .campo-roles li:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
-.campo-roles li::before{
-  content:'';width:7px;height:7px;flex:none;border-radius:50%;background:var(--red);
-  transition:transform .22s var(--ease);
-}
-.campo-roles li:hover::before{transform:scale(1.5)}
+/* Cada puesto lleva el icono de su area (el mismo set duotono de "Que
+   aprenderas", en indigo) en lugar del punto rojo: asi la pastilla dice
+   de un vistazo de que area es el puesto y enlaza con esas tarjetas. */
+.campo-roles li{padding-left:13px}
+.rol-ico{display:block;flex:none;width:22px;height:22px;color:var(--indigo)}
+.rol-ico svg{width:100%;height:100%;display:block}
 
 /* ---------- Convenios ----------
    Cinta que corre sola. La lista va DOS veces y la animacion desplaza

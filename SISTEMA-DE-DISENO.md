@@ -58,7 +58,7 @@ y no pasaba de 3,8:1. Al `.86` llega a 4,5:1 aunque debajo haya negro.
 | `--red` | `#FF0E49` | Superficies grandes, titulares, iconos y adornos |
 | `--red-600` | `#E00040` | Fondo de botones y chips con letra blanca (4,95:1) |
 | `--red-700` | `#C00036` | **Solo** hover y texto rojo pequeño que hay que poder leer |
-| `--red-soft` | `#FFE4EC` | Pastilla rosa detrás de iconos |
+| `--red-soft` | `#FFE4EC` | Fondos rosa suaves (ya no va detrás de iconos de contenido) |
 | `--terciario` | `#FAD44F` | Tercer color de marca |
 | `--crema` | `#FBF0C4` | Tinte claro del amarillo |
 | `--indigo` | `#4642A6` | Idiomas, pinceladas de Sedes, panel de cifras, puntos de la malla |
@@ -256,6 +256,24 @@ se desplaza `translate(3px,-3px)`.
 > **Grieta:** no hay estado `disabled` definido para `.btn`. Sí lo hay para
 > `.labs-flecha` (opacidad .35 y `pointer-events:none`).
 
+### Iconografía
+
+Dos familias, con una regla simple: **lo que ilustra lleva duotono, lo que se
+pulsa lleva línea.**
+
+| Familia | Qué cubre | Estilo |
+|---|---|---|
+| **Contenido** | Áreas de la oferta (`area-*`), "¿Qué aprenderás?" (`apr-*`), datos rápidos (`dato-*`), puestos (`rol-*`), cifras (`cifra-*`), valores (`valor-*`) | [Phosphor](https://phosphoricons.com) **duotono** (MIT, `@phosphor-icons/core` 2.1.1). Trazo en `currentColor` (rojo, o índigo en Logística) y la capa de relleno en `--terciario` (`#FAD44F`) |
+| **Interfaz y marca** | Teléfono, WhatsApp, flechas, menú, lupa, pin, calendario, redes sociales, logo | Línea simple de un color. Las redes, con su logo oficial |
+
+- Los de contenido van **sueltos, sin pastilla ni baldosa** detrás, y no cambian
+  de tamaño al pasar el ratón: lo que se mueve es la tarjeta.
+- Un solo trazo por bloque: si el trazo fuera amarillo, el relleno amarillo se
+  comería el dibujo.
+- Para añadir uno: bajar `assets/duotone/<nombre>-duotone.svg` del paquete,
+  cambiar su `opacity="0.2"` por `fill="#FAD44F"` y pegarlo en `icons.js`.
+- Las cards de carrera usan el icono de su **área**, no uno por carrera.
+
 ### Convenciones de nombre
 
 - Prefijo por bloque, guion simple: `hub-card`, `hub-sello`, `hub-title`.
@@ -304,7 +322,7 @@ sise-web-v2/
 ├── assets/js/main.js        Un solo IIFE por secciones numeradas (1, 1a, 2, 2d, 3, 4…)
 ├── assets/js/data.js        TODO el contenido editable: carreras, cursos, sedes,
 │                            convenios, hitos, valores, directivos, CRM, transparencia
-├── assets/js/icons.js       Iconos exportados de Figma, con currentColor
+├── assets/js/icons.js       Iconos (Phosphor duotono y de interfaz), con currentColor
 ├── assets/js/crm.js         Envío del formulario a Smart Sales
 ├── assets/fonts/            woff2, subconjunto latino
 └── assets/img/              .webp; variantes `-movil` para los banners
