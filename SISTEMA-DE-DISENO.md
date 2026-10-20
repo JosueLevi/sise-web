@@ -263,7 +263,7 @@ pulsa lleva línea.**
 
 | Familia | Qué cubre | Estilo |
 |---|---|---|
-| **Contenido** | Áreas de la oferta (`area-*`), "¿Qué aprenderás?" (`apr-*`), datos rápidos (`dato-*`), puestos (`rol-*`), cifras (`cifra-*`), valores (`valor-*`) | [Phosphor](https://phosphoricons.com) **duotono** (MIT, `@phosphor-icons/core` 2.1.1). Trazo en `currentColor` (rojo, o índigo en Logística) y la capa de relleno en `--terciario` (`#FAD44F`) |
+| **Contenido** | "¿Qué aprenderás?" (`apr-*`), puestos (`rol-*`), valores (`valor-*`) | [Phosphor](https://phosphoricons.com) **duotono** (MIT, `@phosphor-icons/core` 2.1.1). Trazo en `currentColor` (rojo, o índigo en Logística) y la capa de relleno en `--terciario` (`#FAD44F`) |
 | **Interfaz y marca** | Teléfono, WhatsApp, flechas, menú, lupa, pin, calendario, redes sociales, logo | Línea simple de un color. Las redes, con su logo oficial |
 
 - Los de contenido van **sueltos, sin pastilla ni baldosa** detrás, y no cambian
@@ -273,6 +273,19 @@ pulsa lleva línea.**
 - Para añadir uno: bajar `assets/duotone/<nombre>-duotone.svg` del paquete,
   cambiar su `opacity="0.2"` por `fill="#FAD44F"` y pegarlo en `icons.js`.
 - Las cards de carrera usan el icono de su **área**, no uno por carrera.
+- **Excepción:** los datos rápidos de la ficha (Inicio, Turnos, Modalidad,
+  Duración) se quedan con sus iconos de línea de Figma, todos en rojo. Se
+  probaron en duotono y se prefirieron así.
+- **Excepción:** los iconos de área (`area-*`: menú de Carreras, Cursos,
+  Idiomas, Escuela y Admisión, cards de carrera y huecos sin foto) son Phosphor
+  **solo trazo**: al copiarlos a `icons.js` se borra el `<path>` con
+  `opacity="0.2"`. Van en rojo.
+- La tira de cifras (40 años, convenios, sedes, egresados) va **sin iconos**:
+  repetían la etiqueta. Números en `--indigo` (8,1:1) y una rayita roja de
+  28×3 px bajo cada uno (`.pil-num::after`), igual en las cuatro.
+- **Excepción:** en la ficha de carrera, las cards de "¿Qué aprenderás?" y los
+  puestos van **solo en trazo rojo**, sin capa de relleno (`fill:none` sobre
+  `[fill="#FAD44F"]`, en el CSS): el relleno se veía disparejo entre dibujos.
 
 ### Convenciones de nombre
 

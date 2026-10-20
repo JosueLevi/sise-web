@@ -22,7 +22,7 @@
     /* Provisional: birrete neutro para las carreras cuyo icono
        todavia no ha llegado del diseno. */
     'carrera': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6 22 8.4l-10 4.8L2 8.4z"/><path d="M6 10.6v4.6c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.6"/></svg>',
-    /* Los iconos de area (area-*) ya viven en icons.js. */
+    /* Los iconos de area (area-*) viven en icons.js. */
     'caret': '<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     /* Logo de YouTube Shorts: el cuerpo toma el color del contenedor
        y el triángulo va calado en blanco. */
