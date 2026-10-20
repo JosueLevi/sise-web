@@ -7,7 +7,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=788">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=791">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -15,7 +15,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-400.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-condensed-800.woff2">
 <link rel="preload" as="image" href="assets/img/carrera-logistica.webp?v=3">
-<link rel="stylesheet" href="assets/css/style.css?v=788">
+<link rel="stylesheet" href="assets/css/style.css?v=791">
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -105,10 +105,8 @@
         </button>
       </div>
 
-      <header class="section-head section-head--left section-head--raya reveal">
-        <h2 class="section-title">Carrera de <em>Gesti&oacute;n Log&iacute;stica</em></h2>
-      </header>
-
+      <!-- Aqui iba "Carrera de Gestion Logistica": repetia el titulo del
+           banner, que esta justo encima. -->
       <!-- Video de presentacion de la carrera -->
       <div class="egr-video car-video reveal" data-yt="Eu18djh5W-Q" data-forma="ancha" data-previo
            style="background-image:url('https://i.ytimg.com/vi/Eu18djh5W-Q/maxresdefault.jpg')">
@@ -366,7 +364,18 @@
       <div class="campo-img" style="background-image:url('assets/img/carrera-logistica.webp?v=3')"></div>
       <div class="campo-txt">
         <h3 class="car-h">D&oacute;nde trabajar&aacute;s</h3>
-        <p class="car-p">Empresas dedicadas al control y gesti&oacute;n de stock, compras y abastecimiento. Multinacionales de transporte de mercader&iacute;as y aduanas. &Aacute;reas de control de inventarios, producci&oacute;n y distribuci&oacute;n de empresas de cualquier rubro: banca, retail, telefon&iacute;a. Constructoras y mineras de car&aacute;cter p&uacute;blico y privado.</p>
+        <!-- Antes era un parrafo justificado de cinco lineas; partido por
+             sectores se lee de un vistazo. Mismo contenido, sin inventar. -->
+        <ul class="campo-sectores">
+          <li><span class="rol-ico" data-ico="rol-inventario" aria-hidden="true"></span>
+            <span><b>Stock, compras y abastecimiento</b>Empresas dedicadas al control y gesti&oacute;n de inventarios.</span></li>
+          <li><span class="rol-ico" data-ico="apr-transporte" aria-hidden="true"></span>
+            <span><b>Transporte y aduanas</b>Multinacionales de transporte de mercader&iacute;as y aduanas.</span></li>
+          <li><span class="rol-ico" data-ico="apr-almacen" aria-hidden="true"></span>
+            <span><b>Producci&oacute;n y distribuci&oacute;n</b>&Aacute;reas log&iacute;sticas de cualquier rubro: banca, retail, telefon&iacute;a.</span></li>
+          <li><span class="rol-ico" data-ico="sector-obra" aria-hidden="true"></span>
+            <span><b>Construcci&oacute;n y miner&iacute;a</b>Constructoras y mineras, p&uacute;blicas y privadas.</span></li>
+        </ul>
 
         <h3 class="car-h">Podr&aacute;s desempe&ntilde;arte como</h3>
         <ul class="campo-roles">
@@ -401,7 +410,7 @@
     <header class="section-head section-head--left section-head--raya malla-cabecera reveal">
       <h2 class="section-title">Malla <em>curricular</em></h2>
       <p class="section-sub">Tres a&ntilde;os, seis ciclos y pr&aacute;ctica desde el primero.</p>
-      <a class="btn btn-pill btn-ghost malla-btn" href="#">Descargar malla
+      <a class="btn btn-pill btn-ghost malla-btn" href="https://back.sise.edu.pe/uploads/admin_logistica_e8f31ab048.pdf" target="_blank" rel="noopener">Descargar malla
         <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </header>
@@ -684,6 +693,26 @@
 
 </main>
 
+<!-- ============ CIERRE ============ -->
+<!-- El mismo cierre del inicio, con la foto y el texto de la carrera:
+     quien llega hasta aqui ya esta interesado y no deberia tener que
+     volver arriba. Lleva tambien la malla, que es lo que mas se pide. -->
+<section class="section cierre cierre--carrera">
+  <div class="shell cierre-caja reveal">
+    <div class="cierre-foto" aria-hidden="true" style="background-image:url('assets/img/carrera-logistica.webp?v=3')"></div>
+    <div class="cierre-txt">
+    <h2 class="cierre-titulo">&iquest;Listo para <em>comenzar?</em></h2>
+    <p class="cierre-sub">Estudia Gesti&oacute;n Log&iacute;stica desde el 5 de enero. Un asesor te escribe hoy, sin compromiso.</p>
+    <div class="cierre-acciones">
+      <a class="btn btn-pill btn-primary" href="#form">Quiero informaci&oacute;n
+        <svg class="ico-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7m0 0H9m8 0v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn btn-pill btn-ghost" href="https://back.sise.edu.pe/uploads/admin_logistica_e8f31ab048.pdf" target="_blank" rel="noopener">Descargar malla</a>
+    </div>
+    </div>
+  </div>
+</section>
+
 <div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-label="Testimonio en video" hidden>
   <button class="vm-cerrar" id="vmCerrar" type="button" aria-label="Cerrar video">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -774,10 +803,10 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=788"></script>
-<script src="assets/js/data.js?v=788"></script>
-<script src="assets/js/crm.js?v=788"></script>
-<script src="assets/js/main.js?v=788"></script>
+<script src="assets/js/icons.js?v=791"></script>
+<script src="assets/js/data.js?v=791"></script>
+<script src="assets/js/crm.js?v=791"></script>
+<script src="assets/js/main.js?v=791"></script>
 
 </body>
 </html>

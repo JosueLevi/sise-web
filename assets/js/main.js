@@ -783,6 +783,20 @@
     }
   }
 
+  /* Pastilla del formulario plegada al bajar y abierta al subir (o
+     arriba del todo). La clase solo pinta en movil y tableta (CSS). El
+     margen de 4px evita que tiemble con el rebote del scroll tactil. */
+  if ($('.floater-form')) {
+    let ultimoY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y < 200) document.body.classList.remove('floater-plegado');
+      else if (y > ultimoY + 4) document.body.classList.add('floater-plegado');
+      else if (y < ultimoY - 4) document.body.classList.remove('floater-plegado');
+      ultimoY = y;
+    }, { passive: true });
+  }
+
   const abrirForm  = $('#abrirForm');
   const cerrarForm = $('#cerrarForm');
   const formVelo   = $('#formVelo');
