@@ -2884,7 +2884,9 @@ body.form-abierto .lead-card .field .sel-list{
 .tienda-hero{
   position:relative;isolation:isolate;overflow:hidden;
   border-radius:clamp(20px,2.4vw,30px);
-  min-height:clamp(380px,38vw,520px);
+  /* El mismo alto que el banner de las demas internas (.car-hero--hub):
+     580 en escritorio. Estuvo en clamp(380px,38vw,520px). */
+  min-height:580px;
   display:flex;align-items:flex-end;
   padding:clamp(28px,3.6vw,56px);
   background:var(--negro) center/cover no-repeat;
@@ -3296,7 +3298,7 @@ body.form-abierto .lead-card .field .sel-list{
   /* Sin proporcion fija: con el titulo en dos lineas, el texto y los
      dos botones apilados, el contenido no cabia y se salia por arriba,
      por debajo de la cabecera. Ahora la caja crece con lo que lleva. */
-  .tienda-hero{min-height:clamp(380px,72vw,460px);aspect-ratio:auto;padding:26px 18px 28px}
+  .tienda-hero{min-height:max(500px,min(540px,76vh));aspect-ratio:auto;padding:26px 18px 28px}
   .tienda-hero::before{
     background:linear-gradient(0deg,rgba(7,8,12,.9),rgba(7,8,12,.42) 54%,rgba(7,8,12,.18));
   }
@@ -3500,8 +3502,8 @@ body.form-abierto .lead-card .field .sel-list{
 
 /* --- Banner: las fotos se relevan --- */
 /* Las capas las crea main.js. Van detras del velo, que es quien
-   sostiene el texto. */
-.car-hero.nos-hero{min-height:660px}
+   sostiene el texto. El alto es el de .car-hero--hub, como en todas las
+   internas (estuvo en 660 y 560 en movil). */
 .nos-hero-capa{
   position:absolute;inset:0;
   background-size:cover;background-position:50% 62%;
@@ -3776,7 +3778,6 @@ body.form-abierto .lead-card .field .sel-list{
   .val-panel{min-height:0}
 }
 @media (max-width:900px){
-  .car-hero.nos-hero{min-height:560px}
   .nos-franja-grid{grid-template-columns:1fr;gap:34px}
 }
 
@@ -4518,31 +4519,22 @@ body.form-abierto .lead-card .field .sel-list{
    concreta que presentar -solo situar al visitante-, asi que la foto no
    necesita tanto sitio y la reja de tarjetas entra antes en pantalla. */
 .car-hero--hub{
-  /* El mismo alto que el banner del inicio: 720 y 500. */
-  min-height:720px;
+  /* El mismo alto que la ficha de carrera, a peticion: las paginas de
+     oferta estaban en 720 (el del inicio) y la ficha en 580, y al pasar
+     de un listado a una carrera el banner cambiaba de tamano. Ahora son
+     uno solo. La ficha bajo de 640 a 560 para que el contenido asomara
+     antes y luego subio a 580 para dar aire a la foto. */
+  min-height:580px;
   /* Anclado abajo y separado del borde: es la altura marcada en el
      diseno, un poco por debajo del centro. Centrado del todo el bloque
      subia demasiado y el pie del banner se quedaba vacio. */
   align-items:flex-end;
 }
-/* En un movil 600px se comen tres cuartos de la pantalla y hay que
-   deslizar para ver la primera carrera, asi que ahi baja. */
+/* En movil sube a 540 solo si cabe en el 76% de la ventana: el
+   max-height no sirve de techo, porque cuando choca con el min-height
+   gana el minimo. En un movil bajito se queda en 500. */
 @media (max-width:900px){
-  /* Techo del 76% de la ventana, como en el inicio: en un movil bajito
-     500px fijos se comen la pantalla entera. */
-  .car-hero--hub{min-height:500px;max-height:76vh}
-}
-/* Ficha de carrera: en escritorio el banner baja a 580px (estuvo en
-   640; se recorto a peticion para que el contenido asome antes). Aqui el
-   banner solo presenta la carrera y debajo espera el contenido con el
-   formulario, asi que conviene que la ficha empiece antes que en las
-   paginas de oferta (720). Se subio de 560 a peticion, para dar mas
-   aire a la foto. En movil sube a 540 solo si cabe en el 76% de la
-   ventana: el max-height no sirve de techo, porque cuando choca con el
-   min-height gana el minimo. En un movil bajito se queda en los 500 de
-   siempre. */
-@media (max-width:900px){
-  .car-hero--ficha{min-height:max(500px,min(540px,76vh))}
+  .car-hero--hub{min-height:max(500px,min(540px,76vh))}
   /* En movil los textos ocupan casi todo el ancho, asi que el velo es
      una franja abajo y no una mancha. Sin el lateral: oscurecia toda la
      mitad izquierda de la foto sin que hubiera texto encima. La franja
@@ -4554,7 +4546,6 @@ body.form-abierto .lead-card .field .sel-list{
   }
 }
 @media (min-width:901px){
-  .car-hero--ficha{min-height:580px}
   /* Velo solo donde hay texto: una mancha abajo a la izquierda, detras
      del titulo, y una franja suave arriba para el menu. El resto de la
      foto queda limpia. El bloque de texto acaba hacia el 40% del ancho
@@ -4564,20 +4555,13 @@ body.form-abierto .lead-card .field .sel-list{
     background:linear-gradient(180deg,rgba(8,9,14,.42) 0%,transparent 24%),
                radial-gradient(ellipse 50% 62% at 12% 80%,rgba(8,9,14,.8) 0%,rgba(8,9,14,.55) 45%,transparent 100%);
   }
-  /* El bloque se apoya en el pie del banner, asi que bajarlo es
-     quitarle relleno por debajo. Va con la clase del bloque delante
-     para pesar mas que el .car-hero--hub de unas lineas mas abajo, que
-     si no le gana por orden y deja los 132px de las paginas de oferta. */
-  .car-hero.car-hero--ficha .car-hero-inner{padding-bottom:88px}
 }
-/* El relleno de abajo es lo que fija la altura del bloque: 114px sobre
-   un banner de 600 deja el texto justo donde lo marca el diseno. En
-   movil el banner mide 360 y ese mismo valor lo pegaria al pie, asi que
-   baja. */
-.car-hero--hub .car-hero-inner{padding-top:0;padding-bottom:132px}
+/* El bloque de texto se apoya en el pie del banner: el relleno de abajo
+   es lo que fija su altura. 88px sobre los 580 del banner; en movil
+   baja a 40 para no pegarlo al centro de la foto. */
+.car-hero--hub .car-hero-inner{padding-top:0;padding-bottom:88px}
 @media (max-width:900px){
-  .car-hero--hub .car-hero-inner{padding-bottom:52px}
-  .car-hero.car-hero--ficha .car-hero-inner{padding-bottom:40px}
+  .car-hero--hub .car-hero-inner{padding-bottom:40px}
 }
 .car-hero--hub .car-hero-title{font-size:clamp(32px,4.4vw,52px)}
 /* En la ficha el velo general es ligero (solo donde hay texto) y el
@@ -4869,23 +4853,29 @@ body.form-abierto .lead-card .field .sel-list{
     mask-composite:intersect;
   }
 }
+/* Tarjetas fijas, sin panel: antes abrian tres cursos al pasar el raton
+   ("Ver cursos"), y se quito a peticion. El detalle de cursos queda en
+   la malla. Al pasar el raton solo suben un poco y ganan sombra. */
 .apr{
-  /* En columna para que el boton estire hasta el alto de la fila: si no,
-     en una fila con una tarjeta mas alta el "Ver cursos" de las otras
-     se quedaba a media altura y no alineaba. */
-  display:flex;flex-direction:column;
   position:relative;border-radius:18px;overflow:hidden;
   background:#fff;border:1px solid rgba(var(--indigo-rgb),.18);
   box-shadow:0 6px 16px rgba(var(--indigo-rgb),.07);
   transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .4s var(--ease);
 }
-.apr-btn{
-  position:relative;
-  display:flex;flex-direction:column;align-items:flex-start;gap:8px;
-  flex:1 0 auto;width:100%;min-height:214px;padding:22px 20px 18px;
-  background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;
+@media (hover:hover) and (pointer:fine){
+  .apr:hover{
+    transform:translateY(-4px);border-color:rgba(var(--indigo-rgb),.28);
+    box-shadow:0 18px 40px rgba(var(--indigo-rgb),.16),0 4px 10px rgba(var(--indigo-rgb),.06);
+  }
 }
-.apr-btn:focus-visible{outline:2px solid var(--apr);outline-offset:-5px;border-radius:18px}
+@media (prefers-reduced-motion:reduce){
+  .apr{transition:none}
+  .apr:hover{transform:none}
+}
+.apr-cuerpo{
+  display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+  height:100%;padding:22px 20px 22px;
+}
 /* Icono suelto y grande, sin baldosa: con ella eran dos marcos (la
    tarjeta y la baldosa) y el dibujo se quedaba en 30px. Asi el
    amarillo del duotono es lo que da color a la tarjeta. */
@@ -4899,7 +4889,6 @@ body.form-abierto .lead-card .field .sel-list{
    icons.js guarda el relleno amarillo para los demas sitios; aqui solo
    se oculta. Textos y botones de las cards siguen en indigo. */
 .apr-ico [fill="#FAD44F"],
-.apr-cab-ico [fill="#FAD44F"],
 .rol-ico [fill="#FAD44F"]{fill:none}
 /* Barlow normal en seminegra, no la condensada: en condensada a 21px y
    en negra pesaba mas que "Que aprenderas" (condensada 600 a 28px), que
@@ -4914,106 +4903,6 @@ body.form-abierto .lead-card .field .sel-list{
 .apr-cert{color:var(--ink-2)}
 .apr-cert-k{font-weight:600;color:var(--muted)}
 .apr-cert-k::after{content:':'}
-.apr-mas{
-  display:inline-flex;align-items:center;gap:7px;margin-top:auto;padding-top:8px;
-  font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--apr);
-}
-/* La flecha de los botones del sitio (la diagonal de "Ver convenios"),
-   en blanco sobre el circulo indigo, en lugar del "+". */
-.apr-mas::after{
-  content:'';display:block;width:22px;height:22px;border-radius:50%;
-  background:var(--apr) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7m0 0H9m8 0v8'/%3E%3C/svg%3E") center/13px no-repeat;
-  transition:transform .35s var(--ease);
-}
-/* El panel calca el relleno de la tarjeta (22/20, menos los 3px del
-   filete de arriba) y su cabecera lleva el icono al mismo tamano y en el
-   mismo sitio que la tarjeta. Entra solo fundido, sin desplazarse: asi
-   el icono no cambia de tamano ni se mueve al pasar el raton, solo
-   aparecen los cursos a su alrededor. */
-.apr-cursos{
-  position:absolute;inset:0;overflow:auto;padding:19px 20px 18px;cursor:pointer;
-  background:#F4F3FB;color:var(--ink-2);
-  border-top:3px solid var(--apr);
-  opacity:0;visibility:hidden;
-  transition:opacity .45s var(--apr-curva),visibility 0s linear .45s;
-}
-/* Entrada escalonada del contenido del panel: primero el fondo, luego
-   cabecera, rotulo, cada curso y el enlace, con 40ms entre uno y otro y
-   despues de que el texto de la tarjeta se haya ido (160ms), para que
-   los dos titulos no coincidan a medio fundido. Solo
-   4px de recorrido. El icono de la cabecera no entra aparte: funde
-   con el fondo del panel mientras el de la tarjeta sigue debajo, y la
-   suma se ve fija; con su propia espera parpadeaba a medio camino.
-   --apr-espera la pone el hover (150ms) para no abrir al cruzar. */
-.apr{--apr-espera:0s;--apr-curva:cubic-bezier(.22,.61,.36,1)}
-.apr-cab-t,.apr-k,.apr-cursos li,.apr-malla{
-  opacity:0;transition:opacity .3s var(--apr-curva),transform .45s var(--apr-curva);
-}
-.apr-k,.apr-cursos li,.apr-malla{transform:translateY(4px)}
-/* Lo de la tarjeta se va mientras entra el panel: sin esto, durante el
-   fundido se veian dos textos superpuestos y el cambio se leia brusco. */
-.apr-t,.apr-d,.apr-meta,.apr-mas{transition:opacity .35s var(--apr-curva)}
-.apr.is-open .apr-t,.apr.is-open .apr-d,.apr.is-open .apr-meta,.apr.is-open .apr-mas{opacity:0;transition-duration:.16s}
-.apr.is-open .apr-cab-t,.apr.is-open .apr-k,.apr.is-open .apr-cursos li,.apr.is-open .apr-malla{opacity:1;transform:none}
-.apr.is-open .apr-cab-t{transition-delay:calc(var(--apr-espera) + .16s)}
-.apr.is-open .apr-k{transition-delay:calc(var(--apr-espera) + .2s)}
-.apr.is-open .apr-cursos li:nth-child(1){transition-delay:calc(var(--apr-espera) + .24s)}
-.apr.is-open .apr-cursos li:nth-child(2){transition-delay:calc(var(--apr-espera) + .28s)}
-.apr.is-open .apr-cursos li:nth-child(3){transition-delay:calc(var(--apr-espera) + .32s)}
-.apr.is-open .apr-malla{transition-delay:calc(var(--apr-espera) + .36s)}
-.apr-cab{
-  display:flex;align-items:center;gap:12px;padding-right:22px;
-  font-family:'Barlow',sans-serif;font-weight:600;font-size:16px;line-height:1.25;color:var(--ink);
-}
-.apr-cab-ico{display:block;flex:none;width:46px;height:46px;margin-left:-2px;color:var(--red)}
-.apr-cab-ico svg{width:100%;height:100%;display:block}
-.apr-k{margin-top:12px;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--apr)}
-.apr-cursos ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:7px}
-.apr-cursos li{position:relative;padding-left:16px;font-size:14.5px;line-height:1.35;font-weight:500;color:var(--ink-2)}
-.apr-cursos li::before{
-  content:'';position:absolute;left:0;top:.5em;width:6px;height:6px;
-  border-radius:50%;background:var(--apr);
-}
-/* Abierta con toque o teclado: lleva aspa para que se vea como cerrarla
-   (con el raton basta con salir de la tarjeta). */
-.apr-malla{
-  display:inline-flex;align-items:center;gap:6px;margin-top:14px;
-  font-size:13px;font-weight:700;color:var(--apr);text-decoration:underline;
-  text-decoration-color:rgba(var(--indigo-rgb),.35);text-underline-offset:3px;
-}
-.apr-malla::after{content:'\2192';transition:transform .2s var(--ease)}
-.apr-malla:hover{text-decoration-color:currentColor}
-.apr-malla:hover::after{transform:translateX(3px)}
-.apr.is-open .apr-cursos::after{
-  content:'\00d7';position:absolute;top:14px;right:16px;font-size:24px;line-height:1;color:var(--muted);
-}
-.apr.is-open .apr-cursos{
-  opacity:1;visibility:visible;
-  transition:opacity .45s var(--apr-curva) var(--apr-espera),visibility 0s linear var(--apr-espera);
-}
-/* Hover suave, a peticion: la tarjeta sube solo 2px en medio segundo,
-   el borde y la sombra apenas se avivan, el contenido de la tarjeta se
-   desvanece mientras el panel funde y su contenido entra escalonado.
-   Al salir se deshace sin espera. Mismas reglas que .is-open (toque y
-   teclado), repetidas para :hover con la espera de 150ms. */
-@media (hover:hover) and (pointer:fine){
-  .apr{transition:transform .5s var(--apr-curva),box-shadow .5s var(--apr-curva),border-color .5s var(--apr-curva)}
-  .apr:hover{--apr-espera:.15s;transform:translateY(-2px);border-color:rgba(var(--indigo-rgb),.3);box-shadow:0 12px 26px rgba(var(--indigo-rgb),.09)}
-  .apr:hover .apr-cursos{
-    opacity:1;visibility:visible;
-    transition:opacity .45s var(--apr-curva) var(--apr-espera),visibility 0s linear var(--apr-espera);
-  }
-  .apr:hover .apr-t,.apr:hover .apr-d,.apr:hover .apr-meta,.apr:hover .apr-mas{
-    opacity:0;transition-duration:.16s;transition-delay:var(--apr-espera);
-  }
-  .apr:hover .apr-cab-t,.apr:hover .apr-k,.apr:hover .apr-cursos li,.apr:hover .apr-malla{opacity:1;transform:none}
-  .apr:hover .apr-cab-t{transition-delay:calc(var(--apr-espera) + .16s)}
-  .apr:hover .apr-k{transition-delay:calc(var(--apr-espera) + .2s)}
-  .apr:hover .apr-cursos li:nth-child(1){transition-delay:calc(var(--apr-espera) + .24s)}
-  .apr:hover .apr-cursos li:nth-child(2){transition-delay:calc(var(--apr-espera) + .28s)}
-  .apr:hover .apr-cursos li:nth-child(3){transition-delay:calc(var(--apr-espera) + .32s)}
-  .apr:hover .apr-malla{transition-delay:calc(var(--apr-espera) + .36s)}
-}
 /* Movil: slider horizontal con imanes (scroll-snap), a peticion. Cada
    tarjeta ocupa el 80% del ancho y la siguiente asoma por la derecha:
    ese borde es lo que dice "hay mas, desliza" sin flechas. Las tarjetas
@@ -5032,9 +4921,7 @@ body.form-abierto .lead-card .field .sel-list{
   }
   .apr-grid::-webkit-scrollbar{display:none}
   .apr{scroll-snap-align:start}
-  .apr-btn{min-height:0;padding:20px 18px 16px}
-  /* Mismo relleno que la tarjeta para que el icono no salte al abrir */
-  .apr-cursos{padding:17px 18px 14px}
+  .apr-cuerpo{padding:20px 18px}
 }
 .apr-puntos{display:none}
 @media (max-width:600px){
@@ -5051,12 +4938,6 @@ body.form-abierto .lead-card .field .sel-list{
     transition:width .25s var(--ease),background .25s var(--ease);
   }
   .apr-punto.is-on::before{width:20px;background:var(--apr,var(--indigo))}
-}
-@media (prefers-reduced-motion:reduce){
-  .apr,.apr-cursos,.apr-cab-t,.apr-k,.apr-cursos li,.apr-malla,
-  .apr-t,.apr-d,.apr-meta,.apr-mas{transition:none!important}
-  .apr-k,.apr-cursos li,.apr-malla{transform:none}
-  .apr.is-open .apr-cursos{animation:none}
 }
 
 /* ---------- Jerarquia de titulos de la ficha ----------
@@ -5738,14 +5619,6 @@ body.form-abierto .lead-card .field .sel-list{
 .malla-ciclo li[data-t="exp"]{--tono:var(--red)}
 .malla-ciclo li[data-t="emp"]{--tono:var(--terciario)}
 .malla-ciclo li[data-t="esp"]{--tono:var(--indigo)}
-/* Cursos senalados desde "Ver en la malla" (main.js): fondo indigo
-   suave que entra y se va, para que el ojo los encuentre en el ano. */
-.malla-ciclo li{border-radius:4px}
-.malla-ciclo li.is-destacado{animation:mallaDestaca 2.8s var(--ease)}
-@keyframes mallaDestaca{
-  0%,70%{background:rgba(var(--indigo-rgb),.13);box-shadow:0 0 0 4px rgba(var(--indigo-rgb),.13)}
-  100%{background:transparent;box-shadow:0 0 0 4px transparent}
-}
 .malla-soon{color:var(--muted);font-size:14px}
 
 /* ---------- Certificaciones ---------- */

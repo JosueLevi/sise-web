@@ -2681,36 +2681,6 @@
     });
   }
 
-  /* "Que aprenderas" de la ficha: cada tarjeta abre sus cursos con
-     toque, clic o teclado (con raton el CSS ya los ensena al pasar).
-     El panel tapa el boton, asi que pulsarlo es lo que lo cierra. */
-  $$('.apr').forEach((card) => {
-    const btn = $('.apr-btn', card);
-    const panel = $('.apr-cursos', card);
-    if (!btn || !panel) return;
-    const abre = (si) => {
-      card.classList.toggle('is-open', si);
-      btn.setAttribute('aria-expanded', String(si));
-    };
-    btn.addEventListener('click', () => abre(!card.classList.contains('is-open')));
-    panel.addEventListener('click', () => {
-      abre(false);
-      btn.focus({ preventScroll: true });
-    });
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && card.classList.contains('is-open')) { abre(false); btn.focus(); }
-    });
-    const enlace = $('.apr-malla', card);
-    if (enlace) {
-      enlace.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();   // el panel se cierra al pulsarlo
-        abre(false);
-        irAMalla($$('li', panel).map((li) => li.textContent));
-      });
-    }
-  });
-
   /* Puntos del slider de "Que aprenderas" (solo se ven en movil, el CSS
      los esconde en pantallas anchas). Siguen al desplazamiento del
      carril y, al pulsarlos, llevan a su tarjeta. */
@@ -2783,38 +2753,6 @@
       verMapa.setAttribute('aria-expanded', String(on));
       verMapa.textContent = on ? 'Ocultar mapa' : 'Ver mapa';
     });
-  }
-
-  /* "Ver en la malla": baja a la malla, abre el ano donde caen mas de
-     esos cursos (a igualdad, el primero) y los ilumina un momento. Sin
-     esto el enlace dejaba al visitante frente a un acordeon cerrado y
-     47 cursos, buscando los tres que acababa de leer. */
-  function irAMalla(nombres) {
-    const malla = $('.car-malla');
-    if (!malla) return;
-    const norma = (t) => t.replace(/\s+/g, ' ').trim().toLowerCase();
-    const buscados = nombres.map(norma);
-    const items = $$('.malla-ciclo li', malla).filter((li) => buscados.includes(norma(li.textContent)));
-    const cuenta = new Map();
-    items.forEach((li) => {
-      const y = li.closest('.malla-year');
-      cuenta.set(y, (cuenta.get(y) || 0) + 1);
-    });
-    let anio = null, max = 0;
-    cuenta.forEach((n, y) => { if (n > max) { max = n; anio = y; } });
-    if (anio && !anio.classList.contains('is-open')) $('.malla-toggle', anio).click();
-    items.forEach((li) => {
-      li.classList.remove('is-destacado');
-      void li.offsetWidth;
-      li.classList.add('is-destacado');
-    });
-    setTimeout(() => items.forEach((li) => li.classList.remove('is-destacado')), 2800);
-    /* Al inicio del acordeon y no al ano: al abrirlo se cierra el que
-       estaba abierto encima y el ano sube, asi que su posicion medida
-       ahora ya no vale cuando termina el desplazamiento. */
-    const destino = $('.malla-acc', malla) || malla;
-    const y = destino.getBoundingClientRect().top + window.scrollY - 110;
-    window.scrollTo({ top: Math.max(y, 0), behavior: reduceMotion ? 'auto' : 'smooth' });
   }
 
   /* Todos los videos con portada de la ficha: el de la carrera y el del

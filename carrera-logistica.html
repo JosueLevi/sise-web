@@ -8,7 +8,7 @@
 <meta name="description" content="Instituto Superior SISE. Más de 24 carreras profesionales semipresenciales y 100% virtuales. 12 sedes en Lima y Callao. 40 años formando profesionales.">
 <meta name="theme-color" content="#FF0E49">
 
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=796">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg?v=799">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 
@@ -16,7 +16,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-400.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/barlow-condensed-800.woff2">
 <link rel="preload" as="image" href="assets/img/carrera-logistica.webp?v=3">
-<link rel="stylesheet" href="assets/css/style.css?v=796">
+<link rel="stylesheet" href="assets/css/style.css?v=799">
 </head>
 <body>
 <header class="site-header" id="siteHeader">
@@ -147,12 +147,11 @@
       <!-- Areas de la carrera, agrupadas a partir de la malla oficial
            (PDF de admision) y numeradas en el orden en que se mueve la
            mercancia. Ciclos y certificaciones salen del mismo PDF; las
-           areas sin certificacion propia solo llevan los ciclos. Cada
-           tarjeta enseña tres cursos reales al pasar el raton o al
-           tocarla (main.js, "Que aprenderas"). -->
+           areas sin certificacion propia solo llevan los ciclos. Son
+           tarjetas fijas: el detalle de cursos esta en la malla. -->
       <div class="apr-grid reveal reveal-stagger">
         <article class="apr">
-          <button class="apr-btn" type="button" aria-expanded="false" aria-controls="apr-1">
+          <div class="apr-cuerpo">
             <span class="apr-ico" data-ico="apr-compras" aria-hidden="true"></span>
             <span class="apr-t">Compras y proveedores</span>
             <span class="apr-d">Negocia con proveedores y asegura que nunca falte lo necesario.</span>
@@ -160,21 +159,10 @@
               <span class="apr-ciclo">Ciclos 3 al 6</span>
               <span class="apr-cert"><span class="apr-cert-k">Certificaci&oacute;n</span> Asistente de compras</span>
             </span>
-            <span class="apr-mas" aria-hidden="true">Ver cursos</span>
-          </button>
-          <div class="apr-cursos" id="apr-1">
-            <p class="apr-cab"><span class="apr-cab-ico" data-ico="apr-compras" aria-hidden="true"></span><span class="apr-cab-t">Compras y proveedores</span></p>
-            <p class="apr-k">Cursos clave<span class="sr-only"> de Compras y proveedores</span></p>
-            <ul>
-              <li>Gesti&oacute;n de proveedores</li>
-              <li>Contratos y adquisiciones</li>
-              <li>Tecnolog&iacute;a de la informaci&oacute;n para compras</li>
-            </ul>
-            <a class="apr-malla" href="#malla">Ver en la malla</a>
           </div>
         </article>
         <article class="apr">
-          <button class="apr-btn" type="button" aria-expanded="false" aria-controls="apr-2">
+          <div class="apr-cuerpo">
             <span class="apr-ico" data-ico="apr-almacen" aria-hidden="true"></span>
             <span class="apr-t">Almacenes e inventarios</span>
             <span class="apr-d">Organiza el almac&eacute;n y controla el stock al detalle.</span>
@@ -182,21 +170,10 @@
               <span class="apr-ciclo">Ciclos 3 al 5</span>
               <span class="apr-cert"><span class="apr-cert-k">Certificaci&oacute;n</span> Asistente de almac&eacute;n</span>
             </span>
-            <span class="apr-mas" aria-hidden="true">Ver cursos</span>
-          </button>
-          <div class="apr-cursos" id="apr-2">
-            <p class="apr-cab"><span class="apr-cab-ico" data-ico="apr-almacen" aria-hidden="true"></span><span class="apr-cab-t">Almacenes e inventarios</span></p>
-            <p class="apr-k">Cursos clave<span class="sr-only"> de Almacenes e inventarios</span></p>
-            <ul>
-              <li>Gesti&oacute;n de almacenes</li>
-              <li>Control de inventarios</li>
-              <li>M&aacute;quinas y equipos de almacenamiento</li>
-            </ul>
-            <a class="apr-malla" href="#malla">Ver en la malla</a>
           </div>
         </article>
         <article class="apr">
-          <button class="apr-btn" type="button" aria-expanded="false" aria-controls="apr-3">
+          <div class="apr-cuerpo">
             <span class="apr-ico" data-ico="apr-transporte" aria-hidden="true"></span>
             <span class="apr-t">Transporte y distribuci&oacute;n</span>
             <span class="apr-d">Planifica rutas y fletes para entregar a tiempo.</span>
@@ -204,42 +181,20 @@
               <span class="apr-ciclo">Ciclos 2 al 4</span>
               <span class="apr-cert"><span class="apr-cert-k">Certificaci&oacute;n</span> Administraci&oacute;n de servicios de transporte</span>
             </span>
-            <span class="apr-mas" aria-hidden="true">Ver cursos</span>
-          </button>
-          <div class="apr-cursos" id="apr-3">
-            <p class="apr-cab"><span class="apr-cab-ico" data-ico="apr-transporte" aria-hidden="true"></span><span class="apr-cab-t">Transporte y distribuci&oacute;n</span></p>
-            <p class="apr-k">Cursos clave<span class="sr-only"> de Transporte y distribuci&oacute;n</span></p>
-            <ul>
-              <li>C&aacute;lculo y negociaciones de fletes terrestres</li>
-              <li>Gesti&oacute;n de sistemas de transporte</li>
-              <li>Distribuci&oacute;n f&iacute;sica internacional</li>
-            </ul>
-            <a class="apr-malla" href="#malla">Ver en la malla</a>
           </div>
         </article>
         <article class="apr">
-          <button class="apr-btn" type="button" aria-expanded="false" aria-controls="apr-4">
+          <div class="apr-cuerpo">
             <span class="apr-ico" data-ico="apr-mundo" aria-hidden="true"></span>
             <span class="apr-t">Comercio internacional</span>
             <span class="apr-d">Mueve mercanc&iacute;a entre pa&iacute;ses con los documentos en regla.</span>
             <span class="apr-meta">
               <span class="apr-ciclo">Ciclos 4 y 5</span>
             </span>
-            <span class="apr-mas" aria-hidden="true">Ver cursos</span>
-          </button>
-          <div class="apr-cursos" id="apr-4">
-            <p class="apr-cab"><span class="apr-cab-ico" data-ico="apr-mundo" aria-hidden="true"></span><span class="apr-cab-t">Comercio internacional</span></p>
-            <p class="apr-k">Cursos clave<span class="sr-only"> de Comercio internacional</span></p>
-            <ul>
-              <li>Log&iacute;stica internacional</li>
-              <li>Gesti&oacute;n de comercio internacional</li>
-              <li>Gesti&oacute;n de documentos log&iacute;sticos</li>
-            </ul>
-            <a class="apr-malla" href="#malla">Ver en la malla</a>
           </div>
         </article>
         <article class="apr">
-          <button class="apr-btn" type="button" aria-expanded="false" aria-controls="apr-5">
+          <div class="apr-cuerpo">
             <span class="apr-ico" data-ico="apr-cadena" aria-hidden="true"></span>
             <span class="apr-t">Supply chain y procesos</span>
             <span class="apr-d">Mira la cadena completa y mejora cada eslab&oacute;n.</span>
@@ -247,38 +202,16 @@
               <span class="apr-ciclo">Ciclos 4 al 6</span>
               <span class="apr-cert"><span class="apr-cert-k">Certificaci&oacute;n</span> Asistente supply chain management</span>
             </span>
-            <span class="apr-mas" aria-hidden="true">Ver cursos</span>
-          </button>
-          <div class="apr-cursos" id="apr-5">
-            <p class="apr-cab"><span class="apr-cab-ico" data-ico="apr-cadena" aria-hidden="true"></span><span class="apr-cab-t">Supply chain y procesos</span></p>
-            <p class="apr-k">Cursos clave<span class="sr-only"> de Supply chain y procesos</span></p>
-            <ul>
-              <li>Supply chain management</li>
-              <li>Dise&ntilde;o y optimizaci&oacute;n de procesos log&iacute;sticos</li>
-              <li>Indicadores de gesti&oacute;n log&iacute;stica</li>
-            </ul>
-            <a class="apr-malla" href="#malla">Ver en la malla</a>
           </div>
         </article>
         <article class="apr">
-          <button class="apr-btn" type="button" aria-expanded="false" aria-controls="apr-6">
+          <div class="apr-cuerpo">
             <span class="apr-ico" data-ico="apr-costos" aria-hidden="true"></span>
             <span class="apr-t">Costos y finanzas</span>
             <span class="apr-d">Usa los n&uacute;meros para decidir con criterio.</span>
             <span class="apr-meta">
               <span class="apr-ciclo">Ciclos 4 al 6</span>
             </span>
-            <span class="apr-mas" aria-hidden="true">Ver cursos</span>
-          </button>
-          <div class="apr-cursos" id="apr-6">
-            <p class="apr-cab"><span class="apr-cab-ico" data-ico="apr-costos" aria-hidden="true"></span><span class="apr-cab-t">Costos y finanzas</span></p>
-            <p class="apr-k">Cursos clave<span class="sr-only"> de Costos y finanzas</span></p>
-            <ul>
-              <li>Costos y presupuestos</li>
-              <li>An&aacute;lisis financiero para la toma de decisiones</li>
-              <li>Procesos estad&iacute;sticos aplicados en log&iacute;stica</li>
-            </ul>
-            <a class="apr-malla" href="#malla">Ver en la malla</a>
           </div>
         </article>
       </div>
@@ -807,10 +740,10 @@
   </button>
 </div>
 
-<script src="assets/js/icons.js?v=796"></script>
-<script src="assets/js/data.js?v=796"></script>
-<script src="assets/js/crm.js?v=796"></script>
-<script src="assets/js/main.js?v=796"></script>
+<script src="assets/js/icons.js?v=799"></script>
+<script src="assets/js/data.js?v=799"></script>
+<script src="assets/js/crm.js?v=799"></script>
+<script src="assets/js/main.js?v=799"></script>
 
 </body>
 </html>
